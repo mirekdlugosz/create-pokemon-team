@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html ng-app="pokemonTeamBuilder">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<!-- Latest compiled and minified JavaScript -->
+	<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/controller.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <div class="page-header">
+    <h2>Yet Another Pokemon Team Builder</h2>
+  </div>
+  <div class="jumbotron" ng-controller="PokemonListCtrl as pokemon_list">
+	  <div id="one" ng-controller="PokemonMovesCtrl as one">
+		<select ng-model="one.pokemon"
+			ng-options="pokemon.id as pokemon.name for pokemon in pokemon_list.pokemon"
+			ng-change="one.getMoves()">
+			<option value="">-- Pokemon --</option>
+		</select>
+		<select ng-model="one.move1"
+			ng-options="move.type as move.name for move in one.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="one.move2"
+			ng-options="move.type as move.name for move in one.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="one.move3"
+			ng-options="move.type as move.name for move in one.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="one.move4"
+			ng-options="move.type as move.name for move in one.moves">
+			<option value="">-- Move --</option>
+		</select>
+	  </div>
+	  <div id="two" ng-controller="PokemonMovesCtrl as two">
+		<select ng-model="two.pokemon"
+			ng-options="pokemon.id as pokemon.name for pokemon in pokemon_list.pokemon"
+			ng-change="two.getMoves()">
+			<option value="">-- Pokemon --</option>
+		</select>
+		<select ng-model="two.move1"
+			ng-options="move.type as move.name for move in two.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="two.move2"
+			ng-options="move.type as move.name for move in two.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="two.move3"
+			ng-options="move.type as move.name for move in two.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="two.move4"
+			ng-options="move.type as move.name for move in two.moves">
+			<option value="">-- Move --</option>
+		</select>
+	  </div>
+	  <div id="three" ng-controller="PokemonMovesCtrl as three">
+		<select ng-model="three.pokemon"
+			ng-options="pokemon.id as pokemon.name for pokemon in pokemon_list.pokemon"
+			ng-change="three.getMoves()">
+			<option value="">-- Pokemon --</option>
+		</select>
+		<select ng-model="three.move1"
+			ng-options="move.type as move.name for move in three.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="three.move2"
+			ng-options="move.type as move.name for move in three.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="three.move3"
+			ng-options="move.type as move.name for move in three.moves">
+			<option value="">-- Move --</option>
+		</select>
+		<select ng-model="three.move4"
+			ng-options="move.type as move.name for move in three.moves">
+			<option value="">-- Move --</option>
+		</select>
+	  </div>
+  </div>
+  <div id="results">
+	  <!-- dwie karty, w każdej tabelka -->
+  </div>
+</div>
+
+</body>
+</html>
