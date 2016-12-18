@@ -14,79 +14,27 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container" ng-controller="PokemonTeamController as pokemon_team">
   <div class="page-header">
     <h2>Yet Another Pokemon Team Builder</h2>
   </div>
-  <div class="jumbotron" ng-controller="PokemonListCtrl as pokemon_list">
-	  <div id="one" ng-controller="PokemonMovesCtrl as one">
-		<select ng-model="one.pokemon"
-			ng-options="pokemon.id as pokemon.name for pokemon in pokemon_list.pokemon"
-			ng-change="one.getMoves()">
+  <div class="jumbotron" ng-controller="PokemonListController as pokemon_list">
+	  <div class="col-sm-2" ng-repeat="team_member in pokemon_team.members">
+		<select ng-model="team_member.pokemon"
+			ng-options="pokemon.name for pokemon in pokemon_list.available_pokemon"
+			ng-change="pokemon_team.getMoves(team_member)">
 			<option value="">-- Pokemon --</option>
 		</select>
-		<select ng-model="one.move1"
-			ng-options="move.type as move.name for move in one.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="one.move2"
-			ng-options="move.type as move.name for move in one.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="one.move3"
-			ng-options="move.type as move.name for move in one.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="one.move4"
-			ng-options="move.type as move.name for move in one.moves">
-			<option value="">-- Move --</option>
-		</select>
+		<div ng-repeat="select_move in team_member.moves track by $index">
+			<select ng-model="team_member.moves[$index]"
+				ng-options="move as (move.name + ' ('+ move.type + ', ' + move.category +')') for move in team_member.available_moves">
+				<option value="">-- Move --</option>
+			</select>
+		</div>
 	  </div>
-	  <div id="two" ng-controller="PokemonMovesCtrl as two">
-		<select ng-model="two.pokemon"
-			ng-options="pokemon.id as pokemon.name for pokemon in pokemon_list.pokemon"
-			ng-change="two.getMoves()">
-			<option value="">-- Pokemon --</option>
-		</select>
-		<select ng-model="two.move1"
-			ng-options="move.type as move.name for move in two.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="two.move2"
-			ng-options="move.type as move.name for move in two.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="two.move3"
-			ng-options="move.type as move.name for move in two.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="two.move4"
-			ng-options="move.type as move.name for move in two.moves">
-			<option value="">-- Move --</option>
-		</select>
-	  </div>
-	  <div id="three" ng-controller="PokemonMovesCtrl as three">
-		<select ng-model="three.pokemon"
-			ng-options="pokemon.id as pokemon.name for pokemon in pokemon_list.pokemon"
-			ng-change="three.getMoves()">
-			<option value="">-- Pokemon --</option>
-		</select>
-		<select ng-model="three.move1"
-			ng-options="move.type as move.name for move in three.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="three.move2"
-			ng-options="move.type as move.name for move in three.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="three.move3"
-			ng-options="move.type as move.name for move in three.moves">
-			<option value="">-- Move --</option>
-		</select>
-		<select ng-model="three.move4"
-			ng-options="move.type as move.name for move in three.moves">
-			<option value="">-- Move --</option>
-		</select>
+	  <pre>
+		{{pokemon_team.members | json}}
+	  </pre>
 	  </div>
   </div>
   <div id="results">
