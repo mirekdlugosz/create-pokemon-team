@@ -1,5 +1,5 @@
 
-angular.module('pokemonTeamBuilder', [])
+angular.module('pokemonTeamBuilder', ['ui.select', 'ngSanitize'])
 .factory('PokemonList', ['$http', function($http) {
 	var self = this;
 	self.pokemon = [];

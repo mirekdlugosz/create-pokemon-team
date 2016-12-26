@@ -9,8 +9,12 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 	<!-- Latest compiled and minified JavaScript -->
 	<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
-	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
+	<script type="text/javascript" src="js/select.js"></script>
 	<script type="text/javascript" src="js/controller.js"></script>
+	<link rel="stylesheet" href="css/select.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
 </head>
 <body>
 
@@ -21,17 +25,27 @@
   <div class="jumbotron" ng-controller="PokemonListController as pokemon_list">
 	  <div class="col-sm-2" ng-repeat="team_member in pokemon_team.members">
 		<h4>Pokemon {{ $index + 1 }}</h4>
-		<select ng-model="team_member.pokemon"
-			ng-options="pokemon.name for pokemon in pokemon_list.available_pokemon"
+		<ui-select ng-model="team_member.pokemon"
+			theme="selectize"
 			ng-change="pokemon_team.getMoves(team_member)">
-			<option value="">-- Pokemon --</option>
-		</select>
+			<ui-select-match>
+				<span ng-bind="$select.selected.name"></span>
+			</ui-select-match>
+			<ui-select-choices repeat="pokemon in (pokemon_list.available_pokemon | filter: $select.search) track by pokemon.id">
+				<span ng-bind="pokemon.name"></span>
+			</ui-select-choices>
+		</ui-select>
 		<div ng-repeat="select_move in team_member.moves track by $index">
-			<select ng-model="team_member.moves[$index]"
-				ng-options="move as (move.name + ' ('+ move.type + ', ' + move.category +')') for move in team_member.available_moves"
+			<ui-select ng-model="team_member.moves[$index]"
+			  	theme="selectize"
 				ng-change="pokemon_team.updateTables()">
-				<option value="">-- Move --</option>
-			</select>
+				<ui-select-match>
+					<span ng-bind="$select.selected.name"></span>
+				</ui-select-match>
+				<ui-select-choices repeat="move in (team_member.available_moves | filter: $select.search) track by move.name">
+					<span ng-bind="move.name + ' ('+move.type + ', ' + move.category+')'"></span>
+				</ui-select-choices>
+			</ui-select>
 		</div>
 	  </div>
 	  <style>
