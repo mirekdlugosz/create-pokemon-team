@@ -20,6 +20,7 @@
   </div>
   <div class="jumbotron" ng-controller="PokemonListController as pokemon_list">
 	  <div class="col-sm-2" ng-repeat="team_member in pokemon_team.members">
+		<h4>Pokemon {{ $index + 1 }}</h4>
 		<select ng-model="team_member.pokemon"
 			ng-options="pokemon.name for pokemon in pokemon_list.available_pokemon"
 			ng-change="pokemon_team.getMoves(team_member)">
@@ -27,17 +28,52 @@
 		</select>
 		<div ng-repeat="select_move in team_member.moves track by $index">
 			<select ng-model="team_member.moves[$index]"
-				ng-options="move as (move.name + ' ('+ move.type + ', ' + move.category +')') for move in team_member.available_moves">
+				ng-options="move as (move.name + ' ('+ move.type + ', ' + move.category +')') for move in team_member.available_moves"
+				ng-change="pokemon_team.updateTables()">
 				<option value="">-- Move --</option>
 			</select>
 		</div>
 	  </div>
-	  <pre>
-		{{pokemon_team.members | json}}
-	  </pre>
+	  <style>
+		table tbody {
+			display: none;
+		}
+		td {
+			width: 30px;
+		}
+	  </style>
+	  <table>
+		<thead>
+			  <tr>
+				  <td></td>
+				  <td colspan="4" ng-repeat="team_member in pokemon_team.members">{{ team_member.pokemon.name }}</td>
+			  </tr>
+			  <tr>
+				  <td ng-repeat="cell in pokemon_team.header_cells track by $index">{{ cell }}</td>
+			  </tr>
+		  </thead>
+		  <tbody>
+			  <tr ng-repeat="row in pokemon_team.typeEffectivenessTable">
+				  <td>{{ pokemon_team.typeTable[$index] }}</td>
+				  <td ng-repeat="cell in row track by $index">{{cell}}</td>
+			  </tr>
+		  </tbody>
+	  </table>
 	  </div>
   </div>
-  <div id="results">
+  <div id="results" >
+	  <div class="tabbable tabs-above">
+		  <ul class="nav nav-tabs">
+			  <li class="active"><a>Type effectiveness</a></li>
+			  <li><a>Type coverage</a></li>
+		  </ul>
+	  </div>
+	  <pre>
+		{{pokemon_team.typeEffectivenessTable | json }}
+	  </pre>
+	  <pre>
+		{{pokemon_team.members | json }}
+	  </pre>
 	  <!-- dwie karty, w każdej tabelka -->
   </div>
 </div>
