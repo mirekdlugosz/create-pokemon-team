@@ -2,95 +2,127 @@
 <html ng-app="pokemonTeamBuilder">
 <head>
 	<meta charset="utf-8">
-	<title></title>
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-	<!-- Latest compiled and minified JavaScript -->
-	<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
+	<title>Yet Another Pokemon Team Builder</title>
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+		integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<!-- Angular + ui.bootstrap + ui.select + dependencies -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.js"
+		 integrity="sha384-JA+5V+7nicXUFU2NHO3gODcIB3tFuyvjK6LmgyBsco18RRclc69JQzkA8ZbthEga" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular-sanitize.js"
+		integrity="sha384-0tXiEbIiyVJeNFfjYoJMSU/icBl48qaKYFUPZFUH9e4Wm9DgZ2h54rOglcYf4hU2" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="js/ui-bootstrap-tabs-tpls-2.3.2.min.js"></script>
 	<script type="text/javascript" src="js/select.js"></script>
-	<script type="text/javascript" src="js/controller.js"></script>
+	<!-- Main app -->
+	<script type="text/javascript" src="js/pokemon-team-builder.js"></script>
+	<link rel="stylesheet" href="css/pokemon-team-builder.css">
+	<!-- Select CSS + theme -->
 	<link rel="stylesheet" href="css/select.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.bootstrap3.min.css"
+		integrity="sha384-Q9NvJ5rZirbLVtW6VA1jIRU/MqdWrm2icdeIVXO9MizWKVdROJNbwWbGWizgQm6R" crossorigin="anonymous">
 </head>
 <body>
 
-<div class="container" ng-controller="PokemonTeamController as pokemon_team">
-  <div class="page-header">
-    <h2>Yet Another Pokemon Team Builder</h2>
-  </div>
-  <div class="jumbotron" ng-controller="PokemonListController as pokemon_list">
-	  <div class="col-sm-2" ng-repeat="team_member in pokemon_team.members">
-		<h4>Pokemon {{ $index + 1 }}</h4>
-		<ui-select ng-model="team_member.pokemon"
-			theme="selectize"
-			ng-change="pokemon_team.getMoves(team_member)">
-			<ui-select-match>
-				<span ng-bind="$select.selected.name"></span>
-			</ui-select-match>
-			<ui-select-choices repeat="pokemon in (pokemon_list.available_pokemon | filter: $select.search) track by pokemon.id">
-				<span ng-bind="pokemon.name"></span>
-			</ui-select-choices>
-		</ui-select>
-		<div ng-repeat="select_move in team_member.moves track by $index">
-			<ui-select ng-model="team_member.moves[$index]"
-			  	theme="selectize"
-				ng-change="pokemon_team.updateTables()">
-				<ui-select-match>
-					<span ng-bind="$select.selected.name"></span>
-				</ui-select-match>
-				<ui-select-choices repeat="move in (team_member.available_moves | filter: $select.search) track by move.name">
-					<span ng-bind="move.name + ' ('+move.type + ', ' + move.category+')'"></span>
-				</ui-select-choices>
-			</ui-select>
+	<div class="container-fluid" ng-controller="PokemonTeamController as pokemon_team">
+		<div class="page-header">
+			<h2>Yet Another Pokemon Team Builder</h2>
 		</div>
-	  </div>
-	  <style>
-		table tbody {
-			display: none;
-		}
-		td {
-			width: 30px;
-		}
-	  </style>
-	  <table>
-		<thead>
-			  <tr>
-				  <td></td>
-				  <td colspan="4" ng-repeat="team_member in pokemon_team.members">{{ team_member.pokemon.name }}</td>
-			  </tr>
-			  <tr>
-				  <td ng-repeat="cell in pokemon_team.header_cells track by $index">{{ cell }}</td>
-			  </tr>
-		  </thead>
-		  <tbody>
-			  <tr ng-repeat="row in pokemon_team.typeEffectivenessTable">
-				  <td>{{ pokemon_team.typeTable[$index] }}</td>
-				  <td ng-repeat="cell in row track by $index">{{cell}}</td>
-			  </tr>
-		  </tbody>
-	  </table>
-	  </div>
-  </div>
-  <div id="results" >
-	  <div class="tabbable tabs-above">
-		  <ul class="nav nav-tabs">
-			  <li class="active"><a>Type effectiveness</a></li>
-			  <li><a>Type coverage</a></li>
-		  </ul>
-	  </div>
-	  <pre>
-		{{pokemon_team.typeEffectivenessTable | json }}
-	  </pre>
-	  <pre>
-		{{pokemon_team.members | json }}
-	  </pre>
-	  <!-- dwie karty, w każdej tabelka -->
-  </div>
-</div>
-
+		<div id="team-selector" class="jumbotron" ng-controller="PokemonListController as pokemon_list">
+			<div class="col-sm-2" ng-repeat="team_member in pokemon_team.members">
+				<h4>Pokemon {{ $index + 1 }}</h4>
+				<ui-select ng-model="team_member.pokemon"
+					theme="selectize"
+					ng-change="pokemon_team.getMoves(team_member)">
+					<ui-select-match>
+						<span ng-bind="$select.selected.name"></span>
+					</ui-select-match>
+					<ui-select-choices repeat="pokemon in (pokemon_list.available_pokemon | filter: $select.search) track by pokemon.id">
+						<span ng-bind="pokemon.name"></span>
+					</ui-select-choices>
+				</ui-select>
+				<div ng-repeat="select_move in team_member.moves track by $index">
+					<ui-select ng-model="team_member.moves[$index]"
+						theme="selectize"
+						ng-change="pokemon_team.updateTables()">
+						<ui-select-match>
+							<span ng-bind="$select.selected.name"></span>
+						</ui-select-match>
+						<ui-select-choices repeat="move in (team_member.available_moves | filter: $select.search) track by move.name">
+							<span ng-bind="move.name + ' ('+move.type + ', ' + move.category+')'"></span>
+						</ui-select-choices>
+					</ui-select>
+				</div>
+			</div>
+		</div>
+		<div id="results">
+			<uib-tabset active="0" justified="false">
+				<uib-tab index="0" heading="Type effectiveness">
+					<table id="type-effectiveness" class="table table-bordered">
+						<thead>
+							<tr>
+								<td></td>
+								<td colspan="4" ng-repeat="team_member in pokemon_team.members">{{ team_member.pokemon.name }}</td>
+							</tr>
+							<tr>
+								<td>Type</td>
+								<td>Effect</td>
+								<td title="Number of Super Effective moves">SE</td>
+								<td title="Number of Not Very Effective moves">NVE</td>
+								<td title="Number of moves with neutral effectiveness">NE</td>
+								<td>Effect</td>
+								<td title="Number of Super Effective moves">SE</td>
+								<td title="Number of Not Very Effective moves">NVE</td>
+								<td title="Number of moves with neutral effectiveness">NE</td>
+								<td>Effect</td>
+								<td title="Number of Super Effective moves">SE</td>
+								<td title="Number of Not Very Effective moves">NVE</td>
+								<td title="Number of moves with neutral effectiveness">NE</td>
+								<td>Effect</td>
+								<td title="Number of Super Effective moves">SE</td>
+								<td title="Number of Not Very Effective moves">NVE</td>
+								<td title="Number of moves with neutral effectiveness">NE</td>
+								<td>Effect</td>
+								<td title="Number of Super Effective moves">SE</td>
+								<td title="Number of Not Very Effective moves">NVE</td>
+								<td title="Number of moves with neutral effectiveness">NE</td>
+								<td>Effect</td>
+								<td title="Number of Super Effective moves">SE</td>
+								<td title="Number of Not Very Effective moves">NVE</td>
+								<td title="Number of moves with neutral effectiveness">NE</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="row in pokemon_team.typeEffectivenessTable">
+								<td>{{ pokemon_team.type_list[$index] }}</td>
+								<td ng-repeat="cell in row track by $index">{{cell}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</uib-tab>
+				<uib-tab index="1" heading="Type coverage">
+					<table id="type-coverage" class="table table-bordered">
+						<thead>
+							<tr>
+								<td>Type</td>
+								<td>Total weaknesses</td>
+								<td>Total resistances</td>
+								<td>Total super effective</td>
+								<td>Total not very effective</td>
+								<td>Total normal effective</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="row in pokemon_team.typeCoverageTable">
+								<td>{{ pokemon_team.type_list[$index] }}</td>
+								<td ng-repeat="cell in row track by $index">{{cell}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</uib-tab>
+			</uib-tabset>
+		</div>
+	</div>
 </body>
 </html>
