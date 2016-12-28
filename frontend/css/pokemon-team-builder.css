@@ -1,0 +1,32 @@
+#team-selector {
+	width: 100%;
+	float: left;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th,
+.table>tfoot>tr>td,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>thead>tr>th {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+thead td {
+	font-weight: bold;
+}
+
+thead td[colspan] {
+	text-align: center;
+}
+
+thead td[title] {
+	text-decoration: underline;
+}
+
+#type-effectiveness td[colspan],
+#type-effectiveness th:nth-child(4n + 1),
+#type-effectiveness td:nth-child(4n + 1) {
+	border-right: 2px solid black !important;
+}
