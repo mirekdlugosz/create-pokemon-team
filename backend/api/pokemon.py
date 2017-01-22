@@ -1,85 +1,32 @@
-from flask import Flask, Response, json
-app = Flask(__name__)
+import os
+import flask
+
+DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+
+app = flask.Flask(__name__)
+
+@app.errorhandler(404)
+def not_found(e):
+    response_text = """{"error": "404 - no such resource"}"""
+    return flask.make_response(response_text, 404, {"Content-Type": "application/json"})
 
 @app.route('/pokemon')
 def api_root():
-    pokemon = [
-            {
-                "name": "bulbasaur",
-                "type": ["Grass", "Poison"]
-            },
-            {
-                "name": "charmander",
-                "type": ["Fire"]
-            },
-            {
-                "name": "squirtle",
-                "type": ["Water"]
-            },
-            {
-                "name": "pikachu",
-                "type": ["electric"]
-            },
-        ]
-    js = json.dumps(pokemon)
-    return Response(js, status=200, mimetype='application/json')
+    with open(os.path.join(DIRECTORY, "pokemon-list.json"), 'r') as fh:
+        js = fh.read()
+
+    return flask.make_response(js, 200, {"Content-Type": "application/json"})
 
 @app.route('/pokemon/<pokemon_name>/moves')
 def api_articles(pokemon_name):
-    if pokemon_name == "bulbasaur":
-        moves = [
-                    {
-                        "name": "Tackle",
-                        "type": "Normal",
-                        "category": "physical"
-                    },
-                    {
-                        "name": "Stun Spore",
-                        "type": "Grass",
-                        "category": "status"
-                    }
-                ]
-    elif pokemon_name == "charmander":
-        moves = [
-                    {
-                        "name": "Ember",
-                        "type": "Fire",
-                        "category": "special"
-                    },
-                    {
-                        "name": "Dragon Rage",
-                        "type": "Dragon",
-                        "category": "special"
-                    }
-                ]
-    elif pokemon_name == "squirtle":
-        moves = [
-                    {
-                        "name": "Bite",
-                        "type": "Dark",
-                        "category": "physical"
-                    },
-                    {
-                        "name": "Water Pulse",
-                        "type": "Water",
-                        "category": "special"
-                    }
-                ]
-    elif pokemon_name == "pikachu":
-        moves = [
-                    {
-                        "name": "Volt Tackle",
-                        "type": "Electric",
-                        "category": "physical"
-                    },
-                    {
-                        "name": "Electro Ball",
-                        "type": "Electric",
-                        "category": "special"
-                    }
-                ]
-    js = json.dumps(moves)
-    return Response(js, status=200, mimetype='application/json')
+    move_file_path = os.path.join(DIRECTORY, "moves", pokemon_name + ".json")
+    if not os.path.exists(move_file_path):
+        flask.abort(404)
+
+    with open(move_file_path, 'r') as fh:
+        js = fh.read()
+
+    return flask.make_response(js, 200, {"Content-Type": "application/json"})
 
 if __name__ == '__main__':
     app.run()
