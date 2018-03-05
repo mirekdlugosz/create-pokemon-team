@@ -14,13 +14,17 @@
 # And since NodeJS expects certain structure from its modules,
 # we rewrite files before processing them.
 
+if [ "$1" = "-f" ] || [ "$1" = "--force" ]; then
+	FORCE=1
+fi
+
 for filename in pokedex-sumo.js moves-sumo.js learnsets-sumo.js; do
-	if [ ! -e "$filename" ]; then
-		wget "http://pyrotoz.com/${filename}"
+	if [ ! -e "$filename" ] || [ ! -z "$FORCE" ]; then
+		wget "http://pyrotoz.com/${filename}" -O "${filename}"
 	fi
 	sed -i -e '1 s:.*= {:exports.data = {:' "$filename"
 	output_filename="${filename}on"
 	nodejs --use_strict -e 'const fs = require("fs");
 		var data = require("./'$filename'");
-		fs.writeFile("'$output_filename'", JSON.stringify(data));'
+		fs.writeFileSync("'$output_filename'", JSON.stringify(data));'
 done
