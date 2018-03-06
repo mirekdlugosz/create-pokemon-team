@@ -1,47 +1,54 @@
-import unittest
+import pytest
 
 import pokedexreader.storage
 
 
-class PokedexAddPokemonTest(unittest.TestCase):
-    def setUp(self):
-        self.pokedex = pokedexreader.storage.PokedexStorage()
-        self.pokemon = {'generation': 5,
-                        'pokemon_id': 'pikachu',
-                        'name': 'Pikachu',
-                        'pokemon_type': ['Electric']}
+@pytest.fixture
+def pokemon_model():
+    return {'generation': 5,
+            'pokemon_id': 'pikachu',
+            'name': 'Pikachu',
+            'pokemon_type': ['Electric']}
 
-    def test_pokemon_with_empty_generation(self):
-        pokemon = self.pokemon
-        pokemon["generation"] = ""
-        with self.assertRaises(ValueError) as cm:
-            self.pokedex.add_pokemon(**pokemon)
-        self.assertEqual(str(cm.exception), 'Generation cannot be empty')
 
-    def test_pokemon_with_empty_id(self):
-        pokemon = self.pokemon
-        pokemon["pokemon_id"] = ""
-        with self.assertRaises(ValueError) as cm:
-            self.pokedex.add_pokemon(**pokemon)
-        self.assertEqual(str(cm.exception), 'Pokemon ID cannot be empty')
+@pytest.fixture
+def pokedex():
+    return pokedexreader.storage.PokedexStorage()
 
-    def test_pokemon_with_empty_name(self):
-        pokemon = self.pokemon
-        pokemon["name"] = ""
-        with self.assertRaises(ValueError) as cm:
-            self.pokedex.add_pokemon(**pokemon)
-        self.assertEqual(str(cm.exception), 'Pokemon name cannot be empty')
 
-    def test_pokemon_with_empty_type(self):
-        pokemon = self.pokemon
-        pokemon["pokemon_type"] = []
-        with self.assertRaises(ValueError) as cm:
-            self.pokedex.add_pokemon(**pokemon)
-        self.assertEqual(str(cm.exception), 'Pokemon Type cannot be empty')
+class TestAdd():
+    def test_pokemon_with_empty_generation(self, pokemon_model, pokedex):
+        pokemon_model["generation"] = ""
+        with pytest.raises(ValueError) as cm:
+            pokedex.add_pokemon(**pokemon_model)
+        assert str(cm.value) == 'Generation cannot be empty'
 
-    def test_pokemon_with_unknown_type(self):
-        pokemon = self.pokemon
-        pokemon["pokemon_type"] = ['Nuclear']
-        with self.assertRaises(ValueError) as cm:
-            self.pokedex.add_pokemon(**pokemon)
-        self.assertIn('Unknown Type in', str(cm.exception))
+    def test_pokemon_with_empty_id(self, pokemon_model, pokedex):
+        pokemon_model["pokemon_id"] = ""
+        with pytest.raises(ValueError) as cm:
+            pokedex.add_pokemon(**pokemon_model)
+        assert str(cm.value) == 'Pokemon ID cannot be empty'
+
+    def test_pokemon_with_empty_name(self, pokemon_model, pokedex):
+        pokemon_model["name"] = ""
+        with pytest.raises(ValueError) as cm:
+            pokedex.add_pokemon(**pokemon_model)
+        assert str(cm.value) == 'Pokemon name cannot be empty'
+
+    def test_pokemon_with_empty_type(self, pokemon_model, pokedex):
+        pokemon_model["pokemon_type"] = []
+        with pytest.raises(ValueError) as cm:
+            pokedex.add_pokemon(**pokemon_model)
+        assert str(cm.value) == 'Pokemon Type cannot be empty'
+
+    def test_pokemon_with_unknown_type(self, pokemon_model, pokedex):
+        pokemon_model["pokemon_type"] = ['Nuclear']
+        with pytest.raises(ValueError) as cm:
+            pokedex.add_pokemon(**pokemon_model)
+        assert 'Unknown Type in' in str(cm.value)
+
+    def test_pokemon_with_lowercase_type(self, pokemon_model, pokedex):
+        pokemon_model["pokemon_type"] = ["electric"]
+        with pytest.raises(ValueError) as cm:
+            pokedex.add_pokemon(**pokemon_model)
+        assert 'Unknown Type in' in str(cm.value)
