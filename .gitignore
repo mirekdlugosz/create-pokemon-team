@@ -1,0 +1,7 @@
+*.pyc
+*.pyo
+~*
+*.swp
+*.egg-info
+pip-selfcheck.json
+.cache/
