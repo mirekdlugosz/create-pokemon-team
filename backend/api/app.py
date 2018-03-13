@@ -24,6 +24,35 @@ KNOWN_VERSIONS = [
 api = flask.Blueprint('api', APP_NAME)
 
 
+class InvalidUsage(Exception):
+    status_code = 400
+
+    def __init__(self, message, status_code=None):
+        Exception.__init__(self)
+        self.message = message
+        if status_code is not None:
+            self.status_code = status_code
+
+    def to_dict(self):
+        return {"error": {"message": self.message}}
+
+    @classmethod
+    def custom_error_handler(cls, error):
+        response = flask.jsonify(error.to_dict())
+        response.status_code = error.status_code
+        return response
+
+    @classmethod
+    def handle_404(cls, error=None):
+        error = cls('No such resource', 404)
+        return cls.custom_error_handler(error)
+
+    @classmethod
+    def handle_500(cls, error=None):
+        error = cls('Internal server error', 500)
+        return cls.custom_error_handler(error)
+
+
 def handle_not_found(e=None):
     response_text = {"error": "404 - no such resource"}
     return flask.make_response(flask.jsonify(response_text), 404)
@@ -46,7 +75,12 @@ def get_pokemon_moves(version=None, pokemon_list=None, transferred=False):
             except KeyError:
                 pass
 
-    return {pokemon: sorted(list(moves)) for pokemon, moves in pokemon_moves.items() if moves}
+    pokemon_moves = {pokemon: sorted(list(moves)) for pokemon, moves in pokemon_moves.items() if moves}
+
+    if not pokemon_moves:
+        raise InvalidUsage('Unrecognized Pokemon requested', 404)
+
+    return pokemon_moves
 
 
 @api.route('/pokemon')
@@ -56,15 +90,12 @@ def pokemon_dispatcher():
     transferred = flask.request.args.get('transferred', False)
 
     if version not in KNOWN_VERSIONS:
-        return handle_not_found()
+        raise InvalidUsage(f'Unknown version "{version}"', 404)
 
     if not requested_pokemon:
         response = get_pokemon(version)
     else:
         response = get_pokemon_moves(version, requested_pokemon, transferred)
-
-    if not response:
-        return handle_not_found()
 
     return flask.make_response(flask.jsonify(response))
 
@@ -72,8 +103,8 @@ def pokemon_dispatcher():
 @api.route('/moves', methods=['GET', 'POST'])
 def get_moves():
     wanted = flask.request.get_json()
-    if not wanted:
-        return handle_not_found()
+    if not wanted or not isinstance(wanted, list):
+        raise InvalidUsage('Please provide list of moves in request body', 400)
 
     struct = {}
     for move in wanted:
@@ -83,7 +114,7 @@ def get_moves():
             pass
 
     if not struct:
-        return handle_not_found()
+        raise InvalidUsage('Unrecognized moves requested', 404)
 
     return flask.make_response(flask.jsonify(struct))
 
@@ -99,6 +130,8 @@ def create(config_filename):
     app.config.from_object(config_filename)
 
     app.register_blueprint(api)
-    app.register_error_handler(404, handle_not_found)
+    app.register_error_handler(InvalidUsage, InvalidUsage.custom_error_handler)
+    app.register_error_handler(404, InvalidUsage.handle_404)
+    app.register_error_handler(500, InvalidUsage.handle_500)
 
     return app

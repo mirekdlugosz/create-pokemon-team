@@ -5,3 +5,5 @@
 *.egg-info
 pip-selfcheck.json
 .cache/
+
+backend/api/data/

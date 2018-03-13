@@ -1,11 +1,11 @@
 import pytest
-import unittest
 import json
 import random
 
 from api import app
 
 game_version = 'omega-ruby-alpha-sapphire'
+
 
 def get_json(rv):
     return json.loads(rv.data.decode("utf-8"))
@@ -21,6 +21,7 @@ def test_non_existing_url_status(client):
     with client.get('/pokedex') as rv:
         assert rv.status_code == 404
         assert rv.mimetype == 'application/json'
+        assert "error" in get_json(rv)
 
 
 class TestPokemon():
@@ -74,6 +75,7 @@ class TestLearnsets():
         with client.get(f'pokemon?ver={game_version}&p={pokemon}') as rv:
             assert rv.status_code == 404
             assert rv.mimetype == 'application/json'
+            assert "error" in get_json(rv)
 
     def test_number(self, client):
         pokemon = 'escavalier'
@@ -136,7 +138,9 @@ class TestMoves():
         assert rv.mimetype == 'application/json'
 
     def test_get_status(self, client):
-        assert client.get('/moves').status_code == 404
+        with client.get('/moves') as rv:
+            assert rv.status_code == 400
+            assert "error" in get_json(rv)
 
     def test_number(self, client):
         data = ['fly']
@@ -162,8 +166,18 @@ class TestMoves():
         rv = client.post('/moves',
                          data=json.dumps(data),
                          content_type='application/json')
-        assert rv.status_code == 404
+        assert rv.status_code == 400
         assert rv.mimetype == 'application/json'
+        assert "error" in get_json(rv)
+
+    def test_dict_request(self, client):
+        data = {"fly": ""}
+        rv = client.post('/moves',
+                         data=json.dumps(data),
+                         content_type='application/json')
+        assert rv.status_code == 400
+        assert rv.mimetype == 'application/json'
+        assert "error" in get_json(rv)
 
     def test_unknown(self, client):
         data = ['10000-pika-fly']
@@ -172,6 +186,7 @@ class TestMoves():
                          content_type='application/json')
         assert rv.status_code == 404
         assert rv.mimetype == 'application/json'
+        assert "error" in get_json(rv)
 
     def test_same_twice(self, client):
         data = ['fly', 'fly']
