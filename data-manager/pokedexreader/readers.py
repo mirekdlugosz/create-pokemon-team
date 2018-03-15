@@ -28,22 +28,22 @@ class EeveeReader():
         self._hidden_powers = []
         for move_type in [i for i in self._types if i not in ['Normal', 'Fairy']]:
             struct = {
-                    "move_identifier": 'hidden-power-{}'.format(move_type.lower()),
-                    "type": move_type,
-                    "category": 'special',
-                    "move_name": 'Hidden Power {}'.format(move_type),
-                    }
+                "move_identifier": 'hidden-power-{}'.format(move_type.lower()),
+                "type": move_type,
+                "category": 'special',
+                "move_name": 'Hidden Power {}'.format(move_type),
+            }
             self._hidden_powers.append(struct)
 
     def _fill_natural_gifts(self):
         self._natural_gifts = []
         for move_type in self._types:
             struct = {
-                    "move_identifier": 'natural-gift-{}'.format(move_type.lower()),
-                    "type": move_type,
-                    "category": 'physical',
-                    "move_name": "Natural Gift {}".format(move_type),
-                    }
+                "move_identifier": 'natural-gift-{}'.format(move_type.lower()),
+                "type": move_type,
+                "category": 'physical',
+                "move_name": "Natural Gift {}".format(move_type),
+            }
             self._natural_gifts.append(struct)
 
     def _fetch_all_pokemon(self):
@@ -51,7 +51,7 @@ class EeveeReader():
 
     def _fetch_all_moves(self):
         return self._db_conn.execute(self._querydb["fetch_all_moves"]).fetchall()
-    
+
     def _fetch_all_moves_with_version(self):
         return self._db_conn.execute(self._querydb["fetch_all_moves_with_version"]).fetchall()
 
@@ -120,9 +120,9 @@ class EeveeReader():
             return pokemon_id.split('-', 1)[0]
 
         return self._id_pokemon_mapping[evolves_from_numeric_id]
-    
+
     def _get_moves_in_version(self, moves, version):
-        wanted_versions = self._versions[:self._versions.index(version)+1]
+        wanted_versions = self._versions[:self._versions.index(version) + 1]
         known_moves = [move["move_id"] for move in moves if move["version"] in wanted_versions]
         return sorted(list(set(known_moves)))
 
@@ -146,7 +146,7 @@ class EeveeReader():
         if version in self._versions[:self._versions.index('x-y')]:
             skip = 'Fairy'
 
-        natural_gifts_names = [move["move_identifier"] for move in 
+        natural_gifts_names = [move["move_identifier"] for move in
                 self._natural_gifts if move["type"] != skip]
 
         moves[where:where + 1] = natural_gifts_names
@@ -177,7 +177,7 @@ class EeveeReader():
                 pokemon_data_row["pokemon_numeric_id"]: pokemon["pokemon_id"],
             })
             self._pokedex.add_pokemon(**pokemon)
-            
+
             pokemon_prevolution = self._get_prevolution(pokemon["pokemon_id"], pokemon_data_row["pokemon_evolves_from"])
             pokemon_moves = self._fetch_pokemon_moves(pokemon_data_row["pokemon_numeric_id"])
 
@@ -192,14 +192,14 @@ class EeveeReader():
                     moves.extend(self._pokedex.get_pokemon_moves(version, pokemon_prevolution))
                 except (ValueError, KeyError):
                     pass
-                
+
                 if pokemon["pokemon_id"] == "smeargle":
                     moves = self._get_moves_in_version(all_moves_with_version, version)
 
                 moves = self._expand_hidden_powers(moves)
                 moves = self._expand_natural_gifts(moves, version)
                 moves = sorted(set(moves))
-                    
+
                 self._pokedex.add_pokemon_moves(version, pokemon["pokemon_id"], moves)
 
         for move_data_row in all_moves:
