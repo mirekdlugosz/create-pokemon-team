@@ -1,0 +1,11 @@
+<div class="card">
+  <div class="card-header" (click)="displayed = ! displayed">
+    <h2>
+      <ng-content select="card-header"></ng-content>
+	  <small *ngIf="! displayed" class="text-muted">Click to expand</small>
+    </h2>
+  </div>
+  <div class="card-body" *ngIf="displayed">
+    <ng-content select="card-body"></ng-content>
+  </div>
+</div>

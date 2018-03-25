@@ -1,0 +1,17 @@
+<div class="row">
+	<div class="col-lg-6 row no-gutters">
+		<label class="col-md" for="version-select">Pokémon game:</label>
+		<ng-select id="version-select"
+			 			 [items]="versions"
+						 bindLabel="label"
+						 bindValue="id"
+						 placeholder="Select Pokemon Game"
+						 [clearable]="false"
+						 [(ngModel)]="versionState">
+		</ng-select>
+	</div>
+	<div class="col-lg-6">
+		<input id="transferred" type="checkbox" [(ngModel)]="transferredState">
+		<label for="transferred">I have Pokémon transferred from earlier game</label>
+	</div>
+</div>

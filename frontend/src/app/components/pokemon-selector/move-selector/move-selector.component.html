@@ -1,0 +1,9 @@
+<ng-select [items]="movesList"
+           [(ngModel)]="selected"
+           bindLabel="label"
+           bindValue="id"
+           placeholder="Select Move">
+  <ng-template ng-label-tmp let-item="item">
+    {{item.name}}
+  </ng-template>
+</ng-select>

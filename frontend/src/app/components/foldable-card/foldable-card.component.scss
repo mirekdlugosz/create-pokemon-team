@@ -1,0 +1,13 @@
+.card-header {
+  cursor: pointer; 
+
+  h2 {
+    word-wrap: normal;
+  }
+
+  small {
+    font-size: 1rem;
+    white-space: nowrap;
+    display: inline-block;
+  }
+}

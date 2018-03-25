@@ -1,0 +1,23 @@
+// Bootstrap 4
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/input-group";
+@import "~bootstrap/scss/card";       // for accordion
+@import "~bootstrap/scss/breadcrumb";  // for main team selection
+@import "~bootstrap/scss/jumbotron";  // for main team selection
+@import "~bootstrap/scss/alert";      // for help-wanted box
+//@import "~bootstrap/scss/tooltip";    // tooltips on hover
+//@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/utilities";  // additional flex classes
+
+// ng-select default theme
+@import "~@ng-select/ng-select/themes/default.theme";
+
+@import "app/app.component";

@@ -1,0 +1,12 @@
+<div id="team-builder" class="jumbotron">
+  <div class="row">
+	<div class="col-md-4 col-lg-2" *ngFor="let pokemon of team.team; index as pos ; trackBy: track">
+	  <app-pokemon-selector
+		[pokemon]="pokemon"
+		[label]="'Pokémon ' + (pos+1)"
+		[position]="pos"
+		(pokemonChanged)="teamChange($event)">
+	  </app-pokemon-selector>
+	</div>
+  </div>
+</div>

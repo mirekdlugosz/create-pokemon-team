@@ -1,0 +1,6 @@
+<div class="input-group">
+	<input class="form-control" type="text" value="{{ teamURL }}" #teamURLInput>
+	<div class="input-group-append">
+		<button class="btn btn-primary" type="button" [ngxClipboard]="teamURLInput">Copy link to this team</button>
+	</div>
+</div>

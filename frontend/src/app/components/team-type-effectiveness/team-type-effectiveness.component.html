@@ -1,0 +1,29 @@
+<div id="team-type-effectiveness">
+	<div *ngFor="let pokemon of team.team; index as i">
+		<div *ngIf="pokemon.pokemon.id">
+			<header id="team-member-{{i}}" class="row align-items-center">
+				<h3 class="col-12 col-md-auto" (click)="toggleMemberVisibility(i)">{{ pokemon.pokemon.name }}</h3>
+				<div class="col-12 col-md">
+					<p *ngIf="team.previousMemberIsDefined(i)">
+						<a (click)="scrollToMember( team.previousMemberIndex(i) )">Previous</a>
+					</p>
+					<p *ngIf="team.nextMemberIsDefined(i)">
+						<a (click)="scrollToMember( team.nextMemberIndex(i) )">Next</a>
+					</p>
+				</div>
+			</header>
+			<div class="row" *ngIf="isVisible(i)">
+				<div class="col-4 col-md-2" *ngFor="let typeName of typeEffectiveness.availableTypes">
+					<app-pokemon-type-effect
+						[pokemon]="pokemon"
+						[typeName]="typeName">
+					</app-pokemon-type-effect>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div *ngIf="team.isEmpty">
+		<p>Oops, looks like you haven't defined your team yet!</p>
+		<p>Please use the form above.</p>
+	</div>
+</div>

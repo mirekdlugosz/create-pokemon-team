@@ -1,0 +1,22 @@
+<app-version-selector></app-version-selector>
+<app-team-builder></app-team-builder>
+
+<app-help-needed></app-help-needed>
+
+<div id="team-description">
+  <app-foldable-card>
+    <card-header>Team overview</card-header>
+    <card-body>
+      <app-team-overview></app-team-overview>
+    </card-body>
+  </app-foldable-card>
+
+  <app-foldable-card [displayed]="false">
+    <card-header>Team type effectiveness</card-header>
+    <card-body>
+      <app-team-type-effectiveness></app-team-type-effectiveness>
+    </card-body>
+  </app-foldable-card>
+</div>
+
+<app-team-permalink></app-team-permalink>

@@ -1,0 +1,28 @@
+div.row {
+  margin-bottom: 0.5rem;
+}
+
+label, input {
+  font-size: 1.2rem;
+  margin-bottom: 0;
+  align-self: center;
+}
+
+label.col-md[for=version-select] {
+  white-space: nowrap;
+  margin-right: 1rem;
+}
+
+label[for=transferred] {
+  display: inline;
+}
+
+.ng-select {
+  flex-grow: 5;
+}
+
+input[type=checkbox] {
+  transform: scale(1.8);
+  transform-origin: 0;
+  margin-right: 1rem;
+}

@@ -1,0 +1,7 @@
+<div *ngIf="showHelp" class="alert alert-primary row no-gutters justify-content-center align-items-center" role="alert">
+  <p class="col-12 col-md-auto">Confused by table below? <a class="alert-link" routerLink="/help">Read our help</a>.</p>
+  <p class="col-12 col-md-auto">
+    <button (click)="helpVisible = false" class="btn btn-primary">Don't show this message again</button>
+    <button (click)="helpDismissed = true" class="btn dismiss" aria-label="Dismiss">&#10005;</button>
+  </p>
+</div>

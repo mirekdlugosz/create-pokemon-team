@@ -1,0 +1,15 @@
+<h4>{{ label }}</h4>
+<ng-select [items]="pokemonList"
+  [(ngModel)]="selected"
+  bindLabel="name"
+  bindValue="id"
+  placeholder="Select Pokemon">
+</ng-select>
+<div *ngFor="let move of pokemon.moves ; index as num ; trackBy: track">
+  <app-move-selector
+    [movesList]="pokemonMovesList"
+    [move]="move"
+    [position]="num"
+    (moveChanged)="moveChanged($event)">
+  </app-move-selector>
+</div>

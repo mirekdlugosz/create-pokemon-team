@@ -1,0 +1,123 @@
+$color-type-normal: #A8A878;
+$color-type-fighting: #C03028;
+$color-type-flying: #A890F0;
+$color-type-poison: #A040A0;
+$color-type-ground: #E0C068;
+$color-type-rock: #B8A038;
+$color-type-bug: #A8B820;
+$color-type-ghost: #705898;
+$color-type-steel: #B8B8D0;
+$color-type-fire: #F08030;
+$color-type-water: #6890F0;
+$color-type-grass: #78C850;
+$color-type-electric: #F8D030;
+$color-type-psychic: #F85888;
+$color-type-ice: #98D8D8;
+$color-type-dragon: #7038F8;
+$color-type-dark: #705848;
+$color-type-fairy: #EE99AC;
+
+.normal { background-color: $color-type-normal; border-color: darken($color-type-normal, 17%); }
+.fighting { background-color: $color-type-fighting; border-color: darken($color-type-fighting, 17%);}
+.flying { background-color: $color-type-flying; border-color: darken($color-type-flying, 17%);}
+.poison { background-color: $color-type-poison; border-color: darken($color-type-poison, 17%);}
+.ground { background-color: $color-type-ground; border-color: darken($color-type-ground, 17%);}
+.rock { background-color: $color-type-rock; border-color: darken($color-type-rock, 17%);}
+.bug { background-color: $color-type-bug; border-color: darken($color-type-bug, 17%);}
+.ghost { background-color: $color-type-ghost; border-color: darken($color-type-ghost, 17%);}
+.steel { background-color: $color-type-steel; border-color: darken($color-type-steel, 17%);}
+.fire { background-color: $color-type-fire; border-color: darken($color-type-fire, 17%);}
+.water { background-color: $color-type-water; border-color: darken($color-type-water, 17%);}
+.grass { background-color: $color-type-grass; border-color: darken($color-type-grass, 17%);}
+.electric { background-color: $color-type-electric; border-color: darken($color-type-electric, 17%);}
+.psychic { background-color: $color-type-psychic; border-color: darken($color-type-psychic, 17%);}
+.ice { background-color: $color-type-ice; border-color: darken($color-type-ice, 17%);}
+.dragon { background-color: $color-type-dragon; border-color: darken($color-type-dragon, 17%);}
+.dark { background-color: $color-type-dark; border-color: darken($color-type-dark, 17%);}
+.fairy { background-color: $color-type-fairy; border-color: darken($color-type-fairy, 17%);}
+
+.type {
+	text-align: center;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 20px;
+	color: white;
+	min-width: 5rem;
+	max-width: 10rem;
+	margin-left: auto;
+	margin-right: auto;
+	line-height: 1.5;
+
+	strong {
+		font-weight: normal;
+	}
+}
+
+.value {
+  word-wrap: normal;
+}
+
+.value.text-success,
+.value.text-danger {
+  font-weight: bold;
+}
+
+header.page-header {
+  margin: 2rem auto;
+  text-align: center;
+  a {
+    &:link,
+    &:visited,
+    &:hover,
+    &:active {
+      color: $body-color;
+      text-decoration: none;
+    }
+  }
+}
+
+nav .breadcrumb {
+  background-color: transparent;
+  padding-left: 0;
+}
+
+app-version-selector .ng-select.ng-single .ng-control {
+  height: 2rem;
+}
+
+app-team-overview .row .value {
+  text-align: right;
+  align-self: center;
+}
+
+app-team-type-effectiveness header a:not([href]):not([tabindex]) {
+  cursor: pointer;
+  color: $link-color;
+}
+
+#team-description {
+  padding-bottom: 2rem;
+}
+
+@include media-breakpoint-down(md) {
+  app-team-type-effectiveness .row .value {
+    text-align: right;
+  }
+  app-help-needed p:first-of-type {
+    margin-bottom: 1rem;
+  }
+  app-help-needed p button.dismiss {
+    padding-left: 0
+  }
+}
+@include media-breakpoint-up(md) {
+  app-team-type-effectiveness header p {
+    margin-bottom: 0;
+  }
+  app-help-needed p button {
+    margin-left: 1rem;
+  }
+  app-foldable-card .card-header small {
+    margin-left: 1rem;
+  }
+}

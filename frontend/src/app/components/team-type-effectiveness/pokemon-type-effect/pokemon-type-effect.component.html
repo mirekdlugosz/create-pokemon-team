@@ -1,0 +1,27 @@
+<p class="type {{typeName | lowercase}}"><strong>{{ typeName }}</strong></p>
+<div class="row no-gutters">
+  <div class="col-12 col-lg-4" ngbPopover="Modifier applied to attack of this type against your Pokémon" placement="bottom">
+    <div class="row no-gutters">
+      <p class="col-7 col-lg-12">Effect</p>
+      <p class="col-5 col-lg-12 value" [ngClass]="{'text-danger': effect > 1, 'text-success': effect < 1}">{{ effect }}</p>
+    </div>
+  </div>
+  <div class="col-12 col-lg" ngbPopover="Number of super effective moves against this type" placement="bottom">
+    <div class="row no-gutters">
+      <p class="col-7 col-lg-12">SE</p>
+      <p class="col-5 col-lg-12 value" [ngClass]="{'text-success': super_effective > 0}">{{ super_effective }}</p>
+    </div>
+  </div>
+  <div class="col-12 col-lg" ngbPopover="Number of normally effective moves against this type" placement="bottom">
+    <div class="row no-gutters">
+      <p class="col-7 col-lg-12">NE</p>
+      <p class="col-5 col-lg-12 value">{{ neutral_effective }}</p>
+    </div>
+  </div>
+  <div class="col-12 col-lg" ngbPopover="Number of not very effective moves against this type" placement="bottom">
+    <div class="row no-gutters">
+      <p class="col-7 col-lg-12">NVE</p>
+      <p class="col-5 col-lg-12 value">{{ not_very_effective }}</p>
+    </div>
+  </div>
+</div>
