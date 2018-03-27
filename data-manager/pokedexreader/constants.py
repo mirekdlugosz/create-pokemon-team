@@ -183,6 +183,14 @@ class Constants():
         "judgment", "multi-attack", "revelation-dance"
     ]
 
+    # List of Pokemon that were not available in given version despite
+    # being introduced in previous one.
+    invalid_pokemon_version = {
+        "ruby-sapphire": ["deoxys-attack", "deoxys-defense", "deoxys-speed"],
+        "firered-leafgreen": ["deoxys-normal", "deoxys-speed"],
+        "emerald": ["deoxys-normal", "deoxys-attack", "deoxys-defense"],
+    }
+
     # Used in Eevee Pokedex reader.
     # Some Pokemon have multiple forms that differ in a way that is not
     # relevant for us (e.g. by stats). This list is used to ensure
@@ -298,17 +306,17 @@ class Constants():
         AND moves.pp != 1
     """
     eeveedex_query_fetch_all_moves_with_version = """
-    SELECT
-    version_groups.identifier as version,
-    moves.identifier as move_id
-    FROM versions
-    JOIN version_groups ON version_groups.id = versions.version_group_id
-    JOIN generations ON version_groups.generation_id = generations.id
-    JOIN moves ON moves.generation_id = generations.id
-    WHERE moves.pp != 1
-    AND version_groups.identifier NOT IN ('colosseum', 'xd')
-    GROUP BY version, move_id
-    ORDER BY version_groups.id ASC, move_id ASC
+        SELECT
+        version_groups.identifier as version,
+        moves.identifier as move_id
+        FROM versions
+        JOIN version_groups ON version_groups.id = versions.version_group_id
+        JOIN generations ON version_groups.generation_id = generations.id
+        JOIN moves ON moves.generation_id = generations.id
+        WHERE moves.pp != 1
+        AND version_groups.identifier NOT IN ('colosseum', 'xd')
+        GROUP BY version, move_id
+        ORDER BY version_groups.id ASC, move_id ASC
     """
     # do note that this query is pseudo-parameterized (as passing list
     # as parameter is seemingly impossible)

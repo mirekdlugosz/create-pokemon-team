@@ -15,6 +15,7 @@ class PokedexStorage():
         self._move_type_overrides = Constants.move_type_overrides
         self._moves_inheriting_type = Constants.moves_inheriting_type
         self._pokemon_type_overrides = Constants.pokemon_type_overrides
+        self._invalid_pokemon_version_map = Constants.invalid_pokemon_version
 
     def _output_pokemon(self, fh):
         struct = {}
@@ -28,6 +29,10 @@ class PokedexStorage():
                 override_list = []
 
             for version in self._versions[self._versions.index(introduced_in_version):]:
+                if (version in self._invalid_pokemon_version_map and
+                        pokemon in self._invalid_pokemon_version_map[version]):
+                    continue
+
                 poke_struct = {
                     "id": pokemon,
                     "name": data["name"],

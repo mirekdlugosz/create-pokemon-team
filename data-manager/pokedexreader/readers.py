@@ -93,6 +93,10 @@ class EeveeReader():
         return current_id
 
     def _create_pokemon_name(self, pokemon_data_row):
+        if "silvally" in pokemon_data_row['pokemon_form_identifier']:
+            return "Silvally ({} Type)".format(
+                pokemon_data_row['pokemon_form_form_identifier'].capitalize())
+
         if not pokemon_data_row["pokemon_form_pokemon_name"]:
             return pokemon_data_row["pokemon_species_name"]
 
