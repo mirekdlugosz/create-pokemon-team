@@ -5,6 +5,7 @@
 *.egg-info
 pip-selfcheck.json
 .cache/
+.pytest_cache
 
 backend/api/data/
 
