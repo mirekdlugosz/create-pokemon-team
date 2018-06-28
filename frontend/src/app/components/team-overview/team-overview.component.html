@@ -1,21 +1,21 @@
 <div class="row">
   <div class="col-6 col-md-4 col-lg-2" *ngFor="let typeName of typeEffectiveness.availableTypes">
     <h3 class="type {{ typeName | lowercase }}">{{ typeName }}</h3>
-    <div class="row no-gutters">
-      <p class="col-9">№ resisting:</p>
-	  <p class="col-3 value" [ngClass]="{'text-danger': number_resists(typeName) === 0}">{{ number_resists(typeName) }}</p>
+    <div class="row no-gutters justify-content-center">
+      <p class="col-9 col-md-7">№ resisting:</p>
+	  <p class="col-3 col-md-2 value" [ngClass]="{'text-danger': number_resists(typeName) === 0}">{{ number_resists(typeName) }}</p>
     </div>
-    <div class="row no-gutters">
-      <p class="col-9">№ weak to:</p>
-      <p class="col-3 value">{{ number_weak_to(typeName) }}</p>
+    <div class="row no-gutters justify-content-center">
+      <p class="col-9 col-md-7">№ weak to:</p>
+      <p class="col-3 col-md-2 value">{{ number_weak_to(typeName) }}</p>
     </div>
-    <div class="row no-gutters">
-      <p class="col-9">№ of <abbr title="Super Effective">SE</abbr> moves:</p>
-      <p class="col-3 value">{{ number_supereffective_moves(typeName) }}</p>
+    <div class="row no-gutters justify-content-center">
+      <p class="col-9 col-md-7">№ of <abbr title="Super Effective">SE</abbr> moves:</p>
+      <p class="col-3 col-md-2 value">{{ number_supereffective_moves(typeName) }}</p>
     </div>
-    <div class="row no-gutters">
-      <p class="col-9">Has counter?</p>
-	  <p class="col-3 value" [ngClass]="{'text-danger': counter_exists(typeName) === 'No'}">{{ counter_exists(typeName) }}</p>
+    <div class="row no-gutters justify-content-center">
+      <p class="col-9 col-md-7">Has counter?</p>
+	  <p class="col-3 col-md-2 value" [ngClass]="{'text-danger': counter_exists(typeName) === 'No'}">{{ counter_exists(typeName) }}</p>
     </div>
   </div>
 </div>

@@ -66,26 +66,8 @@ export class TeamOverviewComponent implements OnInit {
 
   counter_exists(typeName) {
     return this.team.team
-      .map(member => this.is_counter(member, typeName))
+      .map(member => this.typeEffectiveness.isCounter(member, typeName))
       .some(value => value === true)
     ? 'Yes' : 'No';
-  }
-
-  private is_counter(pokemon, typeName) {
-    const resists = this.typeEffectiveness
-      .moveEffect(typeName, pokemon.pokemon.type) < 1;
-
-    // FIXME: this part is very similar to part in
-    // pokemon-type-effect.component.ts
-    const has_super_effective_move = pokemon.moves
-      .filter(move => move.id !== '')
-      .filter(move => move.category !== 'status')
-      .map(move => {
-        return this.typeEffectiveness
-          .moveEffect(move.type, [typeName]);
-      })
-      .some(value => value > 1);
-
-    return resists && has_super_effective_move;
   }
 }

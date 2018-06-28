@@ -39,4 +39,20 @@ export class TypeEffectivenessService {
       return factor * this.typeChart[moveType][type];
     }, 1);
   }
+
+  isCounter(pokemon, typeName) {
+    const resists = this.moveEffect(typeName, pokemon.pokemon.type) < 1;
+
+    // FIXME: this part is very similar to part in
+    // pokemon-type-effect.component.ts
+    const has_super_effective_move = pokemon.moves
+      .filter(move => move.id !== '')
+      .filter(move => move.category !== 'status')
+      .map(move => {
+        return this.moveEffect(move.type, [typeName]);
+      })
+      .some(value => value > 1);
+
+    return resists && has_super_effective_move;
+  }
 }
