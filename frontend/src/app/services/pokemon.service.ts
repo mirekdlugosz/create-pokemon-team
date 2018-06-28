@@ -65,9 +65,7 @@ export class PokemonService {
           this._pokedex = result;
           this._requestedPokemon = this._requestedPokemon
             .filter(pokemon => this._pokedex.map(p => p.id).includes(pokemon));
-          const availablePokemon = this._pokedex
-            .map(pokemonObj => ({'id': pokemonObj.id, 'name': pokemonObj.name}));
-          this.availablePokemon$.next(availablePokemon);
+          this.availablePokemon$.next(this._pokedex);
           this._versionSet$.next(true);
         });
     } else {

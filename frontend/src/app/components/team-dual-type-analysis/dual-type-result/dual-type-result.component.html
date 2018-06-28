@@ -1,0 +1,7 @@
+<h3 class="row">
+  <p class="col type {{ typeName | lowercase }}" *ngFor="let typeName of typing.types">{{ typeName }}</p>
+  <p class="col">({{ typing.pokemon.length }})</p>
+</h3>
+<div class="pokemon">
+  {{ typing.pokemon }}
+</div>

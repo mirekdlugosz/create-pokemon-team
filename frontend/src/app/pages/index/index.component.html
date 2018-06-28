@@ -4,6 +4,18 @@
 <app-help-needed></app-help-needed>
 
 <div id="team-description">
+  <app-foldable-card [displayed]="false">
+    <card-header>Dual typing - no supereffective move</card-header>
+    <card-body>
+      <app-team-dual-type-analysis analysis="SE"></app-team-dual-type-analysis>
+    </card-body>
+  </app-foldable-card>
+  <app-foldable-card [displayed]="true">
+    <card-header>Dual typing - no counter</card-header>
+    <card-body>
+      <app-team-dual-type-analysis analysis="counter"></app-team-dual-type-analysis>
+    </card-body>
+  </app-foldable-card>
   <app-foldable-card>
     <card-header>Team overview</card-header>
     <card-body>
