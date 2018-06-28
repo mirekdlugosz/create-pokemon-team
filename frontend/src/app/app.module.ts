@@ -44,6 +44,8 @@ import { FoldableCardComponent } from './components/foldable-card/foldable-card.
 import { TeamTypeEffectivenessComponent } from './components/team-type-effectiveness/team-type-effectiveness.component';
 import { PokemonTypeEffectComponent } from './components/team-type-effectiveness/pokemon-type-effect/pokemon-type-effect.component';
 import { TeamOverviewComponent } from './components/team-overview/team-overview.component';
+import { TeamDualTypeAnalysisComponent } from './components/team-dual-type-analysis/team-dual-type-analysis.component';
+import { DualTypeResultComponent } from './components/team-dual-type-analysis/dual-type-result/dual-type-result.component';
 import { TeamPermalinkComponent } from './components/team-permalink/team-permalink.component';
 
 // services
@@ -92,6 +94,8 @@ export const ROUTETABLE: Routes = [
     TeamTypeEffectivenessComponent,
     PokemonTypeEffectComponent,
     TeamOverviewComponent,
+    TeamDualTypeAnalysisComponent,
+    DualTypeResultComponent,
     FoldableCardComponent,
     TeamPermalinkComponent
   ],
