@@ -16,9 +16,9 @@ See individual folders for details.
 
 All contributions are welcome!
 
-If you are using this project on [website]() and you found a problem, something unexpected happened or have a question, feel free to [submit an issue](). There is no template that you have to follow, just be sure to describe what did you do, what did you expect to happen and what happened instead.
+If you are using this project on [website](https://createpokemon.team/) and you found a problem, something unexpected happened or have a question, feel free to [submit an issue](https://github.com/mirzal/create-pokemon-team/issues/new). There is no template that you have to follow, just be sure to describe what did you do, what did you expect to happen and what happened instead.
 
-If you know your way around code, you might submit pull request. Feel free to poke around source tree and look at [list of existing issues]() for inspiration. We are using Python 3 on backend and Angular (TypeScript, SCSS) on frontend.
+If you know your way around code, you might submit pull request. Feel free to poke around source tree and look at [list of existing issues](https://github.com/mirzal/create-pokemon-team/issues) for inspiration. We are using Python 3 on backend and Angular (TypeScript, SCSS) on frontend.
 
 ## License
 
