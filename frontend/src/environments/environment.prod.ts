@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  endpoint: 'http://example.com/api/'
+  endpoint: 'https://api.createpokemon.team/'
 };
