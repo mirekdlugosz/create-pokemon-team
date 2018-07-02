@@ -64,10 +64,13 @@ export class TeamOverviewComponent implements OnInit {
       .length;
   }
 
-  counter_exists(typeName) {
+  counters_list(typeName) {
     return this.team.team
-      .map(member => this.typeEffectiveness.isCounter(member, typeName))
-      .some(value => value === true)
-    ? 'Yes' : 'No';
+      .filter(member => this.typeEffectiveness.isCounter(member, typeName))
+      .map(member => member.pokemon.name);
+  }
+
+  counter_exists(typeName) {
+    return this.counters_list(typeName).length > 0;
   }
 }

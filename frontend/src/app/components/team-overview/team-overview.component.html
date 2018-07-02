@@ -14,8 +14,14 @@
       <p class="col-3 col-md-2 value">{{ number_supereffective_moves(typeName) }}</p>
     </div>
     <div class="row no-gutters justify-content-center">
-      <p class="col-9 col-md-7">Has counter?</p>
-	  <p class="col-3 col-md-2 value" [ngClass]="{'text-danger': counter_exists(typeName) === 'No'}">{{ counter_exists(typeName) }}</p>
+      <p class="col-9 col-md-7">Counter</p>
+	  <p class="col-3 col-md-2 value">
+		<span *ngIf="counter_exists(typeName); else noCounter">
+			<span class="d-md-none">Yes</span>
+			<span class="d-none d-md-inline">{{ counters_list(typeName).join(", ") }}</span>
+		</span>
+		<ng-template #noCounter><span class="text-danger">No</span></ng-template>
+	  </p>
     </div>
   </div>
 </div>

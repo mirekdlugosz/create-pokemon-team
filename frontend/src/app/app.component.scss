@@ -69,7 +69,8 @@ $color-type-fairy: #EE99AC;
 }
 
 .value.text-success,
-.value.text-danger {
+.value.text-danger,
+.value .text-danger {
   font-weight: bold;
 }
 
