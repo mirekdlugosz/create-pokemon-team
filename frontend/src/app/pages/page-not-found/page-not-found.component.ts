@@ -7,9 +7,11 @@ import { TitleService } from '../../services/title.service';
   styleUrls: ['./page-not-found.component.scss']
 })
 export class PageNotFoundComponent implements OnInit {
+
   constructor(private titleService: TitleService) {}
 
   ngOnInit() {
     this.titleService.setTitle('404 error – Page not found');
   }
+
 }
