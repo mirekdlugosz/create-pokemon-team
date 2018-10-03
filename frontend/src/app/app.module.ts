@@ -56,18 +56,17 @@ import { TitleService } from './services/title.service';
 
 export const ROUTETABLE: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/index' },
-  {
-    path: '',
+  { path: '',
     component: IndexPageComponent,
     children: [
-      { path: 'index', component: IndexComponent },
-      {path: '',
+      { path: 'index', component: IndexComponent},
+      { path: '',
         component: StaticPageComponent,
         children: [
-          {path: 'about', component: AboutComponent },
-          {path: 'help', component: HelpComponent },
-          {path: 'legal', component: LegalComponent },
-          {path: 'problems', component: ProblemsComponent }
+          {path: 'about', component: AboutComponent},
+          {path: 'help', component: HelpComponent},
+          {path: 'legal', component: LegalComponent},
+          {path: 'problems', component: ProblemsComponent}
         ]
       }
     ]
@@ -115,6 +114,6 @@ export const ROUTETABLE: Routes = [
     TitleService
   ],
   bootstrap: [AppComponent],
-  schemas: [NO_ERRORS_SCHEMA]
+  schemas: [ NO_ERRORS_SCHEMA ]
 })
-export class AppModule {}
+export class AppModule { }
