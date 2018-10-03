@@ -10,7 +10,15 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser'
 import { Router, NavigationEnd } from '@angular/router';
+
+const capitalize = ([s, ...tring]) => [s.toUpperCase(), ...tring].join('');
+const setPageTitle = (url: string = ''): string => {
+    const removedSlashedUrl = url.replace('/', '');
+    const capTitle = capitalize(<any>removedSlashedUrl);
+    return `${capTitle} - createPokémon.​team`
+}
 
 @Component({
   selector: 'app-root',
@@ -20,13 +28,18 @@ export class AppComponent implements OnInit {
   private urlParser = document.createElement('a');
   private previousPage: string;
 
-  constructor(private router: Router) { }
+  constructor(
+      private router: Router,
+      private titleService: Title
+  ) { }
 
   ngOnInit() {
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
         return;
       }
+
+      this.titleService.setTitle(setPageTitle(evt.url));
 
       this.urlParser.href = evt.url;
       if (this.urlParser.pathname === '/') {
