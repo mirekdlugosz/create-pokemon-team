@@ -1,10 +1,5 @@
 import { Subject, combineLatest } from 'rxjs';
-import {
-  filter,
-  withLatestFrom,
-  debounceTime,
-  takeUntil
-} from 'rxjs/operators';
+import { filter, withLatestFrom, debounceTime, takeUntil } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
@@ -30,16 +25,14 @@ export class IndexComponent implements OnInit, OnDestroy {
     private movesService: MovesService,
     private typeEffectivenessService: TypeEffectivenessService,
     private titleService: TitleService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.titleService.setTitle('');
-    this.route.queryParamMap
-      .pipe(
+    this.route.queryParamMap.pipe(
         debounceTime(10), // I hate this idea, but see https://github.com/angular/angular/issues/12157
         takeUntil(this._componentDestroyed$)
-      )
-      .subscribe(params => this.urlmanagerService.paramsChanged(params));
+      ).subscribe(params => this.urlmanagerService.paramsChanged(params));
     this.urlmanagerService.teamDefinition$
       .pipe(takeUntil(this._componentDestroyed$))
       .subscribe(d => this.teamService.createTeamFromURL(d));
