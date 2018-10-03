@@ -38,11 +38,11 @@ export class IndexComponent implements OnInit, OnDestroy {
       .subscribe(d => this.teamService.createTeamFromURL(d));
     this.teamService.teamDataRequest$.pipe(
       withLatestFrom(
-          this.urlmanagerService.version$,
-          (pokemonData, version) => ({versionInfo: version, requestedPokemon: pokemonData})
+        this.urlmanagerService.version$,
+        (pokemonData, version) => ({versionInfo: version, requestedPokemon: pokemonData})
       ),
       takeUntil(this._componentDestroyed$)
-      ).subscribe(d => this.pokemonService.stateChangedHandler(d));
+    ).subscribe(d => this.pokemonService.stateChangedHandler(d));
     this.pokemonService.requestedMoves$
       .pipe(takeUntil(this._componentDestroyed$))
       .subscribe(d => this.movesService.movesRequestHandler(d));
