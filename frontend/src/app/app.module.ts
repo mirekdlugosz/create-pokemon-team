@@ -61,14 +61,13 @@ export const ROUTETABLE: Routes = [
     component: IndexPageComponent,
     children: [
       { path: 'index', component: IndexComponent },
-      {
-        path: '',
+      {path: '',
         component: StaticPageComponent,
         children: [
-          { path: 'about', component: AboutComponent },
-          { path: 'help', component: HelpComponent },
-          { path: 'legal', component: LegalComponent },
-          { path: 'problems', component: ProblemsComponent }
+          {path: 'about', component: AboutComponent },
+          {path: 'help', component: HelpComponent },
+          {path: 'legal', component: LegalComponent },
+          {path: 'problems', component: ProblemsComponent }
         ]
       }
     ]
