@@ -30,24 +30,19 @@ export class IndexComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.titleService.setTitle('');
     this.route.queryParamMap.pipe(
-        debounceTime(10), // I hate this idea, but see https://github.com/angular/angular/issues/12157
-        takeUntil(this._componentDestroyed$)
-      ).subscribe(params => this.urlmanagerService.paramsChanged(params));
+      debounceTime(10), // I hate this idea, but see https://github.com/angular/angular/issues/12157
+      takeUntil(this._componentDestroyed$)
+    ).subscribe(params => this.urlmanagerService.paramsChanged(params));
     this.urlmanagerService.teamDefinition$
       .pipe(takeUntil(this._componentDestroyed$))
       .subscribe(d => this.teamService.createTeamFromURL(d));
-    this.teamService.teamDataRequest$
-      .pipe(
-        withLatestFrom(
+    this.teamService.teamDataRequest$.pipe(
+      withLatestFrom(
           this.urlmanagerService.version$,
-          (pokemonData, version) => ({
-            versionInfo: version,
-            requestedPokemon: pokemonData
-          })
-        ),
-        takeUntil(this._componentDestroyed$)
-      )
-      .subscribe(d => this.pokemonService.stateChangedHandler(d));
+          (pokemonData, version) => ({versionInfo: version, requestedPokemon: pokemonData})
+      ),
+      takeUntil(this._componentDestroyed$)
+      ).subscribe(d => this.pokemonService.stateChangedHandler(d));
     this.pokemonService.requestedMoves$
       .pipe(takeUntil(this._componentDestroyed$))
       .subscribe(d => this.movesService.movesRequestHandler(d));
@@ -66,4 +61,5 @@ export class IndexComponent implements OnInit, OnDestroy {
     this._componentDestroyed$.next(true);
     this._componentDestroyed$.complete();
   }
+
 }
