@@ -52,6 +52,7 @@ import { TeamService } from './services/team.service';
 import { PokemonService } from './services/pokemon.service';
 import { MovesService } from './services/moves.service';
 import { TypeEffectivenessService } from './services/typeeffectiveness.service';
+import { TitleService } from './services/title.service';
 
 export const ROUTETABLE: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/index' },
@@ -109,7 +110,8 @@ export const ROUTETABLE: Routes = [
     TeamService,
     PokemonService,
     MovesService,
-    TypeEffectivenessService
+    TypeEffectivenessService,
+    TitleService
   ],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]
