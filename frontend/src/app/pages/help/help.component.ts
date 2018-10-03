@@ -7,9 +7,11 @@ import { TitleService } from '../../services/title.service';
   styleUrls: ['./help.component.scss']
 })
 export class HelpComponent implements OnInit {
+  
   constructor(private titleService: TitleService) {}
 
   ngOnInit() {
     this.titleService.setTitle('Help');
   }
+
 }
