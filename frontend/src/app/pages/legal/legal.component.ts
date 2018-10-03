@@ -6,9 +6,11 @@ import { TitleService } from '../../services/title.service';
   templateUrl: './legal.component.html'
 })
 export class LegalComponent implements OnInit {
+
   constructor(private titleService: TitleService) {}
 
   ngOnInit() {
     this.titleService.setTitle('Legal');
   }
+
 }
