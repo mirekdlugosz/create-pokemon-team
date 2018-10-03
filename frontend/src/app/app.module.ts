@@ -64,7 +64,7 @@ export const ROUTETABLE: Routes = [
         component: StaticPageComponent,
         children: [
           {path: 'about', component: AboutComponent},
-          {path: 'help',  component: HelpComponent},
+          {path: 'help', component: HelpComponent},
           {path: 'legal', component: LegalComponent},
           {path: 'problems', component: ProblemsComponent}
         ]

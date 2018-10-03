@@ -25,10 +25,10 @@ export class IndexComponent implements OnInit, OnDestroy {
     private movesService: MovesService,
     private typeEffectivenessService: TypeEffectivenessService,
     private titleService: TitleService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.titleService.setTitle('createPokémon.​team');
+    this.titleService.setTitle('');
     this.route.queryParamMap.pipe(
       debounceTime(10), // I hate this idea, but see https://github.com/angular/angular/issues/12157
       takeUntil(this._componentDestroyed$)
@@ -39,7 +39,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.teamService.teamDataRequest$.pipe(
       withLatestFrom(
         this.urlmanagerService.version$,
-        (pokemonData, version) => ({'versionInfo': version, 'requestedPokemon': pokemonData})
+        (pokemonData, version) => ({versionInfo: version, requestedPokemon: pokemonData})
       ),
       takeUntil(this._componentDestroyed$)
     ).subscribe(d => this.pokemonService.stateChangedHandler(d));
