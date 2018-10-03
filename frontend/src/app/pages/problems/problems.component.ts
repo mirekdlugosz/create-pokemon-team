@@ -10,6 +10,6 @@ export class ProblemsComponent implements OnInit {
   constructor(private titleService: TitleService) {}
 
   ngOnInit() {
-    this.titleService.setTitle('Problems');
+    this.titleService.setTitle('Report a problem');
   }
 }

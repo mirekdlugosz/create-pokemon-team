@@ -33,7 +33,7 @@ export class IndexComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.titleService.setTitle('createPokémon.​team');
+    this.titleService.setTitle('');
     this.route.queryParamMap
       .pipe(
         debounceTime(10), // I hate this idea, but see https://github.com/angular/angular/issues/12157

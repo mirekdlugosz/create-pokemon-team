@@ -1,68 +1,222 @@
-<h2>Help</h2>
-
 <nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Help</li>
-  </ol>
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+		<li class="breadcrumb-item active" aria-current="page">Help</li>
+	</ol>
 </nav>
 
 <h2>Setting up the team</h2>
-<p>At the very top of the page, select Pokémon game you are playing and whether you have one or more Pokémon transferred from earlier generation. Second option is important because list of moves that Pokémon can learn is different in each game and sometimes Pokémon lose the ability to learn certain moves. However, if your Pokémon learned that move and then was transferred to newer game, it can still use it.</p>
+<p>At the very top of the page, select Pokémon game you are playing and whether you have one or more Pokémon
+	transferred from earlier generation. Second option is important because list of moves that Pokémon can learn is
+	different in each game and sometimes Pokémon lose the ability to learn certain moves. However, if your Pokémon learned
+	that move and then was transferred to newer game, it can still use it.</p>
 <div class="alert alert-warning" role="alert">
-	<p>You can select moves that are not legitimately available in certain games. Up until generation VII, it was not possible to transfer Pokémon out of generations I and II. Even today, they can be transferred only to generation VII games. But nothing on this website prevents you from saying you have Tauros with Stomp in Pokémon Black (a move it could learn only in generation I).</p>
+	<p>You can select moves that are not legitimately available in certain games. Up until generation VII, it was not
+		possible to transfer Pokémon out of generations I and II. Even today, they can be transferred only to generation VII
+		games. But nothing on this website prevents you from saying you have Tauros with Stomp in Pokémon Black (a move it
+		could learn only in generation I).</p>
 </div>
 
-<p>Use the form below to select Pokémon in your team and their moves. You can type to narrow down the list of items that are displayed. If list of moves is empty, then refresh the page.</p>
+<p>Use the form below to select Pokémon in your team and their moves. You can type to narrow down the list of items
+	that are displayed. If list of moves is empty, then refresh the page.</p>
 
 <h2>Team overview</h2>
 <p><strong>Team overview</strong> displays all Pokémon types and little table for each of them.</p>
 <ul>
-	<li><strong>№ resisting</strong> - number of Pokémon in your team that resist attack of given type (<a href="https://bulbapedia.bulbagarden.net/wiki/Type#Type_effectiveness">effectiveness</a> of an attack is below 1). Your Pokémon resists the attack if message "It's not very effective" or "It had no effect" is displayed when it is hit. Number will be red if there are no Pokémon with resistance in your team. Well-balanced team will have at least one Pokémon resisting each type of attack.</li>
-	<li><strong>№ weak to</strong> - number of Pokémon in your team that are weak to attack of given type (<a href="https://bulbapedia.bulbagarden.net/wiki/Type#Type_effectiveness">effectiveness</a> of an attack is above 1). Your Pokémon is weak to the attack if message "It's super effective" is displayed when it is hit.</li>
-	<li><strong>№ of SE moves</strong> - number of super effective moves that all of your Pokémon have against given type. Well-balanced team will have at least one super effective move against each type.</li>
-	<li><strong>Has counter?</strong> - counter is Pokémon that resists attack of given type and can hit Pokémon of that type with super effective move. It should be your main choice when facing opponent of that type. If you do not have counter for given type, "No" will be displayed in red. Well-balanced team will have counters against majority of types.</li>
+	<li><strong>№ resisting</strong> - number of Pokémon in your team that resist attack of given type (<a href="https://bulbapedia.bulbagarden.net/wiki/Type#Type_effectiveness">effectiveness</a>
+		of an attack is below 1). Your Pokémon resists the attack if message "It's not very effective" or "It had no effect"
+		is displayed when it is hit. Number will be red if there are no Pokémon with resistance in your team. Well-balanced
+		team will have at least one Pokémon resisting each type of attack.</li>
+	<li><strong>№ weak to</strong> - number of Pokémon in your team that are weak to attack of given type (<a href="https://bulbapedia.bulbagarden.net/wiki/Type#Type_effectiveness">effectiveness</a>
+		of an attack is above 1). Your Pokémon is weak to the attack if message "It's super effective" is displayed when it
+		is hit.</li>
+	<li><strong>№ of SE moves</strong> - number of super effective moves that all of your Pokémon have against given type.
+		Well-balanced team will have at least one super effective move against each type.</li>
+	<li><strong>Has counter?</strong> - counter is Pokémon that resists attack of given type and can hit Pokémon of that
+		type with super effective move. It should be your main choice when facing opponent of that type. If you do not have
+		counter for given type, "No" will be displayed in red. Well-balanced team will have counters against majority of
+		types.</li>
 </ul>
 
 <h3>Example 1</h3>
 <div class="row team justify-content-center">
-<div class="col-7 col-md-5 col-lg-3"><h3 class="type grass">Grass</h3><div class="row no-gutters justify-content-center"><p class="col-9 col-md-7">№ resisting:</p><p class="col-3 col-md-2 value">3</p></div><div class="row no-gutters justify-content-center"><p class="col-9 col-md-7">№ weak to:</p><p class="col-3 col-md-2 value">2</p></div><div class="row no-gutters justify-content-center"><p class="col-9 col-md-7">№ of <abbr title="Super Effective">SE</abbr> moves:</p><p class="col-3 col-md-2 value">5</p></div><div class="row no-gutters justify-content-center"><p class="col-9 col-md-7">Counter</p><p class="col-3 col-md-2 value"><span class="d-md-none">Yes</span><span class="d-none d-md-inline">Galvantula</span></p></div></div>
+	<div class="col-7 col-md-5 col-lg-3">
+		<h3 class="type grass">Grass</h3>
+		<div class="row no-gutters justify-content-center">
+			<p class="col-9 col-md-7">№ resisting:</p>
+			<p class="col-3 col-md-2 value">3</p>
+		</div>
+		<div class="row no-gutters justify-content-center">
+			<p class="col-9 col-md-7">№ weak to:</p>
+			<p class="col-3 col-md-2 value">2</p>
+		</div>
+		<div class="row no-gutters justify-content-center">
+			<p class="col-9 col-md-7">№ of <abbr title="Super Effective">SE</abbr> moves:</p>
+			<p class="col-3 col-md-2 value">5</p>
+		</div>
+		<div class="row no-gutters justify-content-center">
+			<p class="col-9 col-md-7">Counter</p>
+			<p class="col-3 col-md-2 value"><span class="d-md-none">Yes</span><span class="d-none d-md-inline">Galvantula</span></p>
+		</div>
+	</div>
 </div>
-<p>There are three Pokémon in this team that resist Grass-type attacks. Pokémon in this team know five moves that deal extra damage to Grass-type opponents. At least one of these moves is known by Pokémon with resistance. While there are also two Pokémon weak to Grass-type attacks, this team should deal with Grass Pokémon without any problems. Good job!</p>
+<p>There are three Pokémon in this team that resist Grass-type attacks. Pokémon in this team know five moves that deal
+	extra damage to Grass-type opponents. At least one of these moves is known by Pokémon with resistance. While there are
+	also two Pokémon weak to Grass-type attacks, this team should deal with Grass Pokémon without any problems. Good job!</p>
 
 <h3>Example 2</h3>
 <div class="row team justify-content-center">
-<div class="col-7 col-md-5 col-lg-3"><h3 class="type psychic">Psychic</h3><div class="row no-gutters justify-content-center"><p class="col-9 col-md-7">№ resisting:</p><p class="col-3 col-md-2 value">1</p></div><div class="row no-gutters justify-content-center"><p class="col-9 col-md-7">№ weak to:</p><p class="col-3 col-md-2 value">3</p></div><div class="row no-gutters justify-content-center"><p class="col-9 col-md-7">№ of <abbr title="Super Effective">SE</abbr> moves:</p><p class="col-3 col-md-2 value">1</p></div><div class="row no-gutters justify-content-center"><p class="col-9 col-md-7">Counter</p><p class="col-3 col-md-2 value text-danger"><span class="text-danger">No</span></p></div></div>
+	<div class="col-7 col-md-5 col-lg-3">
+		<h3 class="type psychic">Psychic</h3>
+		<div class="row no-gutters justify-content-center">
+			<p class="col-9 col-md-7">№ resisting:</p>
+			<p class="col-3 col-md-2 value">1</p>
+		</div>
+		<div class="row no-gutters justify-content-center">
+			<p class="col-9 col-md-7">№ weak to:</p>
+			<p class="col-3 col-md-2 value">3</p>
+		</div>
+		<div class="row no-gutters justify-content-center">
+			<p class="col-9 col-md-7">№ of <abbr title="Super Effective">SE</abbr> moves:</p>
+			<p class="col-3 col-md-2 value">1</p>
+		</div>
+		<div class="row no-gutters justify-content-center">
+			<p class="col-9 col-md-7">Counter</p>
+			<p class="col-3 col-md-2 value text-danger"><span class="text-danger">No</span></p>
+		</div>
+	</div>
 </div>
-<p>There is one Pokémon that resist Psychic-type attacks, but it doesn't know any move that would be super effective against Psychic opponents. Entire team knows only one such move. Moreover, three team members will receive extra damage when hit by Psychic-type move. This team will have really hard time dealing with Psychic Pokémon! You should consider teaching your Pokémon some Bug, Ghost or Dark-type attacks, or get Pokémon of that type.</p>
+<p>There is one Pokémon that resist Psychic-type attacks, but it doesn't know any move that would be super effective
+	against Psychic opponents. Entire team knows only one such move. Moreover, three team members will receive extra
+	damage when hit by Psychic-type move. This team will have really hard time dealing with Psychic Pokémon! You should
+	consider teaching your Pokémon some Bug, Ghost or Dark-type attacks, or get Pokémon of that type.</p>
 
 <h2>Team type effectiveness</h2>
 <p>In <strong>Team type effectiveness</strong> section, you can see how each of your Pokémon fare against each type.</p>
-<p>You can click Pokémon name to hide information about it. This makes it easier to quickly jump between main form and analysis results.</p>
+<p>You can click Pokémon name to hide information about it. This makes it easier to quickly jump between main form and
+	analysis results.</p>
 <ul>
-	<li><strong>Effect</strong> - <a href="https://bulbapedia.bulbagarden.net/wiki/Type#Type_effectiveness">effectiveness</a> of attack of given type on that Pokémon. Numbers below 1 mean that your Pokémon resists that type and are displayed in green. Numbers above 1 mean that your Pokémon is weak against that type and are displayed in red. When facing opponent of that type, usually you will want to send Pokémon with resistance - or, at least, without weakness.</li>
-	<li><strong>SE</strong> - number of <strong>s</strong>uper <strong>e</strong>ffective moves that your Pokémon has against that type. Numbers above zero are displayed in green. Usually it's good idea to send Pokémon with at least one super effective move when facing opponent of given type.</li>
-	<li><strong>NE</strong> - number of moves with <strong>n</strong>eutral <strong>e</strong>ffectiveness, that is moves that are neither strong nor weak. They are not as strong as super effective moves, but will do when your Pokémon resists given type and you can't use other Pokémon.</li>
-	<li><strong>NVE</strong> - number of <strong>n</strong>ot <strong>v</strong>ery <strong>e</strong>ffective moves that your Pokémon has against that type. Most of the time you want to avoid using them against opponent of given type.</li>
+	<li><strong>Effect</strong> - <a href="https://bulbapedia.bulbagarden.net/wiki/Type#Type_effectiveness">effectiveness</a>
+		of attack of given type on that Pokémon. Numbers below 1 mean that your Pokémon resists that type and are displayed
+		in green. Numbers above 1 mean that your Pokémon is weak against that type and are displayed in red. When facing
+		opponent of that type, usually you will want to send Pokémon with resistance - or, at least, without weakness.</li>
+	<li><strong>SE</strong> - number of <strong>s</strong>uper <strong>e</strong>ffective moves that your Pokémon has
+		against that type. Numbers above zero are displayed in green. Usually it's good idea to send Pokémon with at least
+		one super effective move when facing opponent of given type.</li>
+	<li><strong>NE</strong> - number of moves with <strong>n</strong>eutral <strong>e</strong>ffectiveness, that is moves
+		that are neither strong nor weak. They are not as strong as super effective moves, but will do when your Pokémon
+		resists given type and you can't use other Pokémon.</li>
+	<li><strong>NVE</strong> - number of <strong>n</strong>ot <strong>v</strong>ery <strong>e</strong>ffective moves that
+		your Pokémon has against that type. Most of the time you want to avoid using them against opponent of given type.</li>
 </ul>
 
 <h3>Example 1</h3>
 <div class="row pokemon justify-content-center">
-	<div class="col-6 col-md-3"><p class="type grass"><strong>Grass</strong></p><div class="row no-gutters"><div class="col-12 col-lg-4"><div class="row no-gutters"><p class="col-7 col-lg-12">Effect</p><p class="col-5 col-lg-12 value text-success">0.25</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">SE</p><p class="col-5 col-lg-12 value text-success">1</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">NE</p><p class="col-5 col-lg-12 value">3</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">NVE</p><p class="col-5 col-lg-12 value">0</p></div></div></div></div>
+	<div class="col-6 col-md-3">
+		<p class="type grass"><strong>Grass</strong></p>
+		<div class="row no-gutters">
+			<div class="col-12 col-lg-4">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">Effect</p>
+					<p class="col-5 col-lg-12 value text-success">0.25</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">SE</p>
+					<p class="col-5 col-lg-12 value text-success">1</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">NE</p>
+					<p class="col-5 col-lg-12 value">3</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">NVE</p>
+					<p class="col-5 col-lg-12 value">0</p>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-<p>Both types of this dual type Pokémon resist Grass, making attacks of this type deal only quarter of normal damage. Moreover, it has one attack that is super effective against Grass and no attacks resisted by Grass. It is perfect example of Grass counter - you should definitely use it!</p>
+<p>Both types of this dual type Pokémon resist Grass, making attacks of this type deal only quarter of normal damage.
+	Moreover, it has one attack that is super effective against Grass and no attacks resisted by Grass. It is perfect
+	example of Grass counter - you should definitely use it!</p>
 
 <h3>Example 2</h3>
 <div class="row pokemon justify-content-center">
-	<div class="col-6 col-md-3"><p class="type flying"><strong>Flying</strong></p><div class="row no-gutters"><div class="col-12 col-lg-4"><div class="row no-gutters"><p class="col-7 col-lg-12">Effect</p><p class="col-5 col-lg-12 value text-danger">2</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">SE</p><p class="col-5 col-lg-12 value">0</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">NE</p><p class="col-5 col-lg-12 value">2</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">NVE</p><p class="col-5 col-lg-12 value">2</p></div></div></div></div>
+	<div class="col-6 col-md-3">
+		<p class="type flying"><strong>Flying</strong></p>
+		<div class="row no-gutters">
+			<div class="col-12 col-lg-4">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">Effect</p>
+					<p class="col-5 col-lg-12 value text-danger">2</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">SE</p>
+					<p class="col-5 col-lg-12 value">0</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">NE</p>
+					<p class="col-5 col-lg-12 value">2</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">NVE</p>
+					<p class="col-5 col-lg-12 value">2</p>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-<p>This Pokémon is weak against Flying-type attacks, which is not a good sign. Moreover, it can't deal extra damage to Flying Pokémon - it has two neutral moves and two moves that are weak against that type. Use this Pokémon against Flying opponents only if you absolutely have to.</p>
+<p>This Pokémon is weak against Flying-type attacks, which is not a good sign. Moreover, it can't deal extra damage to
+	Flying Pokémon - it has two neutral moves and two moves that are weak against that type. Use this Pokémon against
+	Flying opponents only if you absolutely have to.</p>
 
 <h3>Example 3</h3>
 <div class="row pokemon justify-content-center">
-	<div class="col-6 col-md-3"><p class="type poison"><strong>Poison</strong></p><div class="row no-gutters"><div class="col-12 col-lg-4"><div class="row no-gutters"><p class="col-7 col-lg-12">Effect</p><p class="col-5 col-lg-12 value text-success">0.5</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">SE</p><p class="col-5 col-lg-12 value">0</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">NE</p><p class="col-5 col-lg-12 value">2</p></div></div><div class="col-12 col-lg"><div class="row no-gutters"><p class="col-7 col-lg-12">NVE</p><p class="col-5 col-lg-12 value">1</p></div></div></div></div>
+	<div class="col-6 col-md-3">
+		<p class="type poison"><strong>Poison</strong></p>
+		<div class="row no-gutters">
+			<div class="col-12 col-lg-4">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">Effect</p>
+					<p class="col-5 col-lg-12 value text-success">0.5</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">SE</p>
+					<p class="col-5 col-lg-12 value">0</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">NE</p>
+					<p class="col-5 col-lg-12 value">2</p>
+				</div>
+			</div>
+			<div class="col-12 col-lg">
+				<div class="row no-gutters">
+					<p class="col-7 col-lg-12">NVE</p>
+					<p class="col-5 col-lg-12 value">1</p>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-<p>This Pokémon resists Poison-type attacks, but has no way of making super effective move against Poison opponent. However, it does have two moves that deal neutral damage. This Pokémon is not bad when facing Poison opponent, but would be even better if it knew Ground or Psychic-type move.</p>
+<p>This Pokémon resists Poison-type attacks, but has no way of making super effective move against Poison opponent.
+	However, it does have two moves that deal neutral damage. This Pokémon is not bad when facing Poison opponent, but
+	would be even better if it knew Ground or Psychic-type move.</p>
 
 <hr>
 <p>Didn't find what you were looking for? <a routerLink="/problems">Tell us about it</a>!</p>

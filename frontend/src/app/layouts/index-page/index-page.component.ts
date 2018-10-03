@@ -5,12 +5,16 @@ import { TitleService } from '../../services/title.service';
   templateUrl: './index-page.component.html'
 })
 export class IndexPageComponent implements OnInit {
-  title = '';
+  title = 'createPokémon.​team';
   constructor(private titleService: TitleService) {}
 
   ngOnInit() {
     this.titleService.title$.subscribe(title => {
-      this.title = title;
+      if (title) {
+        this.title = title + ' - createPokémon.​team';
+      } else {
+        this.title = 'createPokémon.​team';
+      }
     });
   }
 }
