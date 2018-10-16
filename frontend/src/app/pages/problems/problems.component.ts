@@ -7,7 +7,7 @@ import { TitleService } from '../../services/title.service';
   styleUrls: ['./problems.component.scss']
 })
 export class ProblemsComponent implements OnInit {
-  constructor(private titleService: TitleService) {}
+  constructor(private titleService: TitleService) { }
 
   ngOnInit() {
     this.titleService.setTitle('Report a problem');
