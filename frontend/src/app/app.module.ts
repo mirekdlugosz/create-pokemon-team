@@ -59,7 +59,7 @@ export const ROUTETABLE: Routes = [
   { path: '',
     component: IndexPageComponent,
     children: [
-      { path: 'index', component: IndexComponent },
+      { path: 'index', component: IndexComponent},
       { path: '',
         component: StaticPageComponent,
         children: [
