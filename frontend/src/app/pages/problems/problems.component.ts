@@ -12,4 +12,4 @@ export class ProblemsComponent implements OnInit {
   ngOnInit() {
     this.titleService.setTitle('Report a problem');
   }
-}
+} 
