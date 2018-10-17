@@ -1,10 +1,5 @@
 import { Subject, combineLatest } from 'rxjs';
-import {
-  filter,
-  withLatestFrom,
-  debounceTime,
-  takeUntil
-} from 'rxjs/operators';
+import { filter, withLatestFrom, debounceTime, takeUntil } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 
@@ -44,7 +39,7 @@ export class IndexComponent implements OnInit, OnDestroy {
     this.teamService.teamDataRequest$.pipe(
       withLatestFrom(
         this.urlmanagerService.version$,
-        (pokemonData, version) => ({ versionInfo: version, requestedPokemon: pokemonData })
+        (pokemonData, version) => ({versionInfo: version, requestedPokemon: pokemonData})
       ),
       takeUntil(this._componentDestroyed$)
     ).subscribe(d => this.pokemonService.stateChangedHandler(d));
@@ -66,4 +61,5 @@ export class IndexComponent implements OnInit, OnDestroy {
     this._componentDestroyed$.next(true);
     this._componentDestroyed$.complete();
   }
+
 }
