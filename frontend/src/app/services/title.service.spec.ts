@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { TitleService } from './urlmanager.service';
+import { TitleService } from './title.service';
 
 describe('TitleService', () => {
   beforeEach(() => {
@@ -10,8 +10,8 @@ describe('TitleService', () => {
   });
 
   it('should be created', inject(
-    [UrlmanagerService],
-    (service: UrlmanagerService) => {
+    [TitleService],
+    (service: TitleService) => {
       expect(service).toBeTruthy();
     }
   ));
