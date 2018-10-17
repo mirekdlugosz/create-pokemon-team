@@ -7,8 +7,7 @@ import { TitleService } from '../../services/title.service';
 })
 export class IndexPageComponent implements OnInit {
   title = 'createPokémon.​team';
-  
-  constructor(private titleService: TitleService) { }
+  constructor(private titleService: TitleService) {}
 
   ngOnInit() {
     this.titleService.title$.subscribe(title => {
@@ -19,5 +18,4 @@ export class IndexPageComponent implements OnInit {
       }
     });
   }
-  
 }
