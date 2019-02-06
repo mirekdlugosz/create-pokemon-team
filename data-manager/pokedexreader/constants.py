@@ -238,8 +238,8 @@ class Constants():
     # Previous evolution id refers to Pokemon species, but some
     # species can have multiple forms and evolution lines run along
     # forms, not across them. In other words, normal Sandshrew can
-    # evolve only into normal Sandshrew and Alolan Sandshrew can
-    # evolve only into Alolan Sandshrew.
+    # evolve only into normal Sandslash and Alolan Sandshrew can
+    # evolve only into Alolan Sandslash.
     # As of generation VII, only Alola forms are affected by that
     eeveedex_evolves_from_override = {
         "raticate-alola": "rattata-alola",

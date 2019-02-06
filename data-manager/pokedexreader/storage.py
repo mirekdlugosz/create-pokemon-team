@@ -117,7 +117,7 @@ class PokedexStorage():
             raise ValueError('Unknown type in {}; must be one of {}'.format(move_type, self._types))
 
         if not category:
-            raise ValueError('Pokemon name cannot be empty')
+            raise ValueError('Move category cannot be empty')
 
         if category not in self._move_categories:
             raise ValueError('Unknown category in {}; must be one of {}'.format(category, self._move_categories))
