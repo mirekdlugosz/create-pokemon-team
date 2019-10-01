@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+
+const path = require('path');
+const fs = require('fs');
+
+if (process.argv.length != 4) {
+    console.log("showdown2json SHOWDOWN_DATA_DIR OUTPUT_JSON_DIR");
+    console.log("showdown2json - tool to convert Pokémon Showdown! data files to JSON")
+    process.exit();
+}
+
+const [SHOWDOWN_DATA_DIR, OUTPUT_JSON_DIR] = process.argv.slice(-2);
+
+['learnsets.js', 'moves.js', 'pokedex.js'].forEach(file => {
+    let source_path = path.resolve(path.join(SHOWDOWN_DATA_DIR, file));
+    let target_path = path.basename(file, path.extname(file)) + '.json';
+    target_path = path.resolve(path.join(OUTPUT_JSON_DIR, target_path));
+    fs.mkdirSync(path.dirname(target_path), {'recursive': true});
+    console.log(`Processing ${source_path}...`);
+
+    let data = require(source_path);
+    let key = Object.keys(data)[0];
+    fs.writeFileSync(target_path, JSON.stringify(data[key], null, 4));
+
+    console.log(`Writing to ${target_path}: OK`);
+});
