@@ -110,8 +110,7 @@ export const ROUTETABLE: Routes = [
     TeamService,
     PokemonService,
     MovesService,
-    TypeEffectivenessService,
-    TitleService
+    TypeEffectivenessService
   ],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]

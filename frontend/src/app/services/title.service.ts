@@ -10,17 +10,23 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-
 import { Subject } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TitleService {
   public title$ = new Subject<string>();
 
-  constructor() {}
+  /**
+   *
+   */
+  constructor(private titleService: Title) {}
 
   public setTitle(title) {
-    this.title$.next(title);
+    let t = title ? title + ' – createPokémon.​team' : 'createPokémon.​team';
+    this.titleService.setTitle(t);
+    this.title$.next(t);
   }
 }
