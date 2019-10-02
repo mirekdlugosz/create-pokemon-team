@@ -5,21 +5,23 @@ data-manager takes data from specified source and outputs JSON files readable by
 ## Requirements
 
 * Python 3.4 or later
-* sqlite3 and json modules (should come with Python)
-* [pipenv](https://github.com/pypa/pipenv) for installation
 * SQLite file with data from [veekun Pokédex](https://github.com/veekun/pokedex)
 
 ## Installation
 
-Run following command:
+Create new virtual environment and install dependencies from requirements.txt file in root of repository:
 
 ```
-pipenv install --dev
+$ python3 -m venv /path/to/venv
+$ . /path/to/venv/bin/activate
+$ pip install -r ../requirements.txt
 ```
+
+You can - and should! - use one virtual environment for both `backend` and `data-manager`.
 
 ## Setting up data source
 
-This component requires some data source. Currently only SQLite file with veekun Pokédex is supported. You can acquire it by running following commands:
+This component requires some data source. Currently only SQLite file with veekun Pokédex is supported. You can acquire it by running following commands; make sure to run them outside of **this** project repository:
 
 ```
 git clone https://github.com/veekun/pokedex.git
@@ -34,7 +36,7 @@ Path to SQLite file will be printed out at the beginning of output. Or you can u
 
 ## Usage
 
-When running in virtualenv shell (`pipenv shell`), run:
+When virtual environment for this project is active, run:
 
 ```
 pokedexreader --eevee <path_to_veekun_pokedex.sqlite> -o <path_to_backend/api/data/>

@@ -1,0 +1,6 @@
+flask
+
+--editable data-manager/
+--editable backend/
+
+pytest

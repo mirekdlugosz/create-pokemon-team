@@ -6,21 +6,29 @@ Flask application that provides data through REST service.
 
 * Python 3.4 or later
 * [Flask](http://flask.pocoo.org/)
-* json module (should come with Python)
-* [pipenv](https://github.com/pypa/pipenv) for installation
-* JSON files created by data-reader component
+* JSON files created by `data-reader` component
 
 ## Installation
 
-Run following command:
+Create new virtual environment and install dependencies from requirements.txt file in root of repository:
 
 ```
-pipenv install --dev
+$ python3 -m venv /path/to/venv
+$ . /path/to/venv/bin/activate
+$ pip install -r ../requirements.txt
 ```
+
+Then, use `pokedexreader` command to create JSON data files:
+
+```
+$ pokedexreader <options> -o backend/api/data/
+```
+
+You can - and should! - use one virtual environment for both `backend` and `data-manager`.
 
 ## Usage
 
-When running in virtualenv shell (`pipenv shell`), run:
+When virtual environment for this project is active, run:
 
 ```
 ./run.py
@@ -30,7 +38,7 @@ REST service will be available at `http://127.0.0.1:8861/`.
 
 ## Running tests
 
-When running in virtualenv shell (`pipenv shell`), run:
+When virtual environment for this project is active, run:
 
 ```
 pytest
