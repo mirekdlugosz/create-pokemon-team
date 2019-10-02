@@ -11,13 +11,6 @@ export class IndexPageComponent implements OnInit {
   constructor(private titleService: TitleService) {}
 
   ngOnInit() {
-    this.titleService.title$.subscribe(title => {
-      if (title) {
-        this.title = title + ' – createPokémon.​team';
-      } else {
-        this.title = 'createPokémon.​team';
-      }
-    });
+    this.titleService.title$.subscribe(title => this.title = title);
   }
-
 }
