@@ -14,6 +14,7 @@ import json
 import io
 
 import pokedexreader.storage
+import pokedexreader.constants
 
 
 @pytest.fixture
@@ -32,6 +33,19 @@ def _file():
 @pytest.fixture
 def pokedex():
     return pokedexreader.storage.PokedexStorage()
+
+
+class TestInternal():
+    def test_versions_in_constants(self):
+        """Verify duplicated version names are exactly the same in
+        both places they appear in.
+        """
+        in_constants = pokedexreader.constants.Constants.known_versions
+        in_valid_list = pokedexreader.constants.Constants.available_pokemon.keys()
+        for one, two in zip(in_constants, in_valid_list):
+            assert one == two
+
+        assert set(in_constants) == set(in_valid_list)
 
 
 class TestAdd():

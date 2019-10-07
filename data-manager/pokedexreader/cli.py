@@ -10,17 +10,18 @@ any later version.
 """
 
 import argparse
-import sys
-import os
+import pathlib
 
 from .storage import PokedexStorage
-from .readers import EeveeReader
+from .readers import EeveeReader, ShowdownReader
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--eevee', required=True, dest='eevee_sqlite',
+    parser.add_argument('--eevee', required=False, dest='eevee_sqlite',
                         help="path to Eevee's Pokedex .sqlite file")
+    parser.add_argument('--showdown', required=False, dest='showdown_dir',
+                        help="path to directory with Pokemon Showdown JSON files")
     parser.add_argument('--dump', action='append',
                         choices=['pokemon', 'learnsets', 'moves', 'all'],
                         help="dump data from Pokedex, don't write any files")
@@ -34,13 +35,28 @@ def parse_arguments():
 def cli():
     args = parse_arguments()
 
-    if not os.path.isfile(args.eevee_sqlite):
-        print("{} does not exist".format(args.eevee_sqlite))
-        sys.exit(1)
+    if not any([args.eevee_sqlite, args.showdown_dir]):
+        msg = ("One of --eevee or --showdown is mandatory and"
+               " must point at existing file/directory")
+        raise SystemExit(msg)
+
+    if args.eevee_sqlite and not pathlib.Path(args.eevee_sqlite).is_file():
+        msg = f"{args.eevee_sqlite} does not exist"
+        raise SystemExit(msg)
+
+    if args.showdown_dir and not pathlib.Path(args.showdown_dir).is_dir():
+        msg = f"{args.showdown_dir} does not exist"
+        raise SystemExit(msg)
 
     pokedex = PokedexStorage()
-    eeveedex = EeveeReader(args.eevee_sqlite)
-    eeveedex.fill_pokedex(pokedex)
+
+    if args.eevee_sqlite:
+        eeveedex = EeveeReader(args.eevee_sqlite)
+        eeveedex.fill_pokedex(pokedex)
+
+    if args.showdown_dir:
+        showdowndex = ShowdownReader(args.showdown_dir)
+        showdowndex.fill_pokedex(pokedex)
 
     if args.dump:
         pokedex.dump_data(args.dump, args.pretty)

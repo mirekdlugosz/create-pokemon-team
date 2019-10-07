@@ -81,6 +81,9 @@ class PokedexStorage():
         if set(pokemon_type) & self._types != set(pokemon_type):
             raise ValueError('Unknown Type in {}; must be one of {}'.format(pokemon_type, self._types))
 
+        if pokemon_id in self.pokemon:
+            return
+
         pokemon_struct = {
             "id": pokemon_id,
             "name": name,
@@ -98,7 +101,7 @@ class PokedexStorage():
             raise ValueError('Version identifier cannot be empty')
         if not pokemon_id:
             raise ValueError('Pokemon identifier cannot be empty')
-        if not moves or not isinstance(moves, list):
+        if not moves:
             raise ValueError('Pokemon moves must be non-empty list')
 
         self.pokemon_moves.setdefault(version, {}).setdefault(pokemon_id, []).extend(moves)

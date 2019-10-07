@@ -9,31 +9,21 @@ by the Free Software Foundation, either version 3 of the License, or
 any later version.
 """
 
+import json
 import sqlite3
+from pathlib import Path
 from .constants import Constants
 
 
-class EeveeReader():
+class AbstractReader:
     def __init__(self, path):
         self._pokedex = None
         self._id_pokemon_mapping = {}
         self._types = Constants.types
         self._versions = Constants.known_versions
-        self._missing_moves_map = Constants.eeveedex_missing_moves
-        self._querydb = {
-            "fetch_all_moves": Constants.eeveedex_query_fetch_all_moves,
-            "fetch_all_pokemon": Constants.eeveedex_query_fetch_all_pokemon,
-            "fetch_pokemon_moves": Constants.eeveedex_query_fetch_pokemon_moves,
-            "fetch_pokemon_types": Constants.eeveedex_query_fetch_pokemon_types,
-            "fetch_all_moves_with_version": Constants.eeveedex_query_fetch_all_moves_with_version,
-        }
-        self._init_db_connection(path)
+        self._valid_pokemon_list = Constants.available_pokemon
         self._fill_hidden_powers()
         self._fill_natural_gifts()
-
-    def _init_db_connection(self, path):
-        self._db_conn = sqlite3.connect(path)
-        self._db_conn.row_factory = sqlite3.Row
 
     def _fill_hidden_powers(self):
         self._hidden_powers = []
@@ -56,6 +46,24 @@ class EeveeReader():
                 "move_name": "Natural Gift {}".format(move_type),
             }
             self._natural_gifts.append(struct)
+
+
+class EeveeReader(AbstractReader):
+    def __init__(self, path):
+        super().__init__(path)
+        self._missing_moves_map = Constants.eeveedex_missing_moves
+        self._querydb = {
+            "fetch_all_moves": Constants.eeveedex_query_fetch_all_moves,
+            "fetch_all_pokemon": Constants.eeveedex_query_fetch_all_pokemon,
+            "fetch_pokemon_moves": Constants.eeveedex_query_fetch_pokemon_moves,
+            "fetch_pokemon_types": Constants.eeveedex_query_fetch_pokemon_types,
+            "fetch_all_moves_with_version": Constants.eeveedex_query_fetch_all_moves_with_version,
+        }
+        self._init_db_connection(path)
+
+    def _init_db_connection(self, path):
+        self._db_conn = sqlite3.connect(path)
+        self._db_conn.row_factory = sqlite3.Row
 
     def _fetch_all_pokemon(self):
         return self._db_conn.execute(self._querydb["fetch_all_pokemon"]).fetchall()
@@ -225,3 +233,134 @@ class EeveeReader():
                 "name": move_data_row["move_name"]
             }
             self._pokedex.add_move(**move)
+
+
+class ShowdownReader(AbstractReader):
+    def __init__(self, path):
+        super().__init__(path)
+        self._all_pokemon = self._fetch_all_pokemon(path)
+        self._all_moves = self._fetch_all_moves(path)
+        self._pokemon_moves_map = self._fetch_learnsets(path)
+        self._ignored_versions = ["red-blue", "yellow", "gold-silver",
+                                  "crystal"]
+
+    def _fetch_all_pokemon(self, basedir_path):
+        with open(Path(basedir_path).joinpath('pokedex.json')) as fh:
+            data = json.load(fh)
+        return data
+
+    def _fetch_all_moves(self, basedir_path):
+        with open(Path(basedir_path).joinpath('moves.json')) as fh:
+            data = json.load(fh)
+        return data
+
+    def _fetch_learnsets(self, basedir_path):
+        with open(Path(basedir_path).joinpath('learnsets.json')) as fh:
+            data = json.load(fh)
+        data = self._transform_learnsets(data)
+        return data
+
+    def _transform_learnsets(self, learnsets):
+        """Changes Showdown learnsets map to one easier to work with
+
+        Basically inverts pokemon->move->version to pokemon->version->move,
+        losing some details in the process.
+        """
+        out = {}
+        for pokemon in learnsets:
+            learnset = learnsets[pokemon]["learnset"]
+            out[pokemon] = self._invert_learnset_map(learnset)
+
+        return out
+
+    def _invert_learnset_map(self, learnset):
+        """Performs transformation for single Pokemon. See _transform_learnsets
+        """
+        out = {}
+        for move, learning_opportunities in learnset.items():
+            versions = self._learning_opportunities_to_versions(move, learning_opportunities)
+            for version in versions:
+                out.setdefault(version, set()).add(move)
+
+        return out
+
+    def _learning_opportunities_to_versions(self, move, learning_opportunities):
+        versions = set()
+        for item in learning_opportunities:
+            generation = int(item[0])
+            method = item[1]
+            games = Constants.games_in_generation[generation]
+            if method == "C":  # optimization trick, ignore it
+                continue
+            if method == "T":  # Tutor - often exclusive to last game in generation
+                # TODO: there are some exceptions to the rule,
+                # and one move that can be learned from tutor in only one game in gen III
+                games = [games[-1]]
+            versions.update(games)
+        return versions
+
+    def _create_pokemon_name(self, pokemon_id):
+        return self._all_pokemon[pokemon_id]['species']
+
+    def _get_pokemon_moves_in_version(self, pokemon_id, version):
+        out = set()
+        while True:
+            moves = self._pokemon_moves_map[pokemon_id][version]
+            out.update(moves)
+            prevo = self._get_prevolution(pokemon_id, version)
+            if prevo:
+                pokemon_id = prevo
+            else:
+                break
+        return out
+        # TODO: smeargle, expand hidden power etc.
+
+    def _get_prevolution(self, pokemon_id, version):
+        pokemon_obj = self._all_pokemon[pokemon_id]
+        prevo = object()
+        if "prevo" in pokemon_obj:
+            prevo = pokemon_obj["prevo"]
+        if "baseSpecies" in pokemon_obj and (
+                pokemon_id.endswith('mega')
+                or pokemon_id.endswith('primal')):
+            prevo = pokemon_obj["baseSpecies"].lower()
+
+        if prevo in self._valid_pokemon_list[version]:
+            return prevo
+
+        return None
+
+    def _position_in_evo_chain(self, pokemon_id, version):
+        prevo = self._get_prevolution(pokemon_id, version)
+        if prevo:
+            return 1 + self._position_in_evo_chain(prevo, version)
+        return 0
+
+    def _ignore_move(self, move_obj):
+        return "isZ" in move_obj
+
+    def fill_pokedex(self, pokedex):
+        for version in self._valid_pokemon_list:
+            if version in self._ignored_versions:
+                continue
+
+            available_pokemon = sorted(
+                self._valid_pokemon_list[version],
+                key=lambda x: self._position_in_evo_chain(x, version)
+            )
+
+            for pokemon_id in available_pokemon:
+                pokemon_name = self._create_pokemon_name(pokemon_id)
+                pokemon_types = self._all_pokemon[pokemon_id]['types']
+                try:
+                    pokemon_moves = self._get_pokemon_moves_in_version(pokemon_id, version)
+                except KeyError:
+                    # special case - ignore for now
+                    continue
+                pokedex.add_pokemon(version, pokemon_id, pokemon_name, pokemon_types)
+                pokedex.add_pokemon_moves(version, pokemon_id, pokemon_moves)
+
+        for move_id, move_obj in self._all_moves.items():
+            if self._ignore_move(move_obj):
+                continue
+            pokedex.add_move(move_id, move_obj["type"], move_obj["category"].lower(), move_obj["name"])

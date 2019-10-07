@@ -9,6 +9,8 @@ by the Free Software Foundation, either version 3 of the License, or
 any later version.
 """
 
+from .constants_pokedex import available_pokemon
+
 
 class Constants():
     # Known types. Should be self-explanatory
@@ -23,6 +25,25 @@ class Constants():
         "heartgold-soulsilver", "black-white", "black-2-white-2", "x-y",
         "omega-ruby-alpha-sapphire", "sun-moon", "ultra-sun-ultra-moon",
     ]
+
+    games_in_generation = (
+        # empty item at index 0 to allow index == generation number
+        (),
+        # gen 1 - red/blue, yellow
+        (known_versions[0], known_versions[1]),
+        # gen 2 - gold/silver, crystal
+        (known_versions[2], known_versions[3]),
+        # gen 3 - ruby/sapphire, emerald, fire red/leaf green
+        (known_versions[4], known_versions[5], known_versions[6]),
+        # gen 4 - diamond/pearl, platinum, heart gold/soul silver
+        (known_versions[7], known_versions[8], known_versions[9]),
+        # gen 5 - black/white, black2/white2
+        (known_versions[10], known_versions[11]),
+        # gen 6 - x/y, omega ruby/alpha sapphire
+        (known_versions[12], known_versions[13]),
+        # gen 7 - sun/moon, ultra sun/ultra moon
+        (known_versions[14], known_versions[15]),
+    )
 
     # In the history of franchise, some Pokemon changed their type.
     # This dict contains ids of these Pokemon, their *previous* type
@@ -194,6 +215,9 @@ class Constants():
     moves_inheriting_type = [
         "judgment", "multi-attack", "revelation-dance"
     ]
+
+    # Map of Pokemon available in each game
+    available_pokemon = available_pokemon
 
     # List of Pokemon that were not available in given version despite
     # being introduced in previous one.
