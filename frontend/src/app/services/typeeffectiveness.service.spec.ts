@@ -2,12 +2,14 @@ import { TestBed, getTestBed } from '@angular/core/testing';
 
 import { TypeEffectivenessService } from './typeeffectiveness.service';
 import { TypeChart } from '../utils/typechart';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
-fdescribe('TypeeffectivenessService', () => {
+describe('TypeeffectivenessService', () => {
   let service;
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TypeEffectivenessService]
+      providers: [TypeEffectivenessService],
+      schemas: [ NO_ERRORS_SCHEMA ]
     });
     service = getTestBed().get(TypeEffectivenessService);
   });

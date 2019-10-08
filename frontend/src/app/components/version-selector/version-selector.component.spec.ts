@@ -1,6 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VersionSelectorComponent } from './version-selector.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { UrlmanagerService } from '../../services/urlmanager.service';
+import { of } from 'rxjs';
+
+class UrlManagerStub{
+  public version$ = of();
+}
 
 describe('VersionSelectorComponent', () => {
   let component: VersionSelectorComponent;
@@ -8,7 +15,9 @@ describe('VersionSelectorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ VersionSelectorComponent ]
+      declarations: [ VersionSelectorComponent ],
+      schemas: [ NO_ERRORS_SCHEMA ],
+      providers: [{provide: UrlmanagerService, useClass: UrlManagerStub}]
     })
     .compileComponents();
   }));
@@ -22,4 +31,6 @@ describe('VersionSelectorComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  //TODO stub unit tests
 });
