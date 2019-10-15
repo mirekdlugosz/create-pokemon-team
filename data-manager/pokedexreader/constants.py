@@ -35,7 +35,7 @@ class Constants():
             "last_version": "black-2-white-2",
         },
         "azurill": {
-            "type": ['Water'],
+            "type": ['Normal'],
             "last_version": "black-2-white-2",
         },
         "clefable": {
