@@ -28,21 +28,21 @@ class Constants():
 
     games_in_generation = (
         # empty item at index 0 to allow index == generation number
-        (),
+        [],
         # gen 1 - red/blue, yellow
-        (known_versions[0], known_versions[1]),
+        [known_versions[0], known_versions[1]],
         # gen 2 - gold/silver, crystal
-        (known_versions[2], known_versions[3]),
+        [known_versions[2], known_versions[3]],
         # gen 3 - ruby/sapphire, emerald, fire red/leaf green
-        (known_versions[4], known_versions[5], known_versions[6]),
+        [known_versions[4], known_versions[5], known_versions[6]],
         # gen 4 - diamond/pearl, platinum, heart gold/soul silver
-        (known_versions[7], known_versions[8], known_versions[9]),
+        [known_versions[7], known_versions[8], known_versions[9]],
         # gen 5 - black/white, black2/white2
-        (known_versions[10], known_versions[11]),
+        [known_versions[10], known_versions[11]],
         # gen 6 - x/y, omega ruby/alpha sapphire
-        (known_versions[12], known_versions[13]),
+        [known_versions[12], known_versions[13]],
         # gen 7 - sun/moon, ultra sun/ultra moon
-        (known_versions[14], known_versions[15]),
+        [known_versions[14], known_versions[15]],
     )
 
     # In the history of franchise, some Pokemon changed their type.
@@ -225,6 +225,55 @@ class Constants():
         "ruby-sapphire": ["deoxys-attack", "deoxys-defense", "deoxys-speed"],
         "firered-leafgreen": ["deoxys-normal", "deoxys-speed"],
         "emerald": ["deoxys-normal", "deoxys-attack", "deoxys-defense"],
+    }
+
+    # Map of tutor moves available in non-last game of generation
+    tutor_moves_map = {
+        3: [
+            {'moves': ['bodyslam', 'counter', 'doubleedge', 'dreameater',
+                       'explosion', 'megakick', 'megapunch', 'metronome', 'mimic',
+                       'rockslide', 'seismictoss', 'softboiled', 'substitute',
+                       'swordsdance', 'thunderwave'],
+             'games': ['emerald', 'firered-leafgreen']},
+            {'moves': ['defensecurl', 'dynamicpunch', 'endure', 'firepunch',
+                       'furycutter', 'icepunch', 'icywind', 'mudslap', 'psychup',
+                       'rollout', 'sleeptalk', 'snore', 'swagger', 'swift',
+                       'thunderpunch'],
+             'games': ['emerald']},
+        ],
+        4: [
+            {'moves': ['blastburn', 'dracometeor', 'frenzyplant', 'hydrocannon'],
+             'games': ['diamond-pearl', 'platinum', 'heartgold-soulsilver']},
+            {'moves': ['aircutter', 'ancientpower', 'aquatail', 'bounce',
+                       'dive', 'earthpower', 'endeavor', 'firepunch',
+                       'furycutter', 'gastroacid', 'gunkshot', 'heatwave',
+                       'helpinghand', 'icepunch', 'icywind', 'irondefense',
+                       'ironhead', 'knockoff', 'lastresort', 'magnetrise',
+                       'mudslap', 'ominouswind', 'outrage', 'rollout',
+                       'seedbomb', 'signalbeam', 'snore', 'spite',
+                       'suckerpunch', 'superpower', 'swift', 'synthesis',
+                       'thunderpunch', 'trick', 'twister', 'uproar',
+                       'vacuumwave', 'zenheadbutt'],
+             'games': ['platinum', 'heartgold-soulsilver']},
+        ],
+        5: [
+            {'moves': ['blastburn', 'dracometeor', 'firepledge', 'frenzyplant',
+                       'grasspledge', 'hydrocannon', 'relicsong', 'secretsword',
+                       'waterpledge'],
+             'games': ['black-white', 'black-2-white-2']}
+        ],
+        6: [
+            {'moves': ['blastburn', 'dracometeor', 'firepledge', 'frenzyplant',
+                       'grasspledge', 'hydrocannon', 'relicsong', 'secretsword',
+                       'waterpledge'],
+             'games': ['x-y', 'omega-ruby-alpha-sapphire']}
+        ],
+        7: [
+            {'moves': ['blastburn', 'dracometeor', 'dragonascent', 'firepledge',
+                       'frenzyplant', 'grasspledge', 'hydrocannon', 'relicsong',
+                       'secretsword', 'volttackle', 'waterpledge'],
+             'games': ['sun-moon', 'ultra-sun-ultra-moon']}
+        ]
     }
 
     # Used in Eevee Pokedex reader.

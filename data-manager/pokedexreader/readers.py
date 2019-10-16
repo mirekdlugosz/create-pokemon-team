@@ -290,12 +290,14 @@ class ShowdownReader(AbstractReader):
             generation = int(item[0])
             method = item[1]
             games = Constants.games_in_generation[generation]
-            if method == "C":  # optimization trick, ignore it
+            if method == "C":  # Showdown optimization trick, ignore it
                 continue
             if method == "T":  # Tutor - often exclusive to last game in generation
-                # TODO: there are some exceptions to the rule,
-                # and one move that can be learned from tutor in only one game in gen III
                 games = [games[-1]]
+                for tutor_special_case in Constants.tutor_moves_map[generation]:
+                    if move in tutor_special_case["moves"]:
+                        games = tutor_special_case["games"]
+                        break
             versions.update(games)
         return versions
 
