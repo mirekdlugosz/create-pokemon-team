@@ -1,0 +1,284 @@
+"""
+createPokémon.team - web application that helps you build your own
+Pokémon team in any core series game
+Copyright © 2019  Mirek Długosz
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+any later version.
+"""
+
+import io
+import json
+import pytest
+
+from pokedexreader.storage import PokedexStorage
+from pokedexreader.constants import Constants
+from pokedexreader.constants_pokedex import ORAS_MEGAS, XY_MEGAS
+
+
+@pytest.fixture(scope="module")
+def filled_eeveedex(eevee):
+    pokedex = PokedexStorage()
+    eevee.fill_pokedex(pokedex)
+
+    with io.StringIO() as fh:
+        pokedex._output_pokemon(fh)
+        pokemon = json.loads(fh.getvalue())
+
+    with io.StringIO() as fh:
+        pokedex._output_moves(fh)
+        moves = json.loads(fh.getvalue())
+
+    with io.StringIO() as fh:
+        pokedex._output_learnsets(fh)
+        learnsets = json.loads(fh.getvalue())
+
+    return {
+        'pokedex': pokedex,
+        'pokemon': pokemon,
+        'moves': moves,
+        'learnsets': learnsets
+    }
+
+
+def test_pokemon_with_many_forms(filled_eeveedex):
+    pass
+
+
+def test_ignored_pokemon_is_not_present(filled_eeveedex):
+    ignored_pokemon_list = ['pichu-spiky-eared', 'pikachu-rock-star', 'marowak-totem',
+                            'castform-sunny', 'burmy-sandy', 'mothim-plant', 'cherrim-sunshine',
+                            'shellos-west', 'gastrodon-east', 'arceus-unknown',
+                            'basculin-red-striped', 'darmanitan', 'deerling-summer',
+                            'sawsbuck-autumn', 'tornadus-incarnate', 'thundurus-therian',
+                            'keldeo-ordinary', 'keldeo-resolute', 'greninja-battle-bond',
+                            'greninja-ash', 'scatterbug-river', 'spewpa-polar', 'vivillon-fancy'
+                            'flabebe-red', 'floette-yellow', 'floette-eternal', 'florges-blue',
+                            'furfrou-star', 'aegislash-shield', 'aegislash-blade',
+                            'pumpkaboo-small', 'gourgeist-large', 'xerneas-active', 'zygarde-10',
+                            'zygarde-complete', 'minior-indigo-meteor', 'minior-meteor',
+                            'minior-blue', 'mimikyu-busted', 'magearna-original']
+
+    for game in filled_eeveedex['pokemon']:
+        pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]]
+        assert pokemon_list
+        for ignored in ignored_pokemon_list:
+            assert ignored not in pokemon_list
+
+
+def test_order_in_pokedex(filled_eeveedex):
+    game = 'ultra-sun-ultra-moon'
+    pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]]
+    assert pokemon_list.index('bulbasaur') == 0
+    assert pokemon_list.index('bulbasaur') < pokemon_list.index('abra')
+    assert pokemon_list.index('charmander') < pokemon_list.index('charmeleon')
+    assert pokemon_list.index('venusaur') < pokemon_list.index('venusaur-mega')
+    assert pokemon_list.index('igglybuff') < pokemon_list.index('jigglypuff')
+    assert pokemon_list.index('rhyhorn') < pokemon_list.index('rhyperior')
+    assert pokemon_list.index('pikachu') < pokemon_list.index('raichu-alola')
+    assert pokemon_list.index('vulpix-alola') < pokemon_list.index('ninetales-alola')
+
+
+def test_arceus_name(filled_eeveedex):
+    game = 'ultra-sun-ultra-moon'
+    pokemon = next(item for item in filled_eeveedex['pokemon'][game]
+                   if item['id'] == 'arceus-normal')
+    assert pokemon['name'] == 'Arceus (Normal Type)'
+
+
+@pytest.mark.parametrize("game,expected", [
+    ("ruby-sapphire", ["deoxys-normal"]),
+    ("emerald", ["deoxys-speed"]),
+    ("firered-leafgreen", ["deoxys-attack", "deoxys-defense"]),
+    ("x-y", ["deoxys-normal", "deoxys-attack", "deoxys-defense", "deoxys-speed"])
+])
+def test_deoxys_in_gen_3(filled_eeveedex, game, expected):
+    pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]
+                    if 'deoxys' in item['id']]
+    assert pokemon_list == expected
+
+
+def test_mega_in_gen_6(filled_eeveedex):
+    fake_mega = ['yanmega', 'meganium']
+    pokemon = filled_eeveedex['pokemon']
+    xy_mega_list = [item['id'] for item in pokemon['x-y']
+                    if 'mega' in item['id'] and item['id'] not in fake_mega]
+    oras_mega_list = [item['id'] for item in pokemon['omega-ruby-alpha-sapphire']
+                      if 'mega' in item['id'] and item['id'] not in fake_mega]
+    # TODO: temporary workaround - pokemon in constants are using Showdown ids,
+    # which are not compatible with veekun ids
+    xy_mega_list = [item.replace('-', '') for item in xy_mega_list]
+    oras_mega_list = [item.replace('-', '') for item in oras_mega_list]
+    assert set(xy_mega_list) == set(XY_MEGAS)
+    for oras_mega in set(ORAS_MEGAS) - set(XY_MEGAS):
+        assert oras_mega not in xy_mega_list
+    assert set(oras_mega_list) == set(ORAS_MEGAS)
+
+
+@pytest.mark.parametrize("pokemon,last_game,type_,new_type", [
+    ("azumarill", "black-2-white-2", ["Water"], ["Water", "Fairy"]),
+    ("azurill", "black-2-white-2", ["Normal"], ["Normal", "Fairy"]),
+    ("rotom-heat", "heartgold-soulsilver", ["Electric", "Ghost"], ["Electric", "Fire"]),
+    ("togekiss", "black-2-white-2", ["Normal", "Flying"], ["Fairy", "Flying"]),
+    ("jigglypuff", "black-2-white-2", ["Normal"], ["Normal", "Fairy"])
+])
+def test_pokemon_type_before_change(filled_eeveedex, pokemon, last_game, type_, new_type):
+    versions = Constants.known_versions
+    for game in versions[:versions.index(last_game) + 1]:
+        pokemon_obj = next((item for item in filled_eeveedex['pokemon'][game]
+                           if pokemon in item['id']), None)
+        if not pokemon_obj:
+            continue
+        assert pokemon_obj['type'] == type_
+
+    game = versions[versions.index(last_game) + 1]
+    pokemon_obj = next((item for item in filled_eeveedex['pokemon'][game]
+                       if pokemon in item['id']), None)
+    assert pokemon_obj['type'] == new_type
+
+
+def test_smeargle_moves(filled_eeveedex):
+    for learnset in filled_eeveedex['learnsets'].values():
+        try:
+            smeargle_moves = learnset['smeargle']
+        except KeyError:
+            continue
+        # there were 250 moves in gen II, when Smeargle was introduced
+        assert len(smeargle_moves) > 250
+        for move in Constants.invalid_smeargle_moves:
+            assert move not in smeargle_moves
+
+
+@pytest.mark.parametrize("pokemon_list,moves", [
+    (["deoxys-normal", "deoxys-attack", "deoxys-defense", "deoxys-speed"],
+     ["superpower", "zap-cannon", "amnesia", "counter", "iron-defense", "mirror-coat",
+      "spikes", "agility", "extreme-speed", "swift"]),
+    (["giratina-altered", "giratina-origin"], ["pain-split", "magic-coat", "tailwind"]),
+    (["shaymin-land", "shaymin-sky"], ["aromatherapy", "healing-wish", "synthesis",
+                                       "air-slash", "leaf-storm", "quick-attack"]),
+    (["hoopa", "hoopa-unbound"], ["hyperspace-fury", "knock-off", "hyperspace-hole",
+                                  "nasty-plot", "phantom-force", "zen-headbutt"])
+])
+def test_changeable_form_moves(filled_eeveedex, pokemon_list, moves):
+    for game_learnset in filled_eeveedex['learnsets'].values():
+        if not all(pokemon in game_learnset for pokemon in pokemon_list):
+            continue
+        for move in moves:
+            know_list = [move in game_learnset[pokemon] for pokemon in pokemon_list]
+            # all Pokemon in group know the move, or none knows it
+            assert sum(know_list) in (0, len(pokemon_list))
+
+
+@pytest.mark.parametrize("prevo,pokemon,move", [
+    ("bulbasaur", "venusaur", "seed-bomb"),
+    ("magby", "magmortar", "uproar"),
+    ("minccino", "cinccino", "hyper-voice"),
+])
+def test_prevolution_exclusive_moves(filled_eeveedex, prevo, pokemon, move):
+    for game_learnset in filled_eeveedex['learnsets'].values():
+        if not all(poke in game_learnset for poke in (prevo, pokemon)):
+            continue
+        know_list = [move in game_learnset[poke] for poke in (prevo, pokemon)]
+        # all Pokemon in group know the move, or none knows it
+        assert sum(know_list) != 1
+
+
+@pytest.mark.parametrize("pokemon,move", [
+    ("venusaur-mega", "petal-dance"),
+    ("charizard-mega-x", "fire-blast"),
+    ("charizard-mega-y", "fire-blast"),
+])
+def test_mega_evolution_moves(filled_eeveedex, pokemon, move):
+    for game in ['x-y', 'omega-ruby-alpha-sapphire', 'sun-moon', 'ultra-sun-ultra-moon']:
+        assert move in filled_eeveedex['learnsets'][game][pokemon]
+
+
+@pytest.mark.parametrize("pokemon,move,game", [
+    ("charizard", "blast-burn", "firered-leafgreen"),
+    ("beedrill", "bug-bite", "heartgold-soulsilver"),
+    ("marowak", "outrage", "black-2-white-2"),
+    ("blastoise", "focus-punch", "omega-ruby-alpha-sapphire"),
+    # ("vikavolt", "snore", "ultra-sun-ultra-moon")
+])
+def test_tutor_moves(filled_eeveedex, pokemon, move, game):
+    assert move in filled_eeveedex['learnsets'][game][pokemon]
+
+
+@pytest.mark.parametrize("pokemon,move,game", [
+    ("gengar", "ice-punch", "emerald"),
+    ("meganium", "frenzy-plant", "diamond-pearl"),
+    ("samurott", "hydro-cannon", "black-white"),
+    ("dragalge", "draco-meteor", "x-y"),
+    ("decidueye", "grass-pledge", "sun-moon"),
+])
+def test_tutor_exceptional_moves(filled_eeveedex, pokemon, move, game):
+    assert move in filled_eeveedex['learnsets'][game][pokemon]
+
+
+@pytest.mark.parametrize("pokemon,move", [
+    ("pidgeot", "substitute"),
+    ("sandslash", "seismic-toss"),
+])
+def test_tutor_gen_3(filled_eeveedex, pokemon, move):
+    for game in ['emerald', 'firered-leafgreen']:
+        assert move in filled_eeveedex['learnsets'][game][pokemon]
+
+
+@pytest.mark.parametrize("pokemon,move", [
+    ("jolteon", "magnet-rise"),
+    ("gardevoir", "signal-beam")
+])
+def test_tutor_gen_4(filled_eeveedex, pokemon, move):
+    for game in ['platinum', 'heartgold-soulsilver']:
+        assert move in filled_eeveedex['learnsets'][game][pokemon]
+
+
+@pytest.mark.parametrize("game,has_fairy", [
+    ("black-white", False),
+    ("sun-moon", True)
+])
+def test_natural_gift_expansion(filled_eeveedex, game, has_fairy):
+    skip = ""
+    if not has_fairy:
+        skip = "Fairy"
+
+    natural_gifts = [f"natural-gift-{type_.lower()}" for type_
+                     in Constants.types if type_ != skip]
+    moves = filled_eeveedex['learnsets'][game]['lugia']
+    assert all(gift in moves for gift in natural_gifts)
+
+    if not has_fairy:
+        assert "natural-gift-fairy" not in moves
+
+
+def test_hidden_power_expansion(filled_eeveedex):
+    hidden_powers = [f"hidden-power-{type_.lower()}" for type_
+                     in Constants.types if type_ not in ["Normal", "Fairy"]]
+    moves = filled_eeveedex['learnsets']['ultra-sun-ultra-moon']['araquanid']
+    assert all(power in moves for power in hidden_powers)
+
+
+def test_move_type_depending_on_pokemon(filled_eeveedex):
+    moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
+             if move_name in Constants.moves_inheriting_type]
+    assert all("uses_pokemon_type" in move for move in moves)
+
+
+def test_move_that_doesnt_change_type(filled_eeveedex):
+    moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
+             if move_name not in Constants.moves_inheriting_type]
+    assert all("uses_pokemon_type" not in move for move in moves)
+
+
+def test_moves_that_changed_type(filled_eeveedex):
+    moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
+             if move_name in Constants.move_type_overrides.keys()]
+    assert all("override" in move for move in moves)
+
+
+def test_moves_that_didnt_change_type(filled_eeveedex):
+    moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
+             if move_name not in Constants.move_type_overrides.keys()]
+    assert all("override" not in move for move in moves)

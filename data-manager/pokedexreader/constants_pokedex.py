@@ -16,15 +16,14 @@ XY_MEGAS = ["venusaurmega", "charizardmegax", "charizardmegay",
             "mewtwomegay", "ampharosmega", "scizormega", "heracrossmega",
             "houndoommega", "tyranitarmega", "blazikenmega", "gardevoirmega",
             "mawilemega", "aggronmega", "medichammega", "manectricmega",
-            "banettemega", "absolmega", "garchompmega", "lucariomega",
-            "abomasnowmega"]
+            "banettemega", "absolmega", "latiasmega", "latiosmega",
+            "garchompmega", "lucariomega", "abomasnowmega"]
 
 ORAS_MEGAS = XY_MEGAS + ["beedrillmega", "pidgeotmega", "slowbromega",
     "steelixmega", "sceptilemega", "swampertmega", "sableyemega",
     "sharpedomega", "cameruptmega", "altariamega", "glaliemega",
-    "salamencemega", "metagrossmega", "latiasmega", "latiosmega",
-    "rayquazamega", "lopunnymega", "gallademega", "audinomega", "dianciemega",
-    "crucibellemega"]
+    "salamencemega", "metagrossmega", "rayquazamega", "lopunnymega",
+    "gallademega", "audinomega", "dianciemega"]
 
 ALOLA = ["rattataalola", "raticatealola", "raichualola", "sandshrewalola",
          "sandslashalola", "vulpixalola", "ninetalesalola", "diglettalola",
