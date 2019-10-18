@@ -283,8 +283,7 @@ def test_natural_gift_expansion(filled_eeveedex, game, has_fairy):
     moves = filled_eeveedex['learnsets'][game]['lugia']
     assert all(gift in moves for gift in natural_gifts)
 
-    if not has_fairy:
-        assert "natural-gift-fairy" not in moves
+    assert ("natural-gift-fairy" in moves) == has_fairy
 
 
 def test_hidden_power_expansion(filled_eeveedex):
