@@ -216,6 +216,12 @@ class Constants():
         "judgment", "multi-attack", "revelation-dance"
     ]
 
+    # List of moves Smeargle can't learn
+    # There are three main moves Smeargle can't sketch (chatter, sketch and struggle),
+    # but two of these are usable by Smeargle through other means
+    # Smeargle can't also sketch Z-moves, but we deliberately ignore them
+    invalid_smeargle_moves = ["chatter"]
+
     # Map of Pokemon available in each game
     available_pokemon = available_pokemon
 

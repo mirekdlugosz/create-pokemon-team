@@ -84,7 +84,7 @@ class EeveeReader(AbstractReader):
 
     def _fetch_pokemon_moves(self, pokemon_id):
         group = next((group for group in Constants.eeveedex_equivalent_movesets
-                      if pokemon_id in group), None)
+                      if str(pokemon_id) in group), None)
         if group:
             pokemon_id = ",".join(group)
 
@@ -217,7 +217,9 @@ class EeveeReader(AbstractReader):
                     pass
 
                 if pokemon["pokemon_id"] == "smeargle":
-                    moves = self._get_moves_in_version(all_moves_with_version, version)
+                    moves = [move for move in
+                             self._get_moves_in_version(all_moves_with_version, version)
+                             if move not in Constants.invalid_smeargle_moves]
 
                 moves = self._expand_hidden_powers(moves)
                 moves = self._expand_natural_gifts(moves, version)
