@@ -44,7 +44,41 @@ def filled_eeveedex(eevee):
 
 
 def test_pokemon_with_many_forms(filled_eeveedex):
-    pass
+    expected = {'diamond-pearl': ["deoxys", "deoxysattack", "deoxysdefense", "deoxysspeed",
+                                  "wormadam", "wormadamsandy", "wormadamtrash", "giratina",
+                                  "shaymin", "arceus", "arceusbug", "arceusdark", "arceusdragon",
+                                  "arceuselectric", "arceusfighting", "arceusfire",
+                                  "arceusflying", "arceusghost", "arceusgrass", "arceusground",
+                                  "arceusice", "arceuspoison", "arceuspsychic", "arceusrock",
+                                  "arceussteel", "arceuswater"],
+                'platinum': ["giratina", "giratinaorigin", "shaymin", "shayminsky"],
+                'black-white': ["kyurem", "meloetta", "meloettapirouette", "genesect",
+                                "genesectdouse", "genesectshock", "genesectburn", "genesectchill"],
+                'black-2-white-2': ["kyurem", "kyuremblack", "kyuremwhite"],
+                'x-y': ["arceusfairy", "hoopa", "meowstic", "meowsticf"],
+                'omega-ruby-alpha-sapphire': ["hoopa", "hoopaunbound"],
+                'sun-moon': ["oricorio", "oricoriopompom", "oricoriopau", "oricoriosensu",
+                             "lycanroc", "lycanrocmidnight", "silvally", "silvallybug",
+                             "silvallydark", "silvallydragon", "silvallyelectric", "silvallyfairy",
+                             "silvallyfighting", "silvallyfire", "silvallyflying", "silvallyghost",
+                             "silvallygrass", "silvallyground", "silvallyice", "silvallypoison",
+                             "silvallypsychic", "silvallyrock", "silvallysteel", "silvallywater",
+                             "necrozma"],
+                'ultra-sun-ultra-moon': ["lycanrocdusk", "necrozmaduskmane", "necrozmadawnwings",
+                                         "necrozmaultra"]
+                }
+    # TODO: ignore some forms that can't be automatically translated from veekun id to Showdown id
+    temp_ignored = ["deoxys", "wormadam", "giratina", "shaymin", "arceus", "meloetta", "hoopa",
+                    "meowstic", "meowsticf", "lycanroc", "oricorio", "silvally",
+                    "necrozmaduskmane", "necrozmadawnwings"]
+    for game, pokemon_list in expected.items():
+        all_pokemon = [item['id'] for item in filled_eeveedex['pokemon'][game]]
+        all_pokemon = [item.replace('-', '') for item in all_pokemon]
+        assert all_pokemon
+        pokemon_list = [pokemon for pokemon in pokemon_list if pokemon not in temp_ignored]
+        for pokemon in pokemon_list:
+            assert pokemon in all_pokemon
+        assert all(pokemon in all_pokemon for pokemon in pokemon_list)
 
 
 def test_ignored_pokemon_is_not_present(filled_eeveedex):
