@@ -4,3 +4,16 @@
 		<button class="btn btn-primary" type="button" [ngxClipboard]="teamURLInput">Copy link to this team</button>
 	</div>
 </div>
+
+<div class="row justify-content-center">
+    <div class="col-12 text-center">
+        <span>Share this team: </span>
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ teamURL }}" class="btn">
+            <span class="fa fa-facebook"></span>
+        </a>
+
+        <a href="https://twitter.com/intent/tweet?text=Check%20out%20my%20Pokémon%20team%21&url={{ teamURL }}" class="btn">
+            <span class="fa fa-twitter"></span>
+        </a>
+    </div>
+</div>

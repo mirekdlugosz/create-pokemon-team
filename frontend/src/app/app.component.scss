@@ -107,6 +107,30 @@ app-team-type-effectiveness header a:not([href]):not([tabindex]) {
   color: $link-color;
 }
 
+.fa {
+    padding: 0.5em;
+    width: 2em;
+    height: 2em;
+    font-size: 1.5em;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 50%;
+}
+
+.fa:hover {
+  opacity: 0.7;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+.fa-twitter {
+  background: #55ACEE;
+  color: white;
+}
+
 #team-description {
   padding-bottom: 2rem;
 }
