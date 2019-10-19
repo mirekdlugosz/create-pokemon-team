@@ -10,26 +10,24 @@ any later version.
 """
 
 
-XY_MEGAS = ["venusaurmega", "charizardmegax", "charizardmegay",
-            "blastoisemega", "alakazammega", "gengarmega", "kangaskhanmega",
-            "pinsirmega", "gyaradosmega", "aerodactylmega", "mewtwomegax",
-            "mewtwomegay", "ampharosmega", "scizormega", "heracrossmega",
-            "houndoommega", "tyranitarmega", "blazikenmega", "gardevoirmega",
-            "mawilemega", "aggronmega", "medichammega", "manectricmega",
-            "banettemega", "absolmega", "latiasmega", "latiosmega",
-            "garchompmega", "lucariomega", "abomasnowmega"]
+# Pokemon that were added in second game in generation
+# This omits gen 3, where deoxys situation is little more complicated
+# It also omits many Pokemon which we don't care about anyway, such as
+# Spiky-eared Pichu, forces of nature Therian formes etc.
+GEN4_ADDITIONS = ["rotomheat", "rotomwash", "rotomfrost", "rotomfan", "rotommow",
+                  "giratinaorigin", "shayminsky"]
 
-ORAS_MEGAS = XY_MEGAS + ["beedrillmega", "pidgeotmega", "slowbromega",
-    "steelixmega", "sceptilemega", "swampertmega", "sableyemega",
-    "sharpedomega", "cameruptmega", "altariamega", "glaliemega",
-    "salamencemega", "metagrossmega", "rayquazamega", "lopunnymega",
-    "gallademega", "audinomega", "dianciemega"]
+GEN5_ADDITIONS = ["kyuremblack", "kyuremwhite"]
 
-ALOLA = ["rattataalola", "raticatealola", "raichualola", "sandshrewalola",
-         "sandslashalola", "vulpixalola", "ninetalesalola", "diglettalola",
-         "dugtrioalola", "meowthalola", "persianalola", "geodudealola",
-         "graveleralola", "golemalola", "grimeralola", "mukalola",
-         "exeggutoralola", "marowakalola"]
+GEN6_ADDITIONS = ["beedrillmega", "pidgeotmega", "slowbromega", "steelixmega",
+                  "sceptilemega", "swampertmega", "sableyemega", "sharpedomega",
+                  "cameruptmega", "altariamega", "glaliemega", "salamencemega",
+                  "metagrossmega", "rayquazamega", "lopunnymega", "gallademega",
+                  "audinomega", "dianciemega"]
+
+GEN7_ADDITIONS = ["lycanrocdusk", "necrozmaduskmane", "necrozmadawnwings",
+                  "necrozmaultra", "poipole", "naganadel", "stakataka",
+                  "blacephalon", "zeraora"]
 
 # List of Pokemon available in each game. This is required, since Game Freak
 # broke the assumption that all Pokemon available in previous game/generation
@@ -124,20 +122,20 @@ GEN4_DEX = GEN3_DEX + ["deoxys", "deoxysattack", "deoxysdefense",
             "weavile", "magnezone", "lickilicky", "rhyperior", "tangrowth",
             "electivire", "magmortar", "togekiss", "yanmega", "leafeon",
             "glaceon", "gliscor", "mamoswine", "porygonz", "gallade",
-            "probopass", "dusknoir", "froslass", "rotom", "rotomheat",
-            "rotomwash", "rotomfrost", "rotomfan", "rotommow", "uxie",
+            "probopass", "dusknoir", "froslass", "rotom", "uxie",
             "mesprit", "azelf", "dialga", "palkia", "heatran", "regigigas",
-            "giratina", "giratinaorigin", "cresselia", "phione", "manaphy",
-            "darkrai", "shaymin", "shayminsky", "arceus", "arceusbug",
-            "arceusdark", "arceusdragon", "arceuselectric", "arceusfighting",
-            "arceusfire", "arceusflying", "arceusghost", "arceusgrass",
-            "arceusground", "arceusice", "arceuspoison", "arceuspsychic",
-            "arceusrock", "arceussteel", "arceuswater"]
-GEN5_DEX = GEN4_DEX + ["victini", "snivy", "servine", "serperior", "tepig",
-            "pignite", "emboar", "oshawott", "dewott", "samurott", "patrat",
-            "watchog", "lillipup", "herdier", "stoutland", "purrloin",
-            "liepard", "pansage", "simisage", "pansear", "simisear", "panpour",
-            "simipour", "munna", "musharna", "pidove", "tranquill", "unfezant",
+            "giratina", "cresselia", "phione", "manaphy", "darkrai",
+            "shaymin", "arceus", "arceusbug", "arceusdark", "arceusdragon",
+            "arceuselectric", "arceusfighting", "arceusfire", "arceusflying",
+            "arceusghost", "arceusgrass", "arceusground", "arceusice",
+            "arceuspoison", "arceuspsychic", "arceusrock", "arceussteel",
+            "arceuswater"]
+GEN5_DEX = GEN4_DEX + GEN4_ADDITIONS + ["victini", "snivy", "servine",
+            "serperior", "tepig", "pignite", "emboar", "oshawott",
+            "dewott", "samurott", "patrat", "watchog", "lillipup",
+            "herdier", "stoutland", "purrloin", "liepard", "pansage",
+            "simisage", "pansear", "simisear", "panpour", "simipour",
+            "munna", "musharna", "pidove", "tranquill", "unfezant",
             "blitzle", "zebstrika", "roggenrola", "boldore", "gigalith",
             "woobat", "swoobat", "drilbur", "excadrill", "audino", "timburr",
             "gurdurr", "conkeldurr", "tympole", "palpitoad", "seismitoad",
@@ -161,24 +159,32 @@ GEN5_DEX = GEN4_DEX + ["victini", "snivy", "servine", "serperior", "tepig",
             "braviary", "vullaby", "mandibuzz", "heatmor", "durant", "deino",
             "zweilous", "hydreigon", "larvesta", "volcarona", "cobalion",
             "terrakion", "virizion", "tornadus", "thundurus", "reshiram",
-            "zekrom", "landorus", "kyurem", "kyuremblack", "kyuremwhite",
+            "zekrom", "landorus", "kyurem",
             "keldeo", "meloetta", "meloettapirouette", "genesect",
             "genesectdouse", "genesectshock", "genesectburn", "genesectchill"]
-GEN6_DEX = GEN5_DEX + ["chespin", "quilladin", "chesnaught", "fennekin", "braixen",
-            "delphox", "froakie", "frogadier", "greninja", "bunnelby",
-            "diggersby", "fletchling", "fletchinder", "talonflame",
-            "scatterbug", "spewpa", "vivillon", "litleo", "pyroar", "flabebe",
-            "floette", "florges", "skiddo", "gogoat", "pancham", "pangoro",
-            "furfrou", "espurr", "meowstic", "meowsticf", "honedge",
-            "doublade", "aegislash", "spritzee", "aromatisse", "swirlix",
-            "slurpuff", "inkay", "malamar", "binacle", "barbaracle", "skrelp",
-            "dragalge", "clauncher", "clawitzer", "helioptile", "heliolisk",
-            "tyrunt", "tyrantrum", "amaura", "aurorus", "sylveon", "hawlucha",
-            "dedenne", "carbink", "goomy", "sliggoo", "goodra", "klefki",
-            "phantump", "trevenant", "pumpkaboo", "gourgeist", "bergmite",
-            "avalugg", "noibat", "noivern", "xerneas", "yveltal", "zygarde",
-            "diancie", "hoopa", "hoopaunbound", "volcanion", "arceusfairy"]
-GEN7_DEX = GEN6_DEX + ORAS_MEGAS + ALOLA + ["rowlet", "dartrix", "decidueye",
+GEN6_DEX = GEN5_DEX + GEN5_ADDITIONS + ["chespin", "quilladin", "chesnaught",
+            "fennekin", "braixen", "delphox", "froakie", "frogadier",
+            "greninja", "bunnelby", "diggersby", "fletchling", "fletchinder",
+            "talonflame", "scatterbug", "spewpa", "vivillon", "litleo",
+            "pyroar", "flabebe", "floette", "florges", "skiddo", "gogoat",
+            "pancham", "pangoro", "furfrou", "espurr", "meowstic", "meowsticf",
+            "honedge", "doublade", "aegislash", "spritzee", "aromatisse",
+            "swirlix", "slurpuff", "inkay", "malamar", "binacle", "barbaracle",
+            "skrelp", "dragalge", "clauncher", "clawitzer", "helioptile",
+            "heliolisk", "tyrunt", "tyrantrum", "amaura", "aurorus", "sylveon",
+            "hawlucha", "dedenne", "carbink", "goomy", "sliggoo", "goodra",
+            "klefki", "phantump", "trevenant", "pumpkaboo", "gourgeist",
+            "bergmite", "avalugg", "noibat", "noivern", "xerneas", "yveltal",
+            "zygarde", "diancie", "hoopa", "hoopaunbound", "volcanion",
+            "arceusfairy", "venusaurmega", "charizardmegax", "charizardmegay",
+            "blastoisemega", "alakazammega", "gengarmega", "kangaskhanmega",
+            "pinsirmega", "gyaradosmega", "aerodactylmega", "mewtwomegax",
+            "mewtwomegay", "ampharosmega", "scizormega", "heracrossmega",
+            "houndoommega", "tyranitarmega", "blazikenmega", "gardevoirmega",
+            "mawilemega", "aggronmega", "medichammega", "manectricmega",
+            "banettemega", "absolmega", "latiasmega", "latiosmega",
+            "garchompmega", "lucariomega", "abomasnowmega"]
+GEN7_DEX = GEN6_DEX + GEN6_ADDITIONS + ["rowlet", "dartrix", "decidueye",
             "litten", "torracat", "incineroar", "popplio", "brionne",
             "primarina", "pikipek", "trumbeak", "toucannon", "yungoos",
             "gumshoos", "grubbin", "charjabug", "vikavolt", "crabrawler",
@@ -199,7 +205,12 @@ GEN7_DEX = GEN6_DEX + ORAS_MEGAS + ALOLA + ["rowlet", "dartrix", "decidueye",
             "dhelmise", "jangmoo", "hakamoo", "kommoo", "tapukoko", "tapulele",
             "tapubulu", "tapufini", "cosmog", "cosmoem", "solgaleo", "lunala",
             "nihilego", "buzzwole", "pheromosa", "xurkitree", "celesteela",
-            "kartana", "guzzlord", "necrozma", "magearna", "marshadow"]
+            "kartana", "guzzlord", "necrozma", "magearna", "marshadow",
+            "rattataalola", "raticatealola", "raichualola", "sandshrewalola",
+            "sandslashalola", "vulpixalola", "ninetalesalola", "diglettalola",
+            "dugtrioalola", "meowthalola", "persianalola", "geodudealola",
+            "graveleralola", "golemalola", "grimeralola", "mukalola",
+            "exeggutoralola", "marowakalola"]
 
 available_pokemon = {
     "red-blue": GEN1_DEX,
@@ -210,14 +221,12 @@ available_pokemon = {
     "emerald": GEN3_DEX + ["deoxysspeed"],
     "firered-leafgreen": GEN3_DEX + ["deoxysattack", "deoxysdefense"],
     "diamond-pearl": GEN4_DEX,
-    "platinum": GEN4_DEX,
-    "heartgold-soulsilver": GEN4_DEX,
+    "platinum": GEN4_DEX + GEN4_ADDITIONS,
+    "heartgold-soulsilver": GEN4_DEX + GEN4_ADDITIONS,
     "black-white": GEN5_DEX,
-    "black-2-white-2": GEN5_DEX,
-    "x-y": GEN6_DEX + XY_MEGAS,
-    "omega-ruby-alpha-sapphire": GEN6_DEX + ORAS_MEGAS,
+    "black-2-white-2": GEN5_DEX + GEN5_ADDITIONS,
+    "x-y": GEN6_DEX,
+    "omega-ruby-alpha-sapphire": GEN6_DEX + GEN6_ADDITIONS,
     "sun-moon": GEN7_DEX,
-    "ultra-sun-ultra-moon": GEN7_DEX + ["lycanrocdusk", "necrozmaduskmane",
-            "necrozmadawnwings", "necrozmaultra", "poipole", "naganadel",
-            "stakataka", "blacephalon", "zeraora"]
+    "ultra-sun-ultra-moon": GEN7_DEX + GEN7_ADDITIONS,
 }

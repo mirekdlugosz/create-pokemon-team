@@ -15,7 +15,6 @@ import pytest
 
 from pokedexreader.storage import PokedexStorage
 from pokedexreader.constants import Constants
-from pokedexreader.constants_pokedex import ORAS_MEGAS, XY_MEGAS
 
 
 @pytest.fixture(scope="module")
@@ -136,6 +135,13 @@ def test_deoxys_in_gen_3(filled_eeveedex, game, expected):
 
 def test_mega_in_gen_6(filled_eeveedex):
     fake_mega = ['yanmega', 'meganium']
+
+    reference_xy_mega = [pokemon for pokemon in Constants.available_pokemon['x-y']
+                         if "mega" in pokemon and pokemon not in fake_mega]
+    reference_oras_mega = [pokemon for pokemon in
+                           Constants.available_pokemon['omega-ruby-alpha-sapphire']
+                           if "mega" in pokemon and pokemon not in fake_mega]
+
     pokemon = filled_eeveedex['pokemon']
     xy_mega_list = [item['id'] for item in pokemon['x-y']
                     if 'mega' in item['id'] and item['id'] not in fake_mega]
@@ -145,10 +151,10 @@ def test_mega_in_gen_6(filled_eeveedex):
     # which are not compatible with veekun ids
     xy_mega_list = [item.replace('-', '') for item in xy_mega_list]
     oras_mega_list = [item.replace('-', '') for item in oras_mega_list]
-    assert set(xy_mega_list) == set(XY_MEGAS)
-    for oras_mega in set(ORAS_MEGAS) - set(XY_MEGAS):
+    assert set(xy_mega_list) == set(reference_xy_mega)
+    for oras_mega in set(reference_oras_mega) - set(reference_xy_mega):
         assert oras_mega not in xy_mega_list
-    assert set(oras_mega_list) == set(ORAS_MEGAS)
+    assert set(oras_mega_list) == set(reference_oras_mega)
 
 
 @pytest.mark.parametrize("pokemon,last_game,type_,new_type", [
