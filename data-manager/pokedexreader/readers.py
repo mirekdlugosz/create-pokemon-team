@@ -317,7 +317,6 @@ class ShowdownReader(AbstractReader):
             else:
                 break
         return out
-        # TODO: smeargle, expand hidden power etc.
 
     def _get_prevolution(self, pokemon_id, version):
         pokemon_obj = self._all_pokemon[pokemon_id]

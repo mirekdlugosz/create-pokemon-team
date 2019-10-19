@@ -84,15 +84,15 @@ def test_ignored_pokemon_is_not_present(filled_eeveedex):
     ignored_pokemon_list = ['pichu-spiky-eared', 'pikachu-rock-star', 'marowak-totem',
                             'castform-sunny', 'burmy-sandy', 'mothim-plant', 'cherrim-sunshine',
                             'shellos-west', 'gastrodon-east', 'arceus-unknown',
-                            'basculin-red-striped', 'darmanitan', 'deerling-summer',
-                            'sawsbuck-autumn', 'tornadus-incarnate', 'thundurus-therian',
-                            'keldeo-ordinary', 'keldeo-resolute', 'greninja-battle-bond',
-                            'greninja-ash', 'scatterbug-river', 'spewpa-polar', 'vivillon-fancy'
-                            'flabebe-red', 'floette-yellow', 'floette-eternal', 'florges-blue',
-                            'furfrou-star', 'aegislash-shield', 'aegislash-blade',
-                            'pumpkaboo-small', 'gourgeist-large', 'xerneas-active', 'zygarde-10',
-                            'zygarde-complete', 'minior-indigo-meteor', 'minior-meteor',
-                            'minior-blue', 'mimikyu-busted', 'magearna-original']
+                            'basculin-red-striped', 'deerling-summer', 'sawsbuck-autumn',
+                            'tornadus-incarnate', 'thundurus-therian', 'keldeo-ordinary',
+                            'keldeo-resolute', 'greninja-battle-bond', 'greninja-ash',
+                            'scatterbug-river', 'spewpa-polar', 'vivillon-fancy' 'flabebe-red',
+                            'floette-yellow', 'floette-eternal', 'florges-blue', 'furfrou-star',
+                            'aegislash-shield', 'aegislash-blade', 'pumpkaboo-small',
+                            'gourgeist-large', 'xerneas-active', 'zygarde-10', 'zygarde-complete',
+                            'minior-indigo-meteor', 'minior-meteor', 'minior-blue',
+                            'mimikyu-busted', 'magearna-original']
 
     for game in filled_eeveedex['pokemon']:
         pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]]
@@ -106,19 +106,54 @@ def test_order_in_pokedex(filled_eeveedex):
     pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]]
     assert pokemon_list.index('bulbasaur') == 0
     assert pokemon_list.index('bulbasaur') < pokemon_list.index('abra')
-    assert pokemon_list.index('charmander') < pokemon_list.index('charmeleon')
-    assert pokemon_list.index('venusaur') < pokemon_list.index('venusaur-mega')
-    assert pokemon_list.index('igglybuff') < pokemon_list.index('jigglypuff')
-    assert pokemon_list.index('rhyhorn') < pokemon_list.index('rhyperior')
-    assert pokemon_list.index('pikachu') < pokemon_list.index('raichu-alola')
-    assert pokemon_list.index('vulpix-alola') < pokemon_list.index('ninetales-alola')
+    assert pokemon_list.index('charmander') == pokemon_list.index('charmeleon') - 1
+    assert pokemon_list.index('venusaur') == pokemon_list.index('venusaur-mega') - 1
+    assert pokemon_list.index('igglybuff') == pokemon_list.index('jigglypuff') - 1
+    assert pokemon_list.index('rhyhorn') == pokemon_list.index('rhyperior') - 2
+    assert pokemon_list.index('pikachu') == pokemon_list.index('raichu-alola') - 2
+    assert pokemon_list.index('vulpix-alola') == pokemon_list.index('ninetales-alola') - 2
 
 
-def test_arceus_name(filled_eeveedex):
-    game = 'ultra-sun-ultra-moon'
-    pokemon = next(item for item in filled_eeveedex['pokemon'][game]
-                   if item['id'] == 'arceus-normal')
-    assert pokemon['name'] == 'Arceus (Normal Type)'
+@pytest.mark.parametrize("pokemon_id,name", [
+    ("kyogre-primal", "Kyogre (Primal Reversion)"),
+    ("deoxys-normal", "Deoxys (Normal Forme)"),
+    ("wormadam-plant", "Wormadam (Plant Cloak)"),
+    ("wormadam-sandy", "Wormadam (Sandy Cloak)"),
+    ("rotom-heat", "Rotom (Heat Rotom)"),
+    ("giratina-altered", "Giratina (Altered Forme)"),
+    ("giratina-origin", "Giratina (Origin Forme)"),
+    ("shaymin-land", "Shaymin (Land Forme)"),
+    ("shaymin-sky", "Shaymin (Sky Forme)"),
+    ("arceus-dark", "Arceus (Dark Type)"),
+    ("darmanitan-standard", "Darmanitan (Standard Mode)"),
+    ("darmanitan-zen", "Darmanitan (Zen Mode)"),
+    ("kyurem-white", "Kyurem (White Kyurem)"),
+    ("kyurem-black", "Kyurem (Black Kyurem)"),
+    ("meloetta-aria", "Meloetta (Aria Forme)"),
+    ("meloetta-pirouette", "Meloetta (Pirouette Forme)"),
+    ("genesect-burn", "Genesect (Burn Drive)"),
+    ("meowstic-male", "Meowstic (Male)"),
+    ("meowstic-female", "Meowstic (Female)"),
+    ("hoopa", "Hoopa (Hoopa Confined)"),
+    ("hoopa-unbound", "Hoopa (Hoopa Unbound)"),
+    ("oricorio-pau", "Oricorio (Pa’u Style)"),
+    ("oricorio-sensu", "Oricorio (Sensu Style)"),
+    ("lycanroc-midday", "Lycanroc (Midday Form)"),
+    ("silvally-electric", "Silvally (Electric Type)"),
+    ("necrozma-dusk", "Necrozma (Dusk Mane)"),
+    ("necrozma-dawn", "Necrozma (Dawn Wings)"),
+    ("necrozma-ultra", "Necrozma (Ultra Necrozma)"),
+])
+def test_forme_name(filled_eeveedex, pokemon_id, name):
+    in_any = False
+    for game in filled_eeveedex['pokemon']:
+        pokemon = next((item for item in filled_eeveedex['pokemon'][game]
+                        if item['id'] == pokemon_id), None)
+        if not pokemon:
+            continue
+        in_any = True
+        assert pokemon['name'] == name
+    assert in_any
 
 
 @pytest.mark.parametrize("game,expected", [

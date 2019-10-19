@@ -15,7 +15,6 @@ import pytest
 
 from pokedexreader.storage import PokedexStorage
 from pokedexreader.constants import Constants
-from pokedexreader.constants_pokedex import ORAS_MEGAS, XY_MEGAS
 
 
 @pytest.fixture(scope="module")
@@ -79,15 +78,15 @@ def test_ignored_pokemon_is_not_present(filled_showdowndex):
     ignored_pokemon_list = ['pichu-spiky-eared', 'pikachu-rock-star', 'marowak-totem',
                             'castform-sunny', 'burmy-sandy', 'mothim-plant', 'cherrim-sunshine',
                             'shellos-west', 'gastrodon-east', 'arceus-unknown',
-                            'basculin-red-striped', 'darmanitan', 'deerling-summer',
-                            'sawsbuck-autumn', 'tornadus-incarnate', 'thundurus-therian',
-                            'keldeo-ordinary', 'keldeo-resolute', 'greninja-battle-bond',
-                            'greninja-ash', 'scatterbug-river', 'spewpa-polar', 'vivillon-fancy'
-                            'flabebe-red', 'floette-yellow', 'floette-eternal', 'florges-blue',
-                            'furfrou-star', 'aegislash-shield', 'aegislash-blade',
-                            'pumpkaboo-small', 'gourgeist-large', 'xerneas-active', 'zygarde-10',
-                            'zygarde-complete', 'minior-indigo-meteor', 'minior-meteor',
-                            'minior-blue', 'mimikyu-busted', 'magearna-original']
+                            'basculin-red-striped', 'deerling-summer', 'sawsbuck-autumn',
+                            'tornadus-incarnate', 'thundurus-therian', 'keldeo-ordinary',
+                            'keldeo-resolute', 'greninja-battle-bond', 'greninja-ash',
+                            'scatterbug-river', 'spewpa-polar', 'vivillon-fancy' 'flabebe-red',
+                            'floette-yellow', 'floette-eternal', 'florges-blue', 'furfrou-star',
+                            'aegislash-shield', 'aegislash-blade', 'pumpkaboo-small',
+                            'gourgeist-large', 'xerneas-active', 'zygarde-10', 'zygarde-complete',
+                            'minior-indigo-meteor', 'minior-meteor', 'minior-blue',
+                            'mimikyu-busted', 'magearna-original']
 
     for game in filled_showdowndex['pokemon']:
         pokemon_list = [item['id'] for item in filled_showdowndex['pokemon'][game]]
@@ -101,20 +100,54 @@ def test_order_in_pokedex(filled_showdowndex):
     pokemon_list = [item['id'] for item in filled_showdowndex['pokemon'][game]]
     assert pokemon_list.index('bulbasaur') == 0
     assert pokemon_list.index('bulbasaur') < pokemon_list.index('abra')
-    assert pokemon_list.index('charmander') < pokemon_list.index('charmeleon')
-    assert pokemon_list.index('venusaur') < pokemon_list.index('venusaurmega')
-    assert pokemon_list.index('igglybuff') < pokemon_list.index('jigglypuff')
-    assert pokemon_list.index('rhyhorn') < pokemon_list.index('rhyperior')
-    assert pokemon_list.index('pikachu') < pokemon_list.index('raichualola')
-    assert pokemon_list.index('vulpixalola') < pokemon_list.index('ninetalesalola')
+    assert pokemon_list.index('charmander') == pokemon_list.index('charmeleon') - 1
+    assert pokemon_list.index('venusaur') == pokemon_list.index('venusaurmega') - 1
+    assert pokemon_list.index('igglybuff') == pokemon_list.index('jigglypuff') - 1
+    assert pokemon_list.index('rhyhorn') == pokemon_list.index('rhyperior') - 2
+    assert pokemon_list.index('pikachu') == pokemon_list.index('raichualola') - 2
+    assert pokemon_list.index('vulpixalola') == pokemon_list.index('ninetalesalola') - 2
 
 
-def test_arceus_name(filled_showdowndex):
-    game = 'ultra-sun-ultra-moon'
-    pokemon = next(item for item in filled_showdowndex['pokemon'][game]
-                   if item['id'] == 'arceus')
-    assert pokemon['name'] == 'Arceus (Normal Type)'
-
+@pytest.mark.parametrize("pokemon_id,name", [
+    ("kyogreprimal", "Kyogre (Primal Reversion)"),
+    ("deoxysnormal", "Deoxys (Normal Forme)"),
+    ("wormadamplant", "Wormadam (Plant Cloak)"),
+    ("wormadamsandy", "Wormadam (Sandy Cloak)"),
+    ("rotomheat", "Rotom (Heat Rotom)"),
+    ("giratinaaltered", "Giratina (Altered Forme)"),
+    ("giratinaorigin", "Giratina (Origin Forme)"),
+    ("shayminland", "Shaymin (Land Forme)"),
+    ("shayminsky", "Shaymin (Sky Forme)"),
+    ("arceusdark", "Arceus (Dark Type)"),
+    ("darmanitanstandard", "Darmanitan (Standard Mode)"),
+    ("darmanitanzen", "Darmanitan (Zen Mode)"),
+    ("kyuremwhite", "Kyurem (White Kyurem)"),
+    ("kyuremblack", "Kyurem (Black Kyurem)"),
+    ("meloettaaria", "Meloetta (Aria Forme)"),
+    ("meloettapirouette", "Meloetta (Pirouette Forme)"),
+    ("genesectburn", "Genesect (Burn Drive)"),
+    ("meowsticmale", "Meowstic (Male)"),
+    ("meowsticfemale", "Meowstic (Female)"),
+    ("hoopa", "Hoopa (Hoopa Confined)"),
+    ("hoopaunbound", "Hoopa (Hoopa Unbound)"),
+    ("oricoriopau", "Oricorio (Pa’u Style)"),
+    ("oricoriosensu", "Oricorio (Sensu Style)"),
+    ("lycanrocmidday", "Lycanroc (Midday Form)"),
+    ("silvallyelectric", "Silvally (Electric Type)"),
+    ("necrozmadusk", "Necrozma (Dusk Mane)"),
+    ("necrozmadawn", "Necrozma (Dawn Wings)"),
+    ("necrozmaultra", "Necrozma (Ultra Necrozma)"),
+])
+def test_forme_name(filled_showdowndex, pokemon_id, name):
+    in_any = False
+    for game in filled_showdowndex['pokemon']:
+        pokemon = next((item for item in filled_showdowndex['pokemon'][game]
+                        if item['id'] == pokemon_id), None)
+        if not pokemon:
+            continue
+        in_any = True
+        assert pokemon['name'] == name
+    assert in_any
 
 @pytest.mark.parametrize("game,expected", [
     ("ruby-sapphire", ["deoxys"]),
@@ -130,15 +163,22 @@ def test_deoxys_in_gen_3(filled_showdowndex, game, expected):
 
 def test_mega_in_gen_6(filled_showdowndex):
     fake_mega = ['yanmega', 'meganium']
+
+    reference_xy_mega = [pokemon for pokemon in Constants.available_pokemon['x-y']
+                         if "mega" in pokemon and pokemon not in fake_mega]
+    reference_oras_mega = [pokemon for pokemon in
+                           Constants.available_pokemon['omega-ruby-alpha-sapphire']
+                           if "mega" in pokemon and pokemon not in fake_mega]
+
     pokemon = filled_showdowndex['pokemon']
     xy_mega_list = [item['id'] for item in pokemon['x-y']
                     if 'mega' in item['id'] and item['id'] not in fake_mega]
     oras_mega_list = [item['id'] for item in pokemon['omega-ruby-alpha-sapphire']
                       if 'mega' in item['id'] and item['id'] not in fake_mega]
-    assert set(xy_mega_list) == set(XY_MEGAS)
-    for oras_mega in set(ORAS_MEGAS) - set(XY_MEGAS):
+    assert set(xy_mega_list) == set(reference_xy_mega)
+    for oras_mega in set(reference_oras_mega) - set(reference_xy_mega):
         assert oras_mega not in xy_mega_list
-    assert set(oras_mega_list) == set(ORAS_MEGAS)
+    assert set(oras_mega_list) == set(reference_oras_mega)
 
 
 @pytest.mark.parametrize("pokemon,last_game,type_,new_type", [
@@ -150,12 +190,16 @@ def test_mega_in_gen_6(filled_showdowndex):
 ])
 def test_pokemon_type_before_change(filled_showdowndex, pokemon, last_game, type_, new_type):
     versions = Constants.known_versions
+    any_game = False
     for game in versions[:versions.index(last_game) + 1]:
-        pokemon_obj = next((item for item in filled_showdowndex['pokemon'][game]
-                           if pokemon in item['id']), None)
-        if not pokemon_obj:
+        try:
+            pokemon_obj = next(item for item in filled_showdowndex['pokemon'][game]
+                               if pokemon in item['id'])
+        except (KeyError, StopIteration):
             continue
+        any_game = True
         assert pokemon_obj['type'] == type_
+    assert any_game
 
     game = versions[versions.index(last_game) + 1]
     pokemon_obj = next((item for item in filled_showdowndex['pokemon'][game]
