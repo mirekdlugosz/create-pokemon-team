@@ -282,11 +282,10 @@ class Constants():
         ]
     }
 
-    # Used in Eevee Pokedex reader.
     # Some Pokemon have multiple forms that differ in a way that is not
     # relevant for us (e.g. by stats). This list is used to ensure
     # that all forms are treated as one
-    eeveedex_equivalent_pokemon_ids = [
+    equivalent_pokemon_ids = [
         "aegislash", "basculin", "burmy", "castform", "cherrim",
         "deerling", "flabebe", "floette", "florges", "furfrou",
         "gastrodon", "gourgeist", "keldeo", "landorus", "magearna",

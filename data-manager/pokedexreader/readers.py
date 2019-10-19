@@ -119,7 +119,7 @@ class EeveeReader(AbstractReader):
         if not pokemon_data_row["pokemon_form_pokemon_name"]:
             return pokemon_data_row["pokemon_species_name"]
 
-        if [i for i in Constants.eeveedex_equivalent_pokemon_ids
+        if [i for i in Constants.equivalent_pokemon_ids
                 if i in pokemon_data_row["pokemon_id"]]:
             return pokemon_data_row["pokemon_species_name"]
 
@@ -304,19 +304,117 @@ class ShowdownReader(AbstractReader):
         return versions
 
     def _create_pokemon_name(self, pokemon_id):
-        return self._all_pokemon[pokemon_id]['species']
+        pokemon_obj = self._all_pokemon[pokemon_id]
+        species = pokemon_obj.get('species', None)
+        base_species = pokemon_obj.get('baseSpecies', None)
+        forme = pokemon_obj.get('forme', None)
+        base_forme = pokemon_obj.get('baseForme', None)
+        # standard Pokemon - just return species
+        if not any([base_species, forme, base_forme]):
+            return species
+
+        # base forme that is the only one in app - treat as standard Pokemon
+        if [pokemon for pokemon in Constants.equivalent_pokemon_ids
+                if pokemon_id.startswith(pokemon)]:
+            return species
+
+        species_name = base_species or species
+        forme_name = base_forme or forme
+
+        if species_name == "Meowstic":
+            if forme_name == "M":
+                forme_name = "Male"
+            else:
+                forme_name = "Female"
+
+        if forme_name == "Alola":
+            return f"Alolan {species_name}"
+        if forme_name == "Primal":
+            return f"{species_name} (Primal Reversion)"
+        if forme_name.startswith("Mega"):
+            _, _, version = forme_name.partition("-")
+            return f"Mega {species_name} {version}".strip()
+        if species_name.startswith("Rotom"):
+            return f"{forme_name} {species_name}"
+        if species_name.startswith(("Kyurem", "Hoopa", "Meowstic")):
+            return f"{species_name} ({forme_name})"
+        if species_name.startswith("Necrozma"):
+            return f"{species_name} ({forme_name.replace('-', ' ')})"
+
+        suffix = "Forme"
+        if species_name.startswith(("Arceus", "Silvally")):
+            suffix = "Type"
+        elif species_name.startswith("Lycanroc"):
+            suffix = "Form"
+        elif species_name.startswith("Wormadam"):
+            suffix = "Cloak"
+        elif species_name.startswith("Genesect"):
+            suffix = "Drive"
+        elif species_name.startswith("Darmanitan"):
+            suffix = "Mode"
+        elif species_name.startswith("Oricorio"):
+            suffix = "Style"
+        pokemon_name = f"{species_name} ({forme_name} {suffix})"
+        if "'" in forme_name:
+            pokemon_name = pokemon_name.replace("'", "’")
+        return pokemon_name
+
+    def _get_smeargle_moves(self, version):
+        moves = set()
+        for pokemon_id, learnset in self._pokemon_moves_map.items():
+            if pokemon_id not in Constants.available_pokemon[version]:
+                continue
+            try:
+                moves.update(learnset[version])
+            except KeyError:
+                continue
+        return moves.difference(set(Constants.invalid_smeargle_moves))
+
+    def _expand_hidden_powers(self, moves):
+        if 'hiddenpower' not in moves:
+            return moves
+
+        hidden_power_names = [move["move_identifier"].replace('-', '')
+                              for move in self._hidden_powers]
+        moves.remove('hiddenpower')
+        return moves.union(hidden_power_names)
+
+    def _expand_natural_gifts(self, moves, version):
+        if 'naturalgift' not in moves:
+            return moves
+
+        skip = ''
+        if version in self._versions[:self._versions.index('x-y')]:
+            skip = 'Fairy'
+
+        natural_gifts_names = [move["move_identifier"].replace('-', '')
+                               for move in self._natural_gifts
+                               if move["type"] != skip]
+
+        moves.remove('naturalgift')
+        return moves.union(natural_gifts_names)
 
     def _get_pokemon_moves_in_version(self, pokemon_id, version):
-        out = set()
-        while True:
+        # TODO: workaround. Deoxys is super-peculiar in the way that it has
+        # multiple forms that can be changed at will, except in gen 3, where
+        # every game got one form. Since our moveset map only has "deoxys",
+        # we model forms as "evolutions" of standard "deoxy". But this fails,
+        # as these "evolutions" don't have valid prevo in gen 3
+        if "deoxys" in pokemon_id and version in ("emerald", "firered-leafgreen"):
+            version = "ruby-sapphire"
+        # end workaround
+        try:
             moves = self._pokemon_moves_map[pokemon_id][version]
-            out.update(moves)
-            prevo = self._get_prevolution(pokemon_id, version)
-            if prevo:
-                pokemon_id = prevo
-            else:
-                break
-        return out
+        except KeyError:
+            moves = set()
+        prevo = self._get_prevolution(pokemon_id, version)
+        if prevo:
+            moves.update(self._get_pokemon_moves_in_version(prevo, version))
+        if pokemon_id == "smeargle":
+            moves = self._get_smeargle_moves(version)
+        moves = self._expand_hidden_powers(moves)
+        moves = self._expand_natural_gifts(moves, version)
+        return moves
 
     def _get_prevolution(self, pokemon_id, version):
         pokemon_obj = self._all_pokemon[pokemon_id]
@@ -324,8 +422,7 @@ class ShowdownReader(AbstractReader):
         if "prevo" in pokemon_obj:
             prevo = pokemon_obj["prevo"]
         if "baseSpecies" in pokemon_obj and (
-                pokemon_id.endswith('mega')
-                or pokemon_id.endswith('primal')):
+                pokemon_obj.get("forme", None) not in ["Alola"]):
             prevo = pokemon_obj["baseSpecies"].lower()
 
         if prevo in self._valid_pokemon_list[version]:
@@ -355,13 +452,12 @@ class ShowdownReader(AbstractReader):
             for pokemon_id in available_pokemon:
                 pokemon_name = self._create_pokemon_name(pokemon_id)
                 pokemon_types = self._all_pokemon[pokemon_id]['types']
-                try:
-                    pokemon_moves = self._get_pokemon_moves_in_version(pokemon_id, version)
-                except KeyError:
-                    # special case - ignore for now
-                    continue
+                pokemon_moves = self._get_pokemon_moves_in_version(pokemon_id, version)
                 pokedex.add_pokemon(version, pokemon_id, pokemon_name, pokemon_types)
-                pokedex.add_pokemon_moves(version, pokemon_id, pokemon_moves)
+                try:
+                    pokedex.add_pokemon_moves(version, pokemon_id, pokemon_moves)
+                except ValueError:
+                    pass
 
         for move_id, move_obj in self._all_moves.items():
             if self._ignore_move(move_obj):

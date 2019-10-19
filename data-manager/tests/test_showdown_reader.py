@@ -109,34 +109,36 @@ def test_order_in_pokedex(filled_showdowndex):
 
 
 @pytest.mark.parametrize("pokemon_id,name", [
+    ("beedrillmega", "Mega Beedrill"),
+    ("charizardmegax", "Mega Charizard X"),
     ("kyogreprimal", "Kyogre (Primal Reversion)"),
-    ("deoxysnormal", "Deoxys (Normal Forme)"),
-    ("wormadamplant", "Wormadam (Plant Cloak)"),
+    ("deoxys", "Deoxys (Normal Forme)"),
+    ("wormadam", "Wormadam (Plant Cloak)"),
     ("wormadamsandy", "Wormadam (Sandy Cloak)"),
-    ("rotomheat", "Rotom (Heat Rotom)"),
-    ("giratinaaltered", "Giratina (Altered Forme)"),
+    ("rotomheat", "Heat Rotom"),
+    ("giratina", "Giratina (Altered Forme)"),
     ("giratinaorigin", "Giratina (Origin Forme)"),
-    ("shayminland", "Shaymin (Land Forme)"),
+    ("shaymin", "Shaymin (Land Forme)"),
     ("shayminsky", "Shaymin (Sky Forme)"),
     ("arceusdark", "Arceus (Dark Type)"),
-    ("darmanitanstandard", "Darmanitan (Standard Mode)"),
+    ("darmanitan", "Darmanitan (Standard Mode)"),
     ("darmanitanzen", "Darmanitan (Zen Mode)"),
-    ("kyuremwhite", "Kyurem (White Kyurem)"),
-    ("kyuremblack", "Kyurem (Black Kyurem)"),
-    ("meloettaaria", "Meloetta (Aria Forme)"),
+    ("kyuremwhite", "Kyurem (White)"),
+    ("kyuremblack", "Kyurem (Black)"),
+    ("meloetta", "Meloetta (Aria Forme)"),
     ("meloettapirouette", "Meloetta (Pirouette Forme)"),
     ("genesectburn", "Genesect (Burn Drive)"),
-    ("meowsticmale", "Meowstic (Male)"),
-    ("meowsticfemale", "Meowstic (Female)"),
-    ("hoopa", "Hoopa (Hoopa Confined)"),
-    ("hoopaunbound", "Hoopa (Hoopa Unbound)"),
+    ("meowstic", "Meowstic (Male)"),
+    ("meowsticf", "Meowstic (Female)"),
+    ("hoopa", "Hoopa (Confined)"),
+    ("hoopaunbound", "Hoopa (Unbound)"),
     ("oricoriopau", "Oricorio (Pa’u Style)"),
     ("oricoriosensu", "Oricorio (Sensu Style)"),
-    ("lycanrocmidday", "Lycanroc (Midday Form)"),
+    ("lycanroc", "Lycanroc (Midday Form)"),
     ("silvallyelectric", "Silvally (Electric Type)"),
-    ("necrozmadusk", "Necrozma (Dusk Mane)"),
-    ("necrozmadawn", "Necrozma (Dawn Wings)"),
-    ("necrozmaultra", "Necrozma (Ultra Necrozma)"),
+    ("necrozmaduskmane", "Necrozma (Dusk Mane)"),
+    ("necrozmadawnwings", "Necrozma (Dawn Wings)"),
+    ("necrozmaultra", "Necrozma (Ultra)"),
 ])
 def test_forme_name(filled_showdowndex, pokemon_id, name):
     in_any = False
@@ -287,7 +289,7 @@ def test_tutor_exceptional_moves(filled_showdowndex, pokemon, move, game):
 
 @pytest.mark.parametrize("pokemon,move", [
     ("pidgeot", "substitute"),
-    ("sandslash", "seismic-toss"),
+    ("sandslash", "seismictoss"),
 ])
 def test_tutor_gen_3(filled_showdowndex, pokemon, move):
     for game in ['emerald', 'firered-leafgreen']:
@@ -295,8 +297,8 @@ def test_tutor_gen_3(filled_showdowndex, pokemon, move):
 
 
 @pytest.mark.parametrize("pokemon,move", [
-    ("jolteon", "magnet-rise"),
-    ("gardevoir", "signal-beam")
+    ("jolteon", "magnetrise"),
+    ("gardevoir", "signalbeam")
 ])
 def test_tutor_gen_4(filled_showdowndex, pokemon, move):
     for game in ['platinum', 'heartgold-soulsilver']:

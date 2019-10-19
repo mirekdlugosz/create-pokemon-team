@@ -23,7 +23,7 @@ GEN6_ADDITIONS = ["beedrillmega", "pidgeotmega", "slowbromega", "steelixmega",
                   "sceptilemega", "swampertmega", "sableyemega", "sharpedomega",
                   "cameruptmega", "altariamega", "glaliemega", "salamencemega",
                   "metagrossmega", "rayquazamega", "lopunnymega", "gallademega",
-                  "audinomega", "dianciemega"]
+                  "audinomega", "dianciemega", "kyogreprimal", "groudonprimal"]
 
 GEN7_ADDITIONS = ["lycanrocdusk", "necrozmaduskmane", "necrozmadawnwings",
                   "necrozmaultra", "poipole", "naganadel", "stakataka",

@@ -115,6 +115,8 @@ def test_order_in_pokedex(filled_eeveedex):
 
 
 @pytest.mark.parametrize("pokemon_id,name", [
+    ("beedrillmega", "Mega Beedrill"),
+    ("charizardmegax", "Mega Charizard X"),
     ("kyogre-primal", "Kyogre (Primal Reversion)"),
     ("deoxys-normal", "Deoxys (Normal Forme)"),
     ("wormadam-plant", "Wormadam (Plant Cloak)"),
