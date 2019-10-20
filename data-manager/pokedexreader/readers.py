@@ -107,7 +107,7 @@ class EeveeReader(AbstractReader):
         if pokemon_id_parts[0] == current_id:
             return current_id
 
-        if pokemon_id_parts[0] in Constants.eeveedex_equivalent_pokemon_ids:
+        if pokemon_id_parts[0] in Constants.equivalent_pokemon_ids:
             return pokemon_id_parts[0]
         return current_id
 
@@ -126,6 +126,20 @@ class EeveeReader(AbstractReader):
         if ("mega" in pokemon_data_row["pokemon_form_form_identifier"]
                 or "alola" == pokemon_data_row["pokemon_form_form_identifier"]):
             return pokemon_data_row["pokemon_form_pokemon_name"]
+
+        if pokemon_data_row["pokemon_species_name"] == "Rotom":
+            return pokemon_data_row["pokemon_form_name"]
+
+        if pokemon_data_row["pokemon_species_name"] == "Kyurem":
+            form, name = pokemon_data_row["pokemon_form_name"].split()
+            return "{} ({})".format(name, form)
+
+        if pokemon_data_row["pokemon_species_name"] == "Hoopa":
+            name, form = pokemon_data_row["pokemon_form_name"].split()
+            return "{} ({})".format(name, form)
+
+        if pokemon_data_row["pokemon_form_identifier"] == "necrozma-ultra":
+            return "Necrozma (Ultra)"
 
         return "{} ({})".format(
             pokemon_data_row["pokemon_species_name"],
