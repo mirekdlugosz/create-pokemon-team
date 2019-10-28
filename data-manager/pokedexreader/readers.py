@@ -142,6 +142,8 @@ class EeveeReader(AbstractReader):
         return current_id
 
     def _get_external_id(self, pokemon_id):
+        if pokemon_id is None:
+            return None
         if pokemon_id in Constants.eeveedex_external_ids:
             return Constants.eeveedex_external_ids[pokemon_id]
         return pokemon_id.replace("-", "")
@@ -244,7 +246,7 @@ class EeveeReader(AbstractReader):
         self._pokedex = pokedex
         all_moves = self._fetch_all_moves() + self._hidden_powers + self._natural_gifts
 
-        for pokemon_data_row in self._all_pokemon:
+        for row_number, pokemon_data_row in enumerate(self._all_pokemon):
             pokemon_id = self._get_pokemon_id(pokemon_data_row)
             pokemon_number = pokemon_data_row["pokemon_numeric_id"]
 
@@ -253,10 +255,10 @@ class EeveeReader(AbstractReader):
 
             self._number_name_map[pokemon_number] = pokemon_id
             self._name_number_map[pokemon_id] = pokemon_number
-            self._name_dbrow_map[pokemon_id] = pokemon_data_row['row_number']
+            self._name_dbrow_map[pokemon_id] = row_number
 
             external_pokemon_id = self._get_external_id(pokemon_id)
-            prevolution = self._get_prevolution(pokemon_id)
+            prevolution = self._get_external_id(self._get_prevolution(pokemon_id))
 
             pokemon_moves = self._get_pokemon_moves(pokemon_id)
 
@@ -264,7 +266,7 @@ class EeveeReader(AbstractReader):
                 "pokemon_id": external_pokemon_id,
                 "name": self._create_pokemon_name(pokemon_data_row),
                 "types": self._fetch_pokemon_types(pokemon_data_row),
-                "number": pokemon_number,
+                "number": pokemon_data_row['pokemon_species_id'],
                 "prevolution_id": prevolution,
                 "moves": pokemon_moves,
             }

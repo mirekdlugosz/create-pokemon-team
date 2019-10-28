@@ -393,8 +393,7 @@ class Constants():
         version_groups.identifier as pokemon_form_introduced_in_version,
         pokemon_species.id as pokemon_species_id,
         pokemon_species_names.name as pokemon_species_name,
-        pokemon_species.evolves_from_species_id as pokemon_evolves_from,
-        (ROW_NUMBER () OVER (ORDER BY pokemon."order" ASC) - 1) as row_number
+        pokemon_species.evolves_from_species_id as pokemon_evolves_from
         FROM pokemon
         JOIN pokemon_forms ON pokemon_forms.pokemon_id = pokemon.id
         LEFT JOIN pokemon_form_names ON pokemon_form_names.pokemon_form_id = pokemon_forms.id

@@ -66,15 +66,9 @@ def test_pokemon_with_many_forms(filled_eeveedex):
                 'ultra-sun-ultra-moon': ["lycanrocdusk", "necrozmaduskmane", "necrozmadawnwings",
                                          "necrozmaultra"]
                 }
-    # TODO: ignore some forms that can't be automatically translated from veekun id to Showdown id
-    temp_ignored = ["deoxys", "wormadam", "giratina", "shaymin", "arceus", "meloetta", "hoopa",
-                    "meowstic", "meowsticf", "lycanroc", "oricorio", "silvally",
-                    "necrozmaduskmane", "necrozmadawnwings"]
     for game, pokemon_list in expected.items():
         all_pokemon = [item['id'] for item in filled_eeveedex['pokemon'][game]]
-        all_pokemon = [item.replace('-', '') for item in all_pokemon]
         assert all_pokemon
-        pokemon_list = [pokemon for pokemon in pokemon_list if pokemon not in temp_ignored]
         for pokemon in pokemon_list:
             assert pokemon in all_pokemon
         assert all(pokemon in all_pokemon for pokemon in pokemon_list)
@@ -99,6 +93,7 @@ def test_ignored_pokemon_is_not_present(filled_eeveedex):
         assert pokemon_list
         for ignored in ignored_pokemon_list:
             assert ignored not in pokemon_list
+            assert ignored.replace('-', '') not in pokemon_list
 
 
 def test_order_in_pokedex(filled_eeveedex):
@@ -107,11 +102,11 @@ def test_order_in_pokedex(filled_eeveedex):
     assert pokemon_list.index('bulbasaur') == 0
     assert pokemon_list.index('bulbasaur') < pokemon_list.index('abra')
     assert pokemon_list.index('charmander') == pokemon_list.index('charmeleon') - 1
-    assert pokemon_list.index('venusaur') == pokemon_list.index('venusaur-mega') - 1
+    assert pokemon_list.index('venusaur') == pokemon_list.index('venusaurmega') - 1
     assert pokemon_list.index('igglybuff') == pokemon_list.index('jigglypuff') - 1
     assert pokemon_list.index('rhyhorn') == pokemon_list.index('rhyperior') - 2
-    assert pokemon_list.index('pikachu') == pokemon_list.index('raichu-alola') - 2
-    assert pokemon_list.index('vulpix-alola') == pokemon_list.index('ninetales-alola') - 2
+    assert pokemon_list.index('pikachu') == pokemon_list.index('raichualola') - 2
+    assert pokemon_list.index('vulpixalola') == pokemon_list.index('ninetalesalola') - 2
 
 
 @pytest.mark.parametrize("pokemon_id,name", [
@@ -210,6 +205,11 @@ def test_pokemon_type_before_change(filled_eeveedex, pokemon, last_game, type_, 
     pokemon_obj = next((item for item in filled_eeveedex['pokemon'][game]
                        if pokemon in item['id']), None)
     assert pokemon_obj['type'] == new_type
+
+
+def test_pokemon_in_learnsets(filled_eeveedex):
+    for version, pokemon_list in Constants.available_pokemon.items():
+        assert len(filled_eeveedex['learnsets'][version]) == len(pokemon_list)
 
 
 def test_smeargle_moves(filled_eeveedex):

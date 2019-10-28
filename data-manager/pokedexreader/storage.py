@@ -62,17 +62,62 @@ class PokedexStorage():
         self.pokemon = {}        # dict of available Pokemon
         self.moves = {}          # move information
         self._types = Constants.types
-        self._versions = Constants.known_versions
         self._move_categories = ['physical', 'special', 'status']
-        self._move_type_overrides = Constants.move_type_overrides
-        self._moves_inheriting_type = Constants.moves_inheriting_type
-        self._pokemon_type_overrides = Constants.pokemon_type_overrides
-        self._invalid_pokemon_version_map = Constants.invalid_pokemon_version
+        self._evolution_trees = {}
+
+    def _get_evolution_chain(self, pokemon_id):
+        evo_chain = [pokemon_id]
+        while True:
+            prevo = self.pokemon[pokemon_id].prevolution_id
+            if not prevo and pokemon_id.endswith("alola"):
+                prevo, _, _ = pokemon_id.partition("alola")
+            if not prevo:
+                break
+            evo_chain.append(prevo)
+            pokemon_id = prevo
+
+        return list(reversed(evo_chain))
+
+    def _longest_unique_paths(self, tree):
+        """Removes elements of list that are strict subset of another element
+
+        Given list of lists, removes elements that are fully contained within
+        any other element.
+        Example: [[1], [1, 2]] -> [[1, 2]]
+        """
+        out = []
+        for branch_key in sorted(tree, key=lambda x: len(x), reverse=True):
+            if all(set(branch_key) - set(existing) for existing in out):
+                out.append(branch_key)
+        return out
+
+    def _create_evolution_trees(self):
+        evolution_chains = {}
+        for pokemon_obj in self.pokemon.values():
+            evo_chain = self._get_evolution_chain(pokemon_obj.id)
+            family_number = self.pokemon[evo_chain[0]].number
+            evolution_chains.setdefault(family_number, []).append(evo_chain)
+
+        return {family_number: self._longest_unique_paths(tree)
+                for family_number, tree in evolution_chains.items()}
+
+    def _sorting_key(self, pokemon_id):
+        prevo = self._get_evolution_chain(pokemon_id)[0]
+        family_number = self.pokemon[prevo].number
+        for chain_number, chain in enumerate(self._evolution_trees[family_number]):
+            if pokemon_id in chain:
+                evolution_chain_index = chain.index(pokemon_id)
+                break
+        return (family_number, evolution_chain_index, chain_number)
 
     def _output_pokemon(self, fh):
         struct = {}
+        self._evolution_trees = self._create_evolution_trees()
         for version, pokemon_ids in Constants.available_pokemon.items():
-            # odpowiednie sortowanie
+            pokemon_ids = sorted(
+                pokemon_ids,
+                key=lambda x: self._sorting_key(x)
+            )
             for pokemon_id in pokemon_ids:
                 pokemon_obj = self.pokemon[pokemon_id]
                 poke_struct = {
@@ -93,6 +138,8 @@ class PokedexStorage():
         for pokemon_id in pokemon_list:
             learnset = self.pokemon[pokemon_id].moves
             for version, moves_list in learnset.items():
+                if pokemon_id not in Constants.available_pokemon[version]:
+                    continue
                 struct.setdefault(version, {})[pokemon_id] = sorted(moves_list)
 
         json.dump(struct, fh)
@@ -167,10 +214,10 @@ class PokedexStorage():
             "name": name
         }
 
-        if move_id in self._move_type_overrides:
-            move_struct["override"] = self._move_type_overrides[move_id]
+        if move_id in Constants.move_type_overrides:
+            move_struct["override"] = Constants.move_type_overrides[move_id]
 
-        if move_id in self._moves_inheriting_type:
+        if move_id in Constants.moves_inheriting_type:
             move_struct["uses_pokemon_type"] = True
 
         self.moves[move_id] = move_struct
