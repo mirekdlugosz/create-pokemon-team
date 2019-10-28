@@ -111,11 +111,11 @@ class Constants():
             "type": ['Steel'],
             "last_version": "black-2-white-2",
         },
-        "mime-jr": {
+        "mimejr": {
             "type": ['Psychic'],
             "last_version": "black-2-white-2",
         },
-        "mr-mime": {
+        "mrmime": {
             "type": ['Psychic'],
             "last_version": "black-2-white-2",
         },
@@ -127,23 +127,23 @@ class Constants():
             "type": ['Electric', 'Ghost'],
             "last_version": "heartgold-soulsilver",
         },
-        "rotom-heat": {
+        "rotomheat": {
             "type": ['Electric', 'Ghost'],
             "last_version": "heartgold-soulsilver",
         },
-        "rotom-wash": {
+        "rotomwash": {
             "type": ['Electric', 'Ghost'],
             "last_version": "heartgold-soulsilver",
         },
-        "rotom-frost": {
+        "rotomfrost": {
             "type": ['Electric', 'Ghost'],
             "last_version": "heartgold-soulsilver",
         },
-        "rotom-fan": {
+        "rotomfan": {
             "type": ['Electric', 'Ghost'],
             "last_version": "heartgold-soulsilver",
         },
-        "rotom-mow": {
+        "rotommow": {
             "type": ['Electric', 'Ghost'],
             "last_version": "heartgold-soulsilver",
         },
@@ -188,11 +188,11 @@ class Constants():
             "type": 'Normal',
             "last_version": 'yellow',
         },
-        "karate-chop": {
+        "karatechop": {
             "type": 'Normal',
             "last_version": 'yellow',
         },
-        "sand-attack": {
+        "sandattack": {
             "type": 'Normal',
             "last_version": 'yellow',
         },
@@ -204,7 +204,7 @@ class Constants():
             "type": 'Normal',
             "last_version": "black-2-white-2",
         },
-        "sweet-kiss": {
+        "sweetkiss": {
             "type": 'Normal',
             "last_version": "black-2-white-2",
         },
@@ -213,7 +213,7 @@ class Constants():
     # List of moves that change their type depending on type of Pokemon
     # that use them.
     moves_inheriting_type = [
-        "judgment", "multi-attack", "revelation-dance"
+        "judgment", "multiattack", "revelationdance"
     ]
 
     # List of moves Smeargle can't learn
@@ -295,6 +295,27 @@ class Constants():
     ]
 
     # Used in Eevee Pokedex reader.
+    # Usually translating Eevee Pokedex pokemon id to Showdown id
+    # is as easy as removing all dashes, but there are some exceptions.
+    # They are stored in this map, along with correct Showdown id
+    eeveedex_external_ids = {
+        "arceus-normal": "arceus",
+        "darmanitan-standard": "darmanitan",
+        "deoxys-normal": "deoxys",
+        "giratina-altered": "giratina",
+        "lycanroc-midday": "lycanroc",
+        "meloetta-aria": "meloetta",
+        "meowstic-male": "meowstic",
+        "meowstic-female": "meowsticf",
+        "necrozma-dawn": "necrozmadawnwings",
+        "necrozma-dusk": "necrozmaduskmane",
+        "oricorio-baile": "oricorio",
+        "shaymin-land": "shaymin",
+        "silvally-normal": "silvally",
+        "wormadam-plant": "wormadam",
+    }
+
+    # Used in Eevee Pokedex reader.
     # Few Pokemon have learnset differences in forms, but can change form
     # at will and do not forget moves learned while in different form.
     # This list allows us to get moves of form that has not yet been processed
@@ -348,10 +369,14 @@ class Constants():
         "celebi": {
             "x-y": ["hold-back"],
         },
+        "vikavolt": {
+            "sun-moon": ["snore"],
+            "ultra-sun-ultra-moon": ["snore"],
+        },
         "zygarde": {
             "sun-moon": ["thousand-arrows", "thousand-waves"],
             "ultra-sun-ultra-moon": ["thousand-arrows", "thousand-waves"],
-        }
+        },
     }
 
     # Used in Eevee Pokedex reader.
@@ -368,7 +393,8 @@ class Constants():
         version_groups.identifier as pokemon_form_introduced_in_version,
         pokemon_species.id as pokemon_species_id,
         pokemon_species_names.name as pokemon_species_name,
-        pokemon_species.evolves_from_species_id as pokemon_evolves_from
+        pokemon_species.evolves_from_species_id as pokemon_evolves_from,
+        (ROW_NUMBER () OVER (ORDER BY pokemon."order" ASC) - 1) as row_number
         FROM pokemon
         JOIN pokemon_forms ON pokemon_forms.pokemon_id = pokemon.id
         LEFT JOIN pokemon_form_names ON pokemon_form_names.pokemon_form_id = pokemon_forms.id

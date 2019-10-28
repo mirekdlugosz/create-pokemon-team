@@ -17,8 +17,6 @@ from .constants import Constants
 
 class AbstractReader:
     def __init__(self, path):
-        self._pokedex = None
-        self._id_pokemon_mapping = {}
         self._types = Constants.types
         self._versions = Constants.known_versions
         self._valid_pokemon_list = Constants.available_pokemon
@@ -29,7 +27,7 @@ class AbstractReader:
         self._hidden_powers = []
         for move_type in [i for i in self._types if i not in ['Normal', 'Fairy']]:
             struct = {
-                "move_identifier": 'hidden-power-{}'.format(move_type.lower()),
+                "move_identifier": 'hiddenpower{}'.format(move_type.lower()),
                 "type": move_type,
                 "category": 'special',
                 "move_name": 'Hidden Power {}'.format(move_type),
@@ -40,17 +38,45 @@ class AbstractReader:
         self._natural_gifts = []
         for move_type in self._types:
             struct = {
-                "move_identifier": 'natural-gift-{}'.format(move_type.lower()),
+                "move_identifier": 'naturalgift{}'.format(move_type.lower()),
                 "type": move_type,
                 "category": 'physical',
                 "move_name": "Natural Gift {}".format(move_type),
             }
             self._natural_gifts.append(struct)
 
+    def _expand_hidden_powers(self, moves):
+        if 'hiddenpower' not in moves:
+            return moves
+
+        hidden_power_names = [move["move_identifier"]
+                              for move in self._hidden_powers]
+        moves.remove('hiddenpower')
+        return moves.union(hidden_power_names)
+
+    def _expand_natural_gifts(self, moves, version):
+        if 'naturalgift' not in moves:
+            return moves
+
+        skip = ''
+        if self._versions.index('x-y') > self._versions.index(version):
+            skip = 'Fairy'
+
+        natural_gifts_names = [move["move_identifier"]
+                               for move in self._natural_gifts
+                               if move["type"] != skip]
+
+        moves.remove('naturalgift')
+        return moves.union(natural_gifts_names)
+
 
 class EeveeReader(AbstractReader):
     def __init__(self, path):
         super().__init__(path)
+        self._number_name_map = {}
+        self._name_number_map = {}
+        self._name_dbrow_map = {}
+        self.__prevolution_cache = {}
         self._missing_moves_map = Constants.eeveedex_missing_moves
         self._querydb = {
             "fetch_all_moves": Constants.eeveedex_query_fetch_all_moves,
@@ -60,6 +86,7 @@ class EeveeReader(AbstractReader):
             "fetch_all_moves_with_version": Constants.eeveedex_query_fetch_all_moves_with_version,
         }
         self._init_db_connection(path)
+        self._all_pokemon = self._fetch_all_pokemon()
 
     def _init_db_connection(self, path):
         self._db_conn = sqlite3.connect(path)
@@ -82,13 +109,15 @@ class EeveeReader(AbstractReader):
         query = self._querydb["fetch_pokemon_types"].format(pokemon_data_row["pokemon_numeric_id"])
         return [row["name"] for row in self._db_conn.execute(query)]
 
-    def _fetch_pokemon_moves(self, pokemon_id):
-        group = next((group for group in Constants.eeveedex_equivalent_movesets
-                      if str(pokemon_id) in group), None)
-        if group:
-            pokemon_id = ",".join(group)
+    def _fetch_pokemon_moves(self, pokemon_numeric_ids):
+        fetch_ids = ",".join(map(str, pokemon_numeric_ids))
 
-        query = self._querydb["fetch_pokemon_moves"].format(pokemon_id)
+        group = next((group for group in Constants.eeveedex_equivalent_movesets
+                      if fetch_ids in group), None)
+        if group:
+            fetch_ids = ",".join(group)
+
+        query = self._querydb["fetch_pokemon_moves"].format(fetch_ids)
         return self._db_conn.execute(query).fetchall()
 
     def _ignore_pokemon(self, pokemon_data_row):
@@ -99,9 +128,10 @@ class EeveeReader(AbstractReader):
                 or "pichu-spiky-eared" == pokemon_data_row["pokemon_form_identifier"]
                 or "rockruff-own-tempo" == pokemon_id
                 or "floette-eternal" == pokemon_id
-                or "arceus-unknown" == pokemon_data_row["pokemon_form_identifier"])
+                or "arceus-unknown" == pokemon_data_row["pokemon_form_identifier"]
+                or self._get_pokemon_id(pokemon_data_row) in self._name_number_map)
 
-    def _get_real_pokemon_id(self, pokemon_data_row):
+    def _get_pokemon_id(self, pokemon_data_row):
         current_id = pokemon_data_row["pokemon_form_identifier"]
         pokemon_id_parts = current_id.split("-", 1)
         if pokemon_id_parts[0] == current_id:
@@ -110,6 +140,11 @@ class EeveeReader(AbstractReader):
         if pokemon_id_parts[0] in Constants.equivalent_pokemon_ids:
             return pokemon_id_parts[0]
         return current_id
+
+    def _get_external_id(self, pokemon_id):
+        if pokemon_id in Constants.eeveedex_external_ids:
+            return Constants.eeveedex_external_ids[pokemon_id]
+        return pokemon_id.replace("-", "")
 
     def _create_pokemon_name(self, pokemon_data_row):
         if "silvally" in pokemon_data_row['pokemon_form_identifier']:
@@ -146,104 +181,99 @@ class EeveeReader(AbstractReader):
             pokemon_data_row["pokemon_form_name"]
         )
 
-    def _get_prevolution(self, pokemon_id, evolves_from_numeric_id):
-        if not evolves_from_numeric_id:
-            return None
+    def _get_prevolution(self, pokemon_id):
+        if pokemon_id in self.__prevolution_cache:
+            return self.__prevolution_cache[pokemon_id]
 
+        prevo = None
         if pokemon_id in Constants.eeveedex_evolves_from_override:
-            return Constants.eeveedex_evolves_from_override[pokemon_id]
+            prevo = Constants.eeveedex_evolves_from_override[pokemon_id]
 
         if '-mega' in pokemon_id or '-primal' in pokemon_id:
-            return pokemon_id.split('-', 1)[0]
+            prevo = pokemon_id.split('-', 1)[0]
 
-        return self._id_pokemon_mapping[evolves_from_numeric_id]
+        evolves_from_numeric_id = self._all_pokemon[
+            self._name_dbrow_map[pokemon_id]]["pokemon_evolves_from"]
+        if not prevo and evolves_from_numeric_id is not None:
+            prevo = self._number_name_map[evolves_from_numeric_id]
 
-    def _get_moves_in_version(self, moves, version):
-        wanted_versions = self._versions[:self._versions.index(version) + 1]
-        known_moves = [move["move_id"] for move in moves if move["version"] in wanted_versions]
-        return sorted(list(set(known_moves)))
+        self.__prevolution_cache[pokemon_id] = prevo
+        return prevo
 
-    def _expand_hidden_powers(self, moves):
-        try:
-            where = moves.index('hidden-power')
-        except ValueError:
-            return moves
+    def _get_all_prevolutions(self, pokemon_id):
+        prevo = self._get_prevolution(pokemon_id)
+        if prevo:
+            return self._get_all_prevolutions(prevo) + [prevo]
+        return []
 
-        hidden_power_names = [move["move_identifier"] for move in self._hidden_powers]
-        moves[where:where + 1] = hidden_power_names
-        return moves
+    def _get_pokemon_moves(self, pokemon_id):
+        out = {}
+        evolution_chain = self._get_all_prevolutions(pokemon_id) + [pokemon_id]
+        numeric_ids = [self._name_number_map[name] for name in evolution_chain]
+        moves_rows = self._fetch_pokemon_moves(numeric_ids)
+        for move_row in moves_rows:
+            out.setdefault(move_row['version'], set()).update(
+                [move_row['move_id']]
+            )
 
-    def _expand_natural_gifts(self, moves, version):
-        try:
-            where = moves.index('natural-gift')
-        except ValueError:
-            return moves
+        if pokemon_id == "smeargle":
+            all_moves = self._fetch_all_moves_with_version()
+            for version in out:
+                wanted_versions = self._versions[:self._versions.index(version) + 1]
+                moves = [row['move_id'] for row in all_moves
+                         if (row['version'] in wanted_versions
+                             and row['move_id'] not in Constants.invalid_smeargle_moves)]
+                out[version] = set(moves)
 
-        skip = ''
-        if version in self._versions[:self._versions.index('x-y')]:
-            skip = 'Fairy'
+        for version, moves_list in out.items():
+            moves_list = set([move.replace('-', '') for move in moves_list])
+            moves_list = self._expand_hidden_powers(moves_list)
+            moves_list = self._expand_natural_gifts(moves_list, version)
 
-        natural_gifts_names = [move["move_identifier"] for move in
-                self._natural_gifts if move["type"] != skip]
+            try:
+                missing_moves = Constants.eeveedex_missing_moves[pokemon_id][version]
+                moves_list.update(missing_moves)
+            except KeyError:
+                pass
 
-        moves[where:where + 1] = natural_gifts_names
-        return moves
+            out[version] = moves_list
+
+        return out
 
     def fill_pokedex(self, pokedex):
         self._pokedex = pokedex
-        all_pokemon = self._fetch_all_pokemon()
         all_moves = self._fetch_all_moves() + self._hidden_powers + self._natural_gifts
-        all_moves_with_version = self._fetch_all_moves_with_version()
 
-        for pokemon_data_row in all_pokemon:
+        for pokemon_data_row in self._all_pokemon:
+            pokemon_id = self._get_pokemon_id(pokemon_data_row)
+            pokemon_number = pokemon_data_row["pokemon_numeric_id"]
+
             if self._ignore_pokemon(pokemon_data_row):
                 continue
 
+            self._number_name_map[pokemon_number] = pokemon_id
+            self._name_number_map[pokemon_id] = pokemon_number
+            self._name_dbrow_map[pokemon_id] = pokemon_data_row['row_number']
+
+            external_pokemon_id = self._get_external_id(pokemon_id)
+            prevolution = self._get_prevolution(pokemon_id)
+
+            pokemon_moves = self._get_pokemon_moves(pokemon_id)
+
             pokemon = {
-                "pokemon_id": self._get_real_pokemon_id(pokemon_data_row),
+                "pokemon_id": external_pokemon_id,
                 "name": self._create_pokemon_name(pokemon_data_row),
-                "introduced_in_version": pokemon_data_row["pokemon_form_introduced_in_version"],
-                "pokemon_type": self._fetch_pokemon_types(pokemon_data_row),
+                "types": self._fetch_pokemon_types(pokemon_data_row),
+                "number": pokemon_number,
+                "prevolution_id": prevolution,
+                "moves": pokemon_moves,
             }
 
-            if pokemon["pokemon_id"] in self._id_pokemon_mapping:
-                continue
-
-            self._id_pokemon_mapping.update({
-                pokemon["pokemon_id"]: pokemon_data_row["pokemon_numeric_id"],
-                pokemon_data_row["pokemon_numeric_id"]: pokemon["pokemon_id"],
-            })
             self._pokedex.add_pokemon(**pokemon)
-
-            pokemon_prevolution = self._get_prevolution(pokemon["pokemon_id"], pokemon_data_row["pokemon_evolves_from"])
-            pokemon_moves = self._fetch_pokemon_moves(pokemon_data_row["pokemon_numeric_id"])
-
-            for version in set([row["version"] for row in pokemon_moves]):
-                moves = [row["move_id"] for row in pokemon_moves if row["version"] == version]
-
-                if (pokemon["pokemon_id"] in self._missing_moves_map
-                        and version in self._missing_moves_map[pokemon["pokemon_id"]]):
-                    moves.extend(self._missing_moves_map[pokemon["pokemon_id"]][version])
-
-                try:
-                    moves.extend(self._pokedex.get_pokemon_moves(version, pokemon_prevolution))
-                except (ValueError, KeyError):
-                    pass
-
-                if pokemon["pokemon_id"] == "smeargle":
-                    moves = [move for move in
-                             self._get_moves_in_version(all_moves_with_version, version)
-                             if move not in Constants.invalid_smeargle_moves]
-
-                moves = self._expand_hidden_powers(moves)
-                moves = self._expand_natural_gifts(moves, version)
-                moves = sorted(set(moves))
-
-                self._pokedex.add_pokemon_moves(version, pokemon["pokemon_id"], moves)
 
         for move_data_row in all_moves:
             move = {
-                "move_id": move_data_row["move_identifier"],
+                "move_id": move_data_row["move_identifier"].replace('-', ''),
                 "move_type": move_data_row["type"].title(),
                 "category": move_data_row["category"],
                 "name": move_data_row["move_name"]
@@ -383,30 +413,6 @@ class ShowdownReader(AbstractReader):
             except KeyError:
                 continue
         return moves.difference(set(Constants.invalid_smeargle_moves))
-
-    def _expand_hidden_powers(self, moves):
-        if 'hiddenpower' not in moves:
-            return moves
-
-        hidden_power_names = [move["move_identifier"].replace('-', '')
-                              for move in self._hidden_powers]
-        moves.remove('hiddenpower')
-        return moves.union(hidden_power_names)
-
-    def _expand_natural_gifts(self, moves, version):
-        if 'naturalgift' not in moves:
-            return moves
-
-        skip = ''
-        if version in self._versions[:self._versions.index('x-y')]:
-            skip = 'Fairy'
-
-        natural_gifts_names = [move["move_identifier"].replace('-', '')
-                               for move in self._natural_gifts
-                               if move["type"] != skip]
-
-        moves.remove('naturalgift')
-        return moves.union(natural_gifts_names)
 
     def _get_pokemon_moves_in_version(self, pokemon_id, version):
         # TODO: workaround. Deoxys is super-peculiar in the way that it has

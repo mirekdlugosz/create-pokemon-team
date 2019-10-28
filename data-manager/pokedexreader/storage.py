@@ -15,10 +15,51 @@ import json
 from .constants import Constants
 
 
+class Pokemon():
+    def __init__(self, pokemon_id=None, name=None, types=None,
+                 number=None, prevolution_id=None, moves=None):
+        self.id = pokemon_id
+        self.name = name
+        self._type = types
+        self.number = number
+        self.prevolution_id = prevolution_id
+        self.moves = moves or {}
+        self.override = None
+
+        try:
+            self.override = Constants.pokemon_type_overrides[pokemon_id]
+        except KeyError:
+            pass
+
+    def type(self, version):
+        if self.override:
+            max_index = Constants.known_versions.index(self.override["last_version"])
+            index = Constants.known_versions.index(version)
+            if max_index >= index:
+                return self.override["type"]
+
+        return self._type
+
+    def update(self, **kwargs):
+        for arg, value in kwargs.items():
+            if arg == "moves":
+                self._update_moves(value)
+                continue
+            if arg == "types":
+                arg = "_type"
+            current_value = getattr(self, arg)
+            if value != current_value:
+                print(f"{self.id}: setting {arg} to {value} (was {current_value})")
+            setattr(self, arg, value)
+
+    def _update_moves(self, moves):
+        for version, learnset in moves.items():
+            self.moves.setdefault(version, set()).update(learnset)
+
+
 class PokedexStorage():
     def __init__(self):
         self.pokemon = {}        # dict of available Pokemon
-        self.pokemon_moves = {}  # Pokemon move learnsets
         self.moves = {}          # move information
         self._types = Constants.types
         self._versions = Constants.known_versions
@@ -30,71 +71,63 @@ class PokedexStorage():
 
     def _output_pokemon(self, fh):
         struct = {}
-        for pokemon, data in self.pokemon.items():
-            introduced_in_version = data["introduced_in_version"]
-            try:
-                override_list = self._versions[
-                    :self._versions.index(data["override"]['last_version']) + 1
-                ]
-            except KeyError:
-                override_list = []
-
-            for version in self._versions[self._versions.index(introduced_in_version):]:
-                if (version in self._invalid_pokemon_version_map and
-                        pokemon in self._invalid_pokemon_version_map[version]):
-                    continue
-
+        for version, pokemon_ids in Constants.available_pokemon.items():
+            # odpowiednie sortowanie
+            for pokemon_id in pokemon_ids:
+                pokemon_obj = self.pokemon[pokemon_id]
                 poke_struct = {
-                    "id": pokemon,
-                    "name": data["name"],
-                    "type": data["type"],
+                    "id": pokemon_obj.id,
+                    "name": pokemon_obj.name,
+                    "type": pokemon_obj.type(version),
                 }
-                if version in override_list:
-                    poke_struct["type"] = data["override"]["type"]
-
                 struct.setdefault(version, []).append(poke_struct)
 
         json.dump(struct, fh)
 
     def _output_learnsets(self, fh):
-        json.dump(self.pokemon_moves, fh)
+        struct = {}
+        all_pokemon_ids = set()
+        for pokemon_list in Constants.available_pokemon.values():
+            all_pokemon_ids.update(pokemon_list)
+
+        for pokemon_id in pokemon_list:
+            learnset = self.pokemon[pokemon_id].moves
+            for version, moves_list in learnset.items():
+                struct.setdefault(version, {})[pokemon_id] = sorted(moves_list)
+
+        json.dump(struct, fh)
 
     def _output_moves(self, fh):
         json.dump(self.moves, fh)
 
-    def add_pokemon(self, introduced_in_version=None, pokemon_id=None, name=None, pokemon_type=None):
-        if not introduced_in_version:
-            raise ValueError('Version in which Pokemon was introduced cannot be empty')
-
-        if not isinstance(introduced_in_version, str) or introduced_in_version.isdigit():
-            raise ValueError('Version in which Pokemon was introduced cannot be numeric')
-
+    def add_pokemon(self, pokemon_id=None, name=None, types=None, number=None,
+                    prevolution_id=None, moves=None):
+        """
         if not pokemon_id:
             raise ValueError('Pokemon ID cannot be empty')
 
         if not name:
             raise ValueError('Pokemon name cannot be empty')
 
-        if not pokemon_type:
+        if not types:
             raise ValueError('Pokemon Type cannot be empty')
 
-        if set(pokemon_type) & self._types != set(pokemon_type):
-            raise ValueError('Unknown Type in {}; must be one of {}'.format(pokemon_type, self._types))
+        if set(types) & self._types != set(types):
+            raise ValueError('Unknown Type in {}; must be one of {}'.format(types, self._types))
+        """
 
-        if pokemon_id in self.pokemon:
-            return
-
-        pokemon_struct = {
-            "id": pokemon_id,
+        kwargs = {
             "name": name,
-            "type": pokemon_type,
-            "introduced_in_version": introduced_in_version,
+            "types": types,
+            "number": number,
+            "prevolution_id": prevolution_id,
+            "moves": moves,
         }
 
-        if pokemon_id in self._pokemon_type_overrides:
-            pokemon_struct["override"] = self._pokemon_type_overrides[pokemon_id]
-
-        self.pokemon[pokemon_id] = pokemon_struct
+        try:
+            self.pokemon[pokemon_id].update(**kwargs)
+        except KeyError:
+            self.pokemon[pokemon_id] = Pokemon(pokemon_id=pokemon_id, **kwargs)
 
     def add_pokemon_moves(self, version=None, pokemon_id=None, moves=None):
         if not version:
@@ -141,18 +174,6 @@ class PokedexStorage():
             move_struct["uses_pokemon_type"] = True
 
         self.moves[move_id] = move_struct
-
-    def get_pokemon_moves(self, version=None, pokemon_id=None):
-        if not version:
-            raise ValueError('Version identifier cannot be empty')
-        if not pokemon_id:
-            raise ValueError('Pokemon identifier cannot be empty')
-        if version not in self.pokemon_moves:
-            raise ValueError('Unknown version {}'.format(version))
-        if pokemon_id not in self.pokemon_moves[version]:
-            raise ValueError('Unknown pokemon {} in version {}'.format(pokemon_id, version))
-
-        return self.pokemon_moves[version][pokemon_id]
 
     def output(self, directory):
         if directory == '-':

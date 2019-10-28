@@ -115,36 +115,36 @@ def test_order_in_pokedex(filled_eeveedex):
 
 
 @pytest.mark.parametrize("pokemon_id,name", [
-    ("beedrill-mega", "Mega Beedrill"),
-    ("charizard-mega-x", "Mega Charizard X"),
-    ("kyogre-primal", "Kyogre (Primal Reversion)"),
-    ("deoxys-normal", "Deoxys (Normal Forme)"),
-    ("wormadam-plant", "Wormadam (Plant Cloak)"),
-    ("wormadam-sandy", "Wormadam (Sandy Cloak)"),
-    ("rotom-heat", "Heat Rotom"),
-    ("giratina-altered", "Giratina (Altered Forme)"),
-    ("giratina-origin", "Giratina (Origin Forme)"),
-    ("shaymin-land", "Shaymin (Land Forme)"),
-    ("shaymin-sky", "Shaymin (Sky Forme)"),
-    ("arceus-dark", "Arceus (Dark Type)"),
-    ("darmanitan-standard", "Darmanitan (Standard Mode)"),
-    ("darmanitan-zen", "Darmanitan (Zen Mode)"),
-    ("kyurem-white", "Kyurem (White)"),
-    ("kyurem-black", "Kyurem (Black)"),
-    ("meloetta-aria", "Meloetta (Aria Forme)"),
-    ("meloetta-pirouette", "Meloetta (Pirouette Forme)"),
-    ("genesect-burn", "Genesect (Burn Drive)"),
-    ("meowstic-male", "Meowstic (Male)"),
-    ("meowstic-female", "Meowstic (Female)"),
+    ("beedrillmega", "Mega Beedrill"),
+    ("charizardmegax", "Mega Charizard X"),
+    ("kyogreprimal", "Kyogre (Primal Reversion)"),
+    ("deoxys", "Deoxys (Normal Forme)"),
+    ("wormadam", "Wormadam (Plant Cloak)"),
+    ("wormadamsandy", "Wormadam (Sandy Cloak)"),
+    ("rotomheat", "Heat Rotom"),
+    ("giratina", "Giratina (Altered Forme)"),
+    ("giratinaorigin", "Giratina (Origin Forme)"),
+    ("shaymin", "Shaymin (Land Forme)"),
+    ("shayminsky", "Shaymin (Sky Forme)"),
+    ("arceusdark", "Arceus (Dark Type)"),
+    ("darmanitan", "Darmanitan (Standard Mode)"),
+    ("darmanitanzen", "Darmanitan (Zen Mode)"),
+    ("kyuremwhite", "Kyurem (White)"),
+    ("kyuremblack", "Kyurem (Black)"),
+    ("meloetta", "Meloetta (Aria Forme)"),
+    ("meloettapirouette", "Meloetta (Pirouette Forme)"),
+    ("genesectburn", "Genesect (Burn Drive)"),
+    ("meowstic", "Meowstic (Male)"),
+    ("meowsticf", "Meowstic (Female)"),
     ("hoopa", "Hoopa (Confined)"),
-    ("hoopa-unbound", "Hoopa (Unbound)"),
-    ("oricorio-pau", "Oricorio (Pa’u Style)"),
-    ("oricorio-sensu", "Oricorio (Sensu Style)"),
-    ("lycanroc-midday", "Lycanroc (Midday Form)"),
-    ("silvally-electric", "Silvally (Electric Type)"),
-    ("necrozma-dusk", "Necrozma (Dusk Mane)"),
-    ("necrozma-dawn", "Necrozma (Dawn Wings)"),
-    ("necrozma-ultra", "Necrozma (Ultra)"),
+    ("hoopaunbound", "Hoopa (Unbound)"),
+    ("oricoriopau", "Oricorio (Pa’u Style)"),
+    ("oricoriosensu", "Oricorio (Sensu Style)"),
+    ("lycanroc", "Lycanroc (Midday Form)"),
+    ("silvallyelectric", "Silvally (Electric Type)"),
+    ("necrozmaduskmane", "Necrozma (Dusk Mane)"),
+    ("necrozmadawnwings", "Necrozma (Dawn Wings)"),
+    ("necrozmaultra", "Necrozma (Ultra)"),
 ])
 def test_forme_name(filled_eeveedex, pokemon_id, name):
     in_any = False
@@ -159,10 +159,10 @@ def test_forme_name(filled_eeveedex, pokemon_id, name):
 
 
 @pytest.mark.parametrize("game,expected", [
-    ("ruby-sapphire", ["deoxys-normal"]),
-    ("emerald", ["deoxys-speed"]),
-    ("firered-leafgreen", ["deoxys-attack", "deoxys-defense"]),
-    ("x-y", ["deoxys-normal", "deoxys-attack", "deoxys-defense", "deoxys-speed"])
+    ("ruby-sapphire", ["deoxys"]),
+    ("emerald", ["deoxysspeed"]),
+    ("firered-leafgreen", ["deoxysattack", "deoxysdefense"]),
+    ("x-y", ["deoxys", "deoxysattack", "deoxysdefense", "deoxysspeed"])
 ])
 def test_deoxys_in_gen_3(filled_eeveedex, game, expected):
     pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]
@@ -184,10 +184,6 @@ def test_mega_in_gen_6(filled_eeveedex):
                     if 'mega' in item['id'] and item['id'] not in fake_mega]
     oras_mega_list = [item['id'] for item in pokemon['omega-ruby-alpha-sapphire']
                       if 'mega' in item['id'] and item['id'] not in fake_mega]
-    # TODO: temporary workaround - pokemon in constants are using Showdown ids,
-    # which are not compatible with veekun ids
-    xy_mega_list = [item.replace('-', '') for item in xy_mega_list]
-    oras_mega_list = [item.replace('-', '') for item in oras_mega_list]
     assert set(xy_mega_list) == set(reference_xy_mega)
     for oras_mega in set(reference_oras_mega) - set(reference_xy_mega):
         assert oras_mega not in xy_mega_list
@@ -197,7 +193,7 @@ def test_mega_in_gen_6(filled_eeveedex):
 @pytest.mark.parametrize("pokemon,last_game,type_,new_type", [
     ("azumarill", "black-2-white-2", ["Water"], ["Water", "Fairy"]),
     ("azurill", "black-2-white-2", ["Normal"], ["Normal", "Fairy"]),
-    ("rotom-heat", "heartgold-soulsilver", ["Electric", "Ghost"], ["Electric", "Fire"]),
+    ("rotomheat", "heartgold-soulsilver", ["Electric", "Ghost"], ["Electric", "Fire"]),
     ("togekiss", "black-2-white-2", ["Normal", "Flying"], ["Fairy", "Flying"]),
     ("jigglypuff", "black-2-white-2", ["Normal"], ["Normal", "Fairy"])
 ])
@@ -217,7 +213,7 @@ def test_pokemon_type_before_change(filled_eeveedex, pokemon, last_game, type_, 
 
 
 def test_smeargle_moves(filled_eeveedex):
-    for learnset in filled_eeveedex['learnsets'].values():
+    for version, learnset in filled_eeveedex['learnsets'].items():
         try:
             smeargle_moves = learnset['smeargle']
         except KeyError:
@@ -229,14 +225,14 @@ def test_smeargle_moves(filled_eeveedex):
 
 
 @pytest.mark.parametrize("pokemon_list,moves", [
-    (["deoxys-normal", "deoxys-attack", "deoxys-defense", "deoxys-speed"],
-     ["superpower", "zap-cannon", "amnesia", "counter", "iron-defense", "mirror-coat",
-      "spikes", "agility", "extreme-speed", "swift"]),
-    (["giratina-altered", "giratina-origin"], ["pain-split", "magic-coat", "tailwind"]),
-    (["shaymin-land", "shaymin-sky"], ["aromatherapy", "healing-wish", "synthesis",
-                                       "air-slash", "leaf-storm", "quick-attack"]),
-    (["hoopa", "hoopa-unbound"], ["hyperspace-fury", "knock-off", "hyperspace-hole",
-                                  "nasty-plot", "phantom-force", "zen-headbutt"])
+    (["deoxys", "deoxysattack", "deoxysdefense", "deoxysspeed"],
+     ["superpower", "zapcannon", "amnesia", "counter", "irondefense", "mirrorcoat",
+      "spikes", "agility", "extremespeed", "swift"]),
+    (["giratina", "giratinaorigin"], ["painsplit", "magiccoat", "tailwind"]),
+    (["shaymin", "shayminsky"], ["aromatherapy", "healingwish", "synthesis",
+                                 "airslash", "leafstorm", "quickattack"]),
+    (["hoopa", "hoopaunbound"], ["hyperspacefury", "knockoff", "hyperspacehole",
+                                 "nastyplot", "phantomforce", "zenheadbutt"])
 ])
 def test_changeable_form_moves(filled_eeveedex, pokemon_list, moves):
     for game_learnset in filled_eeveedex['learnsets'].values():
@@ -249,9 +245,9 @@ def test_changeable_form_moves(filled_eeveedex, pokemon_list, moves):
 
 
 @pytest.mark.parametrize("prevo,pokemon,move", [
-    ("bulbasaur", "venusaur", "seed-bomb"),
+    ("bulbasaur", "venusaur", "seedbomb"),
     ("magby", "magmortar", "uproar"),
-    ("minccino", "cinccino", "hyper-voice"),
+    ("minccino", "cinccino", "hypervoice"),
 ])
 def test_prevolution_exclusive_moves(filled_eeveedex, prevo, pokemon, move):
     for game_learnset in filled_eeveedex['learnsets'].values():
@@ -263,9 +259,9 @@ def test_prevolution_exclusive_moves(filled_eeveedex, prevo, pokemon, move):
 
 
 @pytest.mark.parametrize("pokemon,move", [
-    ("venusaur-mega", "petal-dance"),
-    ("charizard-mega-x", "fire-blast"),
-    ("charizard-mega-y", "fire-blast"),
+    ("venusaurmega", "petaldance"),
+    ("charizardmegax", "fireblast"),
+    ("charizardmegay", "fireblast"),
 ])
 def test_mega_evolution_moves(filled_eeveedex, pokemon, move):
     for game in ['x-y', 'omega-ruby-alpha-sapphire', 'sun-moon', 'ultra-sun-ultra-moon']:
@@ -273,22 +269,22 @@ def test_mega_evolution_moves(filled_eeveedex, pokemon, move):
 
 
 @pytest.mark.parametrize("pokemon,move,game", [
-    ("charizard", "blast-burn", "firered-leafgreen"),
-    ("beedrill", "bug-bite", "heartgold-soulsilver"),
+    ("charizard", "blastburn", "firered-leafgreen"),
+    ("beedrill", "bugbite", "heartgold-soulsilver"),
     ("marowak", "outrage", "black-2-white-2"),
-    ("blastoise", "focus-punch", "omega-ruby-alpha-sapphire"),
-    # ("vikavolt", "snore", "ultra-sun-ultra-moon")
+    ("blastoise", "focuspunch", "omega-ruby-alpha-sapphire"),
+    ("vikavolt", "snore", "ultra-sun-ultra-moon")
 ])
 def test_tutor_moves(filled_eeveedex, pokemon, move, game):
     assert move in filled_eeveedex['learnsets'][game][pokemon]
 
 
 @pytest.mark.parametrize("pokemon,move,game", [
-    ("gengar", "ice-punch", "emerald"),
-    ("meganium", "frenzy-plant", "diamond-pearl"),
-    ("samurott", "hydro-cannon", "black-white"),
-    ("dragalge", "draco-meteor", "x-y"),
-    ("decidueye", "grass-pledge", "sun-moon"),
+    ("gengar", "icepunch", "emerald"),
+    ("meganium", "frenzyplant", "diamond-pearl"),
+    ("samurott", "hydrocannon", "black-white"),
+    ("dragalge", "dracometeor", "x-y"),
+    ("decidueye", "grasspledge", "sun-moon"),
 ])
 def test_tutor_exceptional_moves(filled_eeveedex, pokemon, move, game):
     assert move in filled_eeveedex['learnsets'][game][pokemon]
@@ -296,7 +292,7 @@ def test_tutor_exceptional_moves(filled_eeveedex, pokemon, move, game):
 
 @pytest.mark.parametrize("pokemon,move", [
     ("pidgeot", "substitute"),
-    ("sandslash", "seismic-toss"),
+    ("sandslash", "seismictoss"),
 ])
 def test_tutor_gen_3(filled_eeveedex, pokemon, move):
     for game in ['emerald', 'firered-leafgreen']:
@@ -304,8 +300,8 @@ def test_tutor_gen_3(filled_eeveedex, pokemon, move):
 
 
 @pytest.mark.parametrize("pokemon,move", [
-    ("jolteon", "magnet-rise"),
-    ("gardevoir", "signal-beam")
+    ("jolteon", "magnetrise"),
+    ("gardevoir", "signalbeam")
 ])
 def test_tutor_gen_4(filled_eeveedex, pokemon, move):
     for game in ['platinum', 'heartgold-soulsilver']:
@@ -321,16 +317,16 @@ def test_natural_gift_expansion(filled_eeveedex, game, has_fairy):
     if not has_fairy:
         skip = "Fairy"
 
-    natural_gifts = [f"natural-gift-{type_.lower()}" for type_
+    natural_gifts = [f"naturalgift{type_.lower()}" for type_
                      in Constants.types if type_ != skip]
     moves = filled_eeveedex['learnsets'][game]['lugia']
     assert all(gift in moves for gift in natural_gifts)
 
-    assert ("natural-gift-fairy" in moves) == has_fairy
+    assert ("naturalgiftfairy" in moves) == has_fairy
 
 
 def test_hidden_power_expansion(filled_eeveedex):
-    hidden_powers = [f"hidden-power-{type_.lower()}" for type_
+    hidden_powers = [f"hiddenpower{type_.lower()}" for type_
                      in Constants.types if type_ not in ["Normal", "Fairy"]]
     moves = filled_eeveedex['learnsets']['ultra-sun-ultra-moon']['araquanid']
     assert all(power in moves for power in hidden_powers)
@@ -339,22 +335,28 @@ def test_hidden_power_expansion(filled_eeveedex):
 def test_move_type_depending_on_pokemon(filled_eeveedex):
     moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
              if move_name in Constants.moves_inheriting_type]
+    assert len(moves) == len(Constants.moves_inheriting_type)
     assert all("uses_pokemon_type" in move for move in moves)
 
 
 def test_move_that_doesnt_change_type(filled_eeveedex):
     moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
              if move_name not in Constants.moves_inheriting_type]
+    assert moves
+    assert len(moves) < len(filled_eeveedex['moves'])
     assert all("uses_pokemon_type" not in move for move in moves)
 
 
 def test_moves_that_changed_type(filled_eeveedex):
     moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
              if move_name in Constants.move_type_overrides.keys()]
+    assert len(moves) == len(Constants.move_type_overrides)
     assert all("override" in move for move in moves)
 
 
 def test_moves_that_didnt_change_type(filled_eeveedex):
     moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
              if move_name not in Constants.move_type_overrides.keys()]
+    assert moves
+    assert len(moves) < len(filled_eeveedex['moves'])
     assert all("override" not in move for move in moves)
