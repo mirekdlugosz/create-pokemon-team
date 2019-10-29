@@ -61,7 +61,6 @@ class PokedexStorage():
     def __init__(self):
         self.pokemon = {}        # dict of available Pokemon
         self.moves = {}          # move information
-        self._types = Constants.types
         self._move_categories = ['physical', 'special', 'status']
         self._evolution_trees = {}
 
@@ -149,20 +148,6 @@ class PokedexStorage():
 
     def add_pokemon(self, pokemon_id=None, name=None, types=None, number=None,
                     prevolution_id=None, moves=None):
-        """
-        if not pokemon_id:
-            raise ValueError('Pokemon ID cannot be empty')
-
-        if not name:
-            raise ValueError('Pokemon name cannot be empty')
-
-        if not types:
-            raise ValueError('Pokemon Type cannot be empty')
-
-        if set(types) & self._types != set(types):
-            raise ValueError('Unknown Type in {}; must be one of {}'.format(types, self._types))
-        """
-
         kwargs = {
             "name": name,
             "types": types,
@@ -176,38 +161,7 @@ class PokedexStorage():
         except KeyError:
             self.pokemon[pokemon_id] = Pokemon(pokemon_id=pokemon_id, **kwargs)
 
-    def add_pokemon_moves(self, version=None, pokemon_id=None, moves=None):
-        if not version:
-            raise ValueError('Version identifier cannot be empty')
-        if not pokemon_id:
-            raise ValueError('Pokemon identifier cannot be empty')
-        if not moves:
-            raise ValueError('Pokemon moves must be non-empty list')
-
-        self.pokemon_moves.setdefault(version, {}).setdefault(pokemon_id, []).extend(moves)
-
     def add_move(self, move_id=None, move_type=None, category=None, name=None):
-        if not move_id:
-            raise ValueError('Move ID cannot be empty')
-
-        if not isinstance(move_id, str) or move_id.isdigit():
-            raise ValueError('Move ID cannot be numeric')
-
-        if not move_type:
-            raise ValueError('Move type cannot be empty')
-
-        if move_type not in self._types:
-            raise ValueError('Unknown type in {}; must be one of {}'.format(move_type, self._types))
-
-        if not category:
-            raise ValueError('Move category cannot be empty')
-
-        if category not in self._move_categories:
-            raise ValueError('Unknown category in {}; must be one of {}'.format(category, self._move_categories))
-
-        if not name:
-            raise ValueError('Move name cannot be empty')
-
         move_struct = {
             "type": move_type,
             "category": category,
@@ -236,19 +190,3 @@ class PokedexStorage():
                 self._output_learnsets(fh)
             with directory.joinpath("moves.json").open('w') as fh:
                 self._output_moves(fh)
-
-    def dump_data(self, data_to_dump, pretty):
-        if pretty:
-            import pprint
-            pp = pprint.PrettyPrinter(compact=True)
-            p = pp.pprint
-        else:
-            p = print
-        if 'all' in data_to_dump:
-            data_to_dump.extend(['pokemon', 'learnsets', 'moves'])
-        if 'pokemon' in data_to_dump:
-            p(self.pokemon)
-        if 'learnsets' in data_to_dump:
-            p(self.pokemon_moves)
-        if 'moves' in data_to_dump:
-            p(self.moves)

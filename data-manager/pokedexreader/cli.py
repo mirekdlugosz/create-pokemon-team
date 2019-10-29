@@ -22,11 +22,6 @@ def parse_arguments():
                         help="path to Eevee's Pokedex .sqlite file")
     parser.add_argument('--showdown', required=False, dest='showdown_dir',
                         help="path to directory with Pokemon Showdown JSON files")
-    parser.add_argument('--dump', action='append',
-                        choices=['pokemon', 'learnsets', 'moves', 'all'],
-                        help="dump data from Pokedex, don't write any files")
-    parser.add_argument('--pretty', action='store_true',
-                        help="pretty-print results (affects --dump only)")
     parser.add_argument('-o', '--output-dir',
                         help="write files to OUTPUT_DIR. \"-\" means STDOUT")
     return parser.parse_args()
@@ -57,9 +52,6 @@ def cli():
     if args.showdown_dir:
         showdowndex = ShowdownReader(args.showdown_dir)
         showdowndex.fill_pokedex(pokedex)
-
-    if args.dump:
-        pokedex.dump_data(args.dump, args.pretty)
 
     if args.output_dir:
         pokedex.output(args.output_dir)
