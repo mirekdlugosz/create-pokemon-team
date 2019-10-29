@@ -19,7 +19,9 @@ class AbstractReader:
     def __init__(self, path):
         self._types = Constants.types
         self._versions = Constants.known_versions
-        self._valid_pokemon_list = Constants.available_pokemon
+        self._all_valid_pokemon = set([pokemon_id
+                                       for pokemon_list in Constants.available_pokemon.values()
+                                       for pokemon_id in pokemon_list])
         self._fill_hidden_powers()
         self._fill_natural_gifts()
 
@@ -405,81 +407,65 @@ class ShowdownReader(AbstractReader):
             pokemon_name = pokemon_name.replace("'", "’")
         return pokemon_name
 
-    def _get_smeargle_moves(self, version):
-        moves = set()
+    def _get_smeargle_moves(self):
+        all_moves = {}
+        introduced_in_index = Constants.known_versions.index('gold-silver')
         for pokemon_id, learnset in self._pokemon_moves_map.items():
-            if pokemon_id not in Constants.available_pokemon[version]:
+            if pokemon_id not in self._all_valid_pokemon:
                 continue
-            try:
-                moves.update(learnset[version])
-            except KeyError:
-                continue
-        return moves.difference(set(Constants.invalid_smeargle_moves))
+            for version, moves in learnset.items():
+                if introduced_in_index > Constants.known_versions.index(version):
+                    continue
+                all_moves.setdefault(version, set()).update(moves.difference(
+                    set(Constants.invalid_smeargle_moves)
+                ))
+        return all_moves
 
-    def _get_pokemon_moves_in_version(self, pokemon_id, version):
-        # TODO: workaround. Deoxys is super-peculiar in the way that it has
-        # multiple forms that can be changed at will, except in gen 3, where
-        # every game got one form. Since our moveset map only has "deoxys",
-        # we model forms as "evolutions" of standard "deoxy". But this fails,
-        # as these "evolutions" don't have valid prevo in gen 3
-        if "deoxys" in pokemon_id and version in ("emerald", "firered-leafgreen"):
-            version = "ruby-sapphire"
-        # end workaround
+    def _get_pokemon_moves(self, pokemon_id):
         try:
-            moves = self._pokemon_moves_map[pokemon_id][version]
+            all_moves = self._pokemon_moves_map[pokemon_id]
         except KeyError:
-            moves = set()
-        prevo = self._get_prevolution(pokemon_id, version)
+            all_moves = {}
+        prevo = self._get_prevolution(pokemon_id)
         if prevo:
-            moves.update(self._get_pokemon_moves_in_version(prevo, version))
+            prevo_moves = self._get_pokemon_moves(prevo)
+            for version, moves in prevo_moves.items():
+                all_moves.setdefault(version, set()).update(moves)
         if pokemon_id == "smeargle":
-            moves = self._get_smeargle_moves(version)
-        moves = self._expand_hidden_powers(moves)
-        moves = self._expand_natural_gifts(moves, version)
-        return moves
+            all_moves = self._get_smeargle_moves()
 
-    def _get_prevolution(self, pokemon_id, version):
+        for version, moves in all_moves.items():
+            moves = self._expand_hidden_powers(moves)
+            moves = self._expand_natural_gifts(moves, version)
+            all_moves[version] = moves
+        return all_moves
+
+    def _get_prevolution(self, pokemon_id):
         pokemon_obj = self._all_pokemon[pokemon_id]
-        prevo = object()
+        prevo = None
         if "prevo" in pokemon_obj:
             prevo = pokemon_obj["prevo"]
         if "baseSpecies" in pokemon_obj and (
                 pokemon_obj.get("forme", None) not in ["Alola"]):
             prevo = pokemon_obj["baseSpecies"].lower()
 
-        if prevo in self._valid_pokemon_list[version]:
-            return prevo
-
-        return None
-
-    def _position_in_evo_chain(self, pokemon_id, version):
-        prevo = self._get_prevolution(pokemon_id, version)
-        if prevo:
-            return 1 + self._position_in_evo_chain(prevo, version)
-        return 0
+        return prevo
 
     def _ignore_move(self, move_obj):
         return "isZ" in move_obj
 
     def fill_pokedex(self, pokedex):
-        for version in self._valid_pokemon_list:
-            if version in self._ignored_versions:
+        for pokemon_id in self._all_pokemon:
+            if pokemon_id not in self._all_valid_pokemon:
                 continue
 
-            available_pokemon = sorted(
-                self._valid_pokemon_list[version],
-                key=lambda x: self._position_in_evo_chain(x, version)
-            )
+            name = self._create_pokemon_name(pokemon_id)
+            types = self._all_pokemon[pokemon_id]['types']
+            number = self._all_pokemon[pokemon_id]['num']
+            prevolution_id = self._get_prevolution(pokemon_id)
+            moves = self._get_pokemon_moves(pokemon_id)
 
-            for pokemon_id in available_pokemon:
-                pokemon_name = self._create_pokemon_name(pokemon_id)
-                pokemon_types = self._all_pokemon[pokemon_id]['types']
-                pokemon_moves = self._get_pokemon_moves_in_version(pokemon_id, version)
-                pokedex.add_pokemon(version, pokemon_id, pokemon_name, pokemon_types)
-                try:
-                    pokedex.add_pokemon_moves(version, pokemon_id, pokemon_moves)
-                except ValueError:
-                    pass
+            pokedex.add_pokemon(pokemon_id, name, types, number, prevolution_id, moves)
 
         for move_id, move_obj in self._all_moves.items():
             if self._ignore_move(move_obj):
