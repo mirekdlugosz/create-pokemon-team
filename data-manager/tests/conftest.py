@@ -9,9 +9,12 @@ by the Free Software Foundation, either version 3 of the License, or
 any later version.
 """
 
+import io
+import json
 import pytest
 
 from pokedexreader.readers import EeveeReader, ShowdownReader
+from pokedexreader.storage import PokedexStorage
 
 
 def pytest_addoption(parser):
@@ -27,19 +30,40 @@ def pytest_collection_modifyitems(session, config, items):
     skip_eevee = pytest.mark.skip(reason="path to eevee pokedex sqlite not set; use --eevee option")
     skip_showdown = pytest.mark.skip(reason="path to Pokemon Showdown JSON files not set; use --showdown option")
     for item in items:
-        if ('eevee' in item.fixturenames and not has_eevee):
+        if ('[eevee' in item.name and not has_eevee):
             item.add_marker(skip_eevee)
-        if ('showdown' in item.fixturenames and not has_showdown):
+        if ('[showdown' in item.name and not has_showdown):
             item.add_marker(skip_showdown)
 
 
-@pytest.fixture(scope='session')
-def eevee(request):
-    pokedex_path = request.config.getoption('eevee_sqlite', None)
-    return EeveeReader(pokedex_path)
+@pytest.fixture(scope="module",
+                params=[(EeveeReader, 'eevee_sqlite'),
+                        (ShowdownReader, 'showdown_dir')],
+                ids=['eevee', 'showdown'])
+def filled_pokedex(request):
+    ReaderClass, option_name = request.param
+    pokedex_path = request.config.getoption(option_name, None)
+    reader = ReaderClass(pokedex_path)
+    pokedex = PokedexStorage()
+    reader.fill_pokedex(pokedex)
+
+    with io.StringIO() as fh:
+        pokedex._output_pokemon(fh)
+        pokemon = json.loads(fh.getvalue())
+
+    with io.StringIO() as fh:
+        pokedex._output_moves(fh)
+        moves = json.loads(fh.getvalue())
+
+    with io.StringIO() as fh:
+        pokedex._output_learnsets(fh)
+        learnsets = json.loads(fh.getvalue())
+
+    return {
+        'pokedex': pokedex,
+        'pokemon': pokemon,
+        'moves': moves,
+        'learnsets': learnsets
+    }
 
 
-@pytest.fixture(scope='session')
-def showdown(request):
-    pokedex_path = request.config.getoption('showdown_dir', None)
-    return ShowdownReader(pokedex_path)

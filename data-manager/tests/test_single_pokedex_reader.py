@@ -9,40 +9,12 @@ by the Free Software Foundation, either version 3 of the License, or
 any later version.
 """
 
-import io
-import json
 import pytest
 
-from pokedexreader.storage import PokedexStorage
 from pokedexreader.constants import Constants
 
 
-@pytest.fixture(scope="module")
-def filled_eeveedex(eevee):
-    pokedex = PokedexStorage()
-    eevee.fill_pokedex(pokedex)
-
-    with io.StringIO() as fh:
-        pokedex._output_pokemon(fh)
-        pokemon = json.loads(fh.getvalue())
-
-    with io.StringIO() as fh:
-        pokedex._output_moves(fh)
-        moves = json.loads(fh.getvalue())
-
-    with io.StringIO() as fh:
-        pokedex._output_learnsets(fh)
-        learnsets = json.loads(fh.getvalue())
-
-    return {
-        'pokedex': pokedex,
-        'pokemon': pokemon,
-        'moves': moves,
-        'learnsets': learnsets
-    }
-
-
-def test_pokemon_with_many_forms(filled_eeveedex):
+def test_pokemon_with_many_forms(filled_pokedex):
     expected = {'diamond-pearl': ["deoxys", "deoxysattack", "deoxysdefense", "deoxysspeed",
                                   "wormadam", "wormadamsandy", "wormadamtrash", "giratina",
                                   "shaymin", "arceus", "arceusbug", "arceusdark", "arceusdragon",
@@ -67,14 +39,14 @@ def test_pokemon_with_many_forms(filled_eeveedex):
                                          "necrozmaultra"]
                 }
     for game, pokemon_list in expected.items():
-        all_pokemon = [item['id'] for item in filled_eeveedex['pokemon'][game]]
+        all_pokemon = [item['id'] for item in filled_pokedex['pokemon'][game]]
         assert all_pokemon
         for pokemon in pokemon_list:
             assert pokemon in all_pokemon
         assert all(pokemon in all_pokemon for pokemon in pokemon_list)
 
 
-def test_ignored_pokemon_is_not_present(filled_eeveedex):
+def test_ignored_pokemon_is_not_present(filled_pokedex):
     ignored_pokemon_list = ['pichu-spiky-eared', 'pikachu-rock-star', 'marowak-totem',
                             'castform-sunny', 'burmy-sandy', 'mothim-plant', 'cherrim-sunshine',
                             'shellos-west', 'gastrodon-east', 'arceus-unknown',
@@ -88,17 +60,16 @@ def test_ignored_pokemon_is_not_present(filled_eeveedex):
                             'minior-indigo-meteor', 'minior-meteor', 'minior-blue',
                             'mimikyu-busted', 'magearna-original']
 
-    for game in filled_eeveedex['pokemon']:
-        pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]]
+    for game in filled_pokedex['pokemon']:
+        pokemon_list = [item['id'] for item in filled_pokedex['pokemon'][game]]
         assert pokemon_list
         for ignored in ignored_pokemon_list:
             assert ignored not in pokemon_list
-            assert ignored.replace('-', '') not in pokemon_list
 
 
-def test_order_in_pokedex(filled_eeveedex):
+def test_order_in_pokedex(filled_pokedex):
     game = 'ultra-sun-ultra-moon'
-    pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]]
+    pokemon_list = [item['id'] for item in filled_pokedex['pokemon'][game]]
     assert pokemon_list.index('bulbasaur') == 0
     assert pokemon_list.index('bulbasaur') < pokemon_list.index('abra')
     assert pokemon_list.index('charmander') == pokemon_list.index('charmeleon') - 1
@@ -141,10 +112,10 @@ def test_order_in_pokedex(filled_eeveedex):
     ("necrozmadawnwings", "Necrozma (Dawn Wings)"),
     ("necrozmaultra", "Necrozma (Ultra)"),
 ])
-def test_forme_name(filled_eeveedex, pokemon_id, name):
+def test_forme_name(filled_pokedex, pokemon_id, name):
     in_any = False
-    for game in filled_eeveedex['pokemon']:
-        pokemon = next((item for item in filled_eeveedex['pokemon'][game]
+    for game in filled_pokedex['pokemon']:
+        pokemon = next((item for item in filled_pokedex['pokemon'][game]
                         if item['id'] == pokemon_id), None)
         if not pokemon:
             continue
@@ -152,20 +123,19 @@ def test_forme_name(filled_eeveedex, pokemon_id, name):
         assert pokemon['name'] == name
     assert in_any
 
-
 @pytest.mark.parametrize("game,expected", [
     ("ruby-sapphire", ["deoxys"]),
     ("emerald", ["deoxysspeed"]),
     ("firered-leafgreen", ["deoxysattack", "deoxysdefense"]),
     ("x-y", ["deoxys", "deoxysattack", "deoxysdefense", "deoxysspeed"])
 ])
-def test_deoxys_in_gen_3(filled_eeveedex, game, expected):
-    pokemon_list = [item['id'] for item in filled_eeveedex['pokemon'][game]
+def test_deoxys_in_gen_3(filled_pokedex, game, expected):
+    pokemon_list = [item['id'] for item in filled_pokedex['pokemon'][game]
                     if 'deoxys' in item['id']]
     assert pokemon_list == expected
 
 
-def test_mega_in_gen_6(filled_eeveedex):
+def test_mega_in_gen_6(filled_pokedex):
     fake_mega = ['yanmega', 'meganium']
 
     reference_xy_mega = [pokemon for pokemon in Constants.available_pokemon['x-y']
@@ -174,7 +144,7 @@ def test_mega_in_gen_6(filled_eeveedex):
                            Constants.available_pokemon['omega-ruby-alpha-sapphire']
                            if "mega" in pokemon and pokemon not in fake_mega]
 
-    pokemon = filled_eeveedex['pokemon']
+    pokemon = filled_pokedex['pokemon']
     xy_mega_list = [item['id'] for item in pokemon['x-y']
                     if 'mega' in item['id'] and item['id'] not in fake_mega]
     oras_mega_list = [item['id'] for item in pokemon['omega-ruby-alpha-sapphire']
@@ -192,28 +162,34 @@ def test_mega_in_gen_6(filled_eeveedex):
     ("togekiss", "black-2-white-2", ["Normal", "Flying"], ["Fairy", "Flying"]),
     ("jigglypuff", "black-2-white-2", ["Normal"], ["Normal", "Fairy"])
 ])
-def test_pokemon_type_before_change(filled_eeveedex, pokemon, last_game, type_, new_type):
+def test_pokemon_type_before_change(filled_pokedex, pokemon, last_game, type_, new_type):
     versions = Constants.known_versions
+    any_game = False
     for game in versions[:versions.index(last_game) + 1]:
-        pokemon_obj = next((item for item in filled_eeveedex['pokemon'][game]
-                           if pokemon in item['id']), None)
-        if not pokemon_obj:
+        try:
+            pokemon_obj = next(item for item in filled_pokedex['pokemon'][game]
+                               if pokemon in item['id'])
+        except (KeyError, StopIteration):
             continue
+        any_game = True
         assert pokemon_obj['type'] == type_
+    assert any_game
 
     game = versions[versions.index(last_game) + 1]
-    pokemon_obj = next((item for item in filled_eeveedex['pokemon'][game]
+    pokemon_obj = next((item for item in filled_pokedex['pokemon'][game]
                        if pokemon in item['id']), None)
     assert pokemon_obj['type'] == new_type
 
 
-def test_pokemon_in_learnsets(filled_eeveedex):
+def test_pokemon_in_learnsets(filled_pokedex):
     for version, pokemon_list in Constants.available_pokemon.items():
-        assert len(filled_eeveedex['learnsets'][version]) == len(pokemon_list)
+        if version not in filled_pokedex['learnsets']:
+            continue
+        assert len(filled_pokedex['learnsets'][version]) == len(pokemon_list)
 
 
-def test_smeargle_moves(filled_eeveedex):
-    for version, learnset in filled_eeveedex['learnsets'].items():
+def test_smeargle_moves(filled_pokedex):
+    for learnset in filled_pokedex['learnsets'].values():
         try:
             smeargle_moves = learnset['smeargle']
         except KeyError:
@@ -234,8 +210,8 @@ def test_smeargle_moves(filled_eeveedex):
     (["hoopa", "hoopaunbound"], ["hyperspacefury", "knockoff", "hyperspacehole",
                                  "nastyplot", "phantomforce", "zenheadbutt"])
 ])
-def test_changeable_form_moves(filled_eeveedex, pokemon_list, moves):
-    for game_learnset in filled_eeveedex['learnsets'].values():
+def test_changeable_form_moves(filled_pokedex, pokemon_list, moves):
+    for game_learnset in filled_pokedex['learnsets'].values():
         if not all(pokemon in game_learnset for pokemon in pokemon_list):
             continue
         for move in moves:
@@ -249,8 +225,8 @@ def test_changeable_form_moves(filled_eeveedex, pokemon_list, moves):
     ("magby", "magmortar", "uproar"),
     ("minccino", "cinccino", "hypervoice"),
 ])
-def test_prevolution_exclusive_moves(filled_eeveedex, prevo, pokemon, move):
-    for game_learnset in filled_eeveedex['learnsets'].values():
+def test_prevolution_exclusive_moves(filled_pokedex, prevo, pokemon, move):
+    for game_learnset in filled_pokedex['learnsets'].values():
         if not all(poke in game_learnset for poke in (prevo, pokemon)):
             continue
         know_list = [move in game_learnset[poke] for poke in (prevo, pokemon)]
@@ -263,9 +239,9 @@ def test_prevolution_exclusive_moves(filled_eeveedex, prevo, pokemon, move):
     ("charizardmegax", "fireblast"),
     ("charizardmegay", "fireblast"),
 ])
-def test_mega_evolution_moves(filled_eeveedex, pokemon, move):
+def test_mega_evolution_moves(filled_pokedex, pokemon, move):
     for game in ['x-y', 'omega-ruby-alpha-sapphire', 'sun-moon', 'ultra-sun-ultra-moon']:
-        assert move in filled_eeveedex['learnsets'][game][pokemon]
+        assert move in filled_pokedex['learnsets'][game][pokemon]
 
 
 @pytest.mark.parametrize("pokemon,move,game", [
@@ -275,8 +251,8 @@ def test_mega_evolution_moves(filled_eeveedex, pokemon, move):
     ("blastoise", "focuspunch", "omega-ruby-alpha-sapphire"),
     ("vikavolt", "snore", "ultra-sun-ultra-moon")
 ])
-def test_tutor_moves(filled_eeveedex, pokemon, move, game):
-    assert move in filled_eeveedex['learnsets'][game][pokemon]
+def test_tutor_moves(filled_pokedex, pokemon, move, game):
+    assert move in filled_pokedex['learnsets'][game][pokemon]
 
 
 @pytest.mark.parametrize("pokemon,move,game", [
@@ -286,77 +262,71 @@ def test_tutor_moves(filled_eeveedex, pokemon, move, game):
     ("dragalge", "dracometeor", "x-y"),
     ("decidueye", "grasspledge", "sun-moon"),
 ])
-def test_tutor_exceptional_moves(filled_eeveedex, pokemon, move, game):
-    assert move in filled_eeveedex['learnsets'][game][pokemon]
+def test_tutor_exceptional_moves(filled_pokedex, pokemon, move, game):
+    assert move in filled_pokedex['learnsets'][game][pokemon]
 
 
 @pytest.mark.parametrize("pokemon,move", [
     ("pidgeot", "substitute"),
     ("sandslash", "seismictoss"),
 ])
-def test_tutor_gen_3(filled_eeveedex, pokemon, move):
+def test_tutor_gen_3(filled_pokedex, pokemon, move):
     for game in ['emerald', 'firered-leafgreen']:
-        assert move in filled_eeveedex['learnsets'][game][pokemon]
+        assert move in filled_pokedex['learnsets'][game][pokemon]
 
 
 @pytest.mark.parametrize("pokemon,move", [
     ("jolteon", "magnetrise"),
     ("gardevoir", "signalbeam")
 ])
-def test_tutor_gen_4(filled_eeveedex, pokemon, move):
+def test_tutor_gen_4(filled_pokedex, pokemon, move):
     for game in ['platinum', 'heartgold-soulsilver']:
-        assert move in filled_eeveedex['learnsets'][game][pokemon]
+        assert move in filled_pokedex['learnsets'][game][pokemon]
 
 
 @pytest.mark.parametrize("game,has_fairy", [
     ("black-white", False),
     ("sun-moon", True)
 ])
-def test_natural_gift_expansion(filled_eeveedex, game, has_fairy):
+def test_natural_gift_expansion(filled_pokedex, game, has_fairy):
     skip = ""
     if not has_fairy:
         skip = "Fairy"
 
     natural_gifts = [f"naturalgift{type_.lower()}" for type_
                      in Constants.types if type_ != skip]
-    moves = filled_eeveedex['learnsets'][game]['lugia']
+    moves = filled_pokedex['learnsets'][game]['lugia']
     assert all(gift in moves for gift in natural_gifts)
 
     assert ("naturalgiftfairy" in moves) == has_fairy
 
 
-def test_hidden_power_expansion(filled_eeveedex):
+def test_hidden_power_expansion(filled_pokedex):
     hidden_powers = [f"hiddenpower{type_.lower()}" for type_
                      in Constants.types if type_ not in ["Normal", "Fairy"]]
-    moves = filled_eeveedex['learnsets']['ultra-sun-ultra-moon']['araquanid']
+    moves = filled_pokedex['learnsets']['ultra-sun-ultra-moon']['araquanid']
     assert all(power in moves for power in hidden_powers)
 
 
-def test_move_type_depending_on_pokemon(filled_eeveedex):
-    moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
+def test_move_type_depending_on_pokemon(filled_pokedex):
+    moves = [move_obj for move_name, move_obj in filled_pokedex['moves'].items()
              if move_name in Constants.moves_inheriting_type]
-    assert len(moves) == len(Constants.moves_inheriting_type)
     assert all("uses_pokemon_type" in move for move in moves)
 
 
-def test_move_that_doesnt_change_type(filled_eeveedex):
-    moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
+def test_move_that_doesnt_change_type(filled_pokedex):
+    moves = [move_obj for move_name, move_obj in filled_pokedex['moves'].items()
              if move_name not in Constants.moves_inheriting_type]
-    assert moves
-    assert len(moves) < len(filled_eeveedex['moves'])
     assert all("uses_pokemon_type" not in move for move in moves)
 
 
-def test_moves_that_changed_type(filled_eeveedex):
-    moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
+def test_moves_that_changed_type(filled_pokedex):
+    moves = [move_obj for move_name, move_obj in filled_pokedex['moves'].items()
              if move_name in Constants.move_type_overrides.keys()]
-    assert len(moves) == len(Constants.move_type_overrides)
     assert all("override" in move for move in moves)
 
 
-def test_moves_that_didnt_change_type(filled_eeveedex):
-    moves = [move_obj for move_name, move_obj in filled_eeveedex['moves'].items()
+def test_moves_that_didnt_change_type(filled_pokedex):
+    moves = [move_obj for move_name, move_obj in filled_pokedex['moves'].items()
              if move_name not in Constants.move_type_overrides.keys()]
-    assert moves
-    assert len(moves) < len(filled_eeveedex['moves'])
     assert all("override" not in move for move in moves)
