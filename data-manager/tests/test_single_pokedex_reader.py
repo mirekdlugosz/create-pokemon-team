@@ -123,6 +123,7 @@ def test_forme_name(filled_pokedex, pokemon_id, name):
         assert pokemon['name'] == name
     assert in_any
 
+
 @pytest.mark.parametrize("game,expected", [
     ("ruby-sapphire", ["deoxys"]),
     ("emerald", ["deoxysspeed"]),
@@ -198,6 +199,30 @@ def test_smeargle_moves(filled_pokedex):
         assert len(smeargle_moves) > 250
         for move in Constants.invalid_smeargle_moves:
             assert move not in smeargle_moves
+
+
+@pytest.mark.parametrize("pokemon_with,pokemon_without,moves", [
+    (['wormadam'], ['wormadamsandy', 'wormadamtrash'], ['razorleaf', 'growth', 'leafstorm']),
+    (['wormadamsandy'], ['wormadam', 'wormadamtrash'], ['rockblast', 'harden', 'fissure']),
+    (['wormadamtrash'], ['wormadam', 'wormadamsandy'], ['mirrorshot', 'metalsound', 'ironhead']),
+    (['kyurem'], ['kyuremwhite', 'kyuremblack'], ['scaryface', 'glaciate']),
+    (['kyuremwhite'], ['kyurem', 'kyuremblack'], ['fusionflare', 'iceburn']),
+    (['kyuremblack'], ['kyurem', 'kyuremwhite'], ['fusionbolt', 'freezeshock']),
+    (['meowstic'], ['meowsticf'], ['charm', 'imprison', 'meanlook', 'miracleeye', 'mistyterrain', 'quickguard']),
+    (['meowsticf'], ['meowstic'], ['extrasensory', 'futuresight', 'magicalleaf', 'mefirst', 'storedpower']),
+    (['lycanrock', 'lycanrocdusk'], ['lycanrocmidnight'], ['accelerock']),
+    (['lycanrocmidnight', 'lycanrocdusk'], ['lycanroc'], ['counter']),
+    (['lycanroc'], ['lycanrocmidnight', 'lycanrocdusk'], ['quickattack']),
+])
+def test_exclusive_form_moves(filled_pokedex, pokemon_with, pokemon_without, moves):
+    for game_learnset in filled_pokedex['learnsets'].values():
+        if not all(pokemon in game_learnset for pokemon in pokemon_with + pokemon_without):
+            continue
+        for move in moves:
+            know_list = [move in game_learnset[pokemon] for pokemon in pokemon_with]
+            dont_know_list = [move not in game_learnset[pokemon] for pokemon in pokemon_without]
+            assert all(know_list)
+            assert all(dont_know_list)
 
 
 @pytest.mark.parametrize("pokemon_list,moves", [
