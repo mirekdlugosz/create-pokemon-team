@@ -444,15 +444,17 @@ class ShowdownReader(AbstractReader):
         return all_moves
 
     def _get_prevolution(self, pokemon_id):
+        if pokemon_id in Constants.showdown_prevolution_override:
+            return Constants.showdown_prevolution_override[pokemon_id]
+
         pokemon_obj = self._all_pokemon[pokemon_id]
-        prevo = None
         if "prevo" in pokemon_obj:
-            prevo = pokemon_obj["prevo"]
+            return pokemon_obj["prevo"]
         if "baseSpecies" in pokemon_obj and (
                 pokemon_obj.get("forme", None) not in ["Alola"]):
-            prevo = pokemon_obj["baseSpecies"].lower()
+            return pokemon_obj["baseSpecies"].lower()
 
-        return prevo
+        return None
 
     def _ignore_move(self, move_obj):
         return "isZ" in move_obj

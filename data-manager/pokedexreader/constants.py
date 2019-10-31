@@ -290,6 +290,13 @@ class Constants():
         "rockruff": "Rockruff",
     }
 
+    # Map of Pokemon and their real prevolutions
+    # Used in Showdown reader
+    showdown_prevolution_override = {
+        "kyuremwhite": None,
+        "kyuremblack": None,
+    }
+
     # Some Pokemon have multiple forms that differ in a way that is not
     # relevant for us (e.g. by stats). This list is used to ensure
     # that all forms are treated as one
