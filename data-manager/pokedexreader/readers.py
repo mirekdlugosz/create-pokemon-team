@@ -352,6 +352,9 @@ class ShowdownReader(AbstractReader):
         return versions
 
     def _create_pokemon_name(self, pokemon_id):
+        if pokemon_id in Constants.showdown_correct_pokemon_names:
+            return Constants.showdown_correct_pokemon_names[pokemon_id]
+
         pokemon_obj = self._all_pokemon[pokemon_id]
         species = pokemon_obj.get('species', None)
         base_species = pokemon_obj.get('baseSpecies', None)
@@ -403,7 +406,7 @@ class ShowdownReader(AbstractReader):
         elif species_name.startswith("Oricorio"):
             suffix = "Style"
         pokemon_name = f"{species_name} ({forme_name} {suffix})"
-        if "'" in forme_name:
+        if "'" in pokemon_name:
             pokemon_name = pokemon_name.replace("'", "’")
         return pokemon_name
 
