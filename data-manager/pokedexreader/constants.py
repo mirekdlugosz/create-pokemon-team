@@ -285,9 +285,11 @@ class Constants():
     # Sometimes Eevee Pokedex names are just better, but there is no obvious
     # way to transform Showdown data into it
     showdown_correct_pokemon_names = {
-        "nidoranf": "Nidoran ♀",
-        "nidoranm": "Nidoran ♂",
+        "nidoranf": "Nidoran♀",
+        "nidoranm": "Nidoran♂",
+        "farfetchd": "Farfetch’d",
         "rockruff": "Rockruff",
+        "silvally": "Silvally (Normal Type)",
     }
 
     # Map of Pokemon and their real prevolutions
