@@ -104,8 +104,8 @@ class TestLearnsets():
 
         assert len(moves) != len(transferred_moves)
         assert moves != transferred_moves
-        assert 'zap-cannon' in transferred_moves
-        assert 'zap-cannon' not in moves
+        assert 'zapcannon' in transferred_moves
+        assert 'zapcannon' not in moves
 
     def test_unknown_version(self, client):
         pokemon = 'sandslash'
@@ -117,7 +117,7 @@ class TestLearnsets():
 
     def test_mega_is_the_same(self, client):
         normal = 'altaria'
-        mega = f'{normal}-mega'
+        mega = f'{normal}mega'
         with client.get(f'/pokemon?ver={game_version}&p={normal}') as rv:
             moves = next((moves for moves in get_json(rv).values()))
 
@@ -129,7 +129,7 @@ class TestLearnsets():
     def test_alola_is_different(self, client):
         game_version = 'sun-moon'
         normal = 'sandslash'
-        alola = f'{normal}-alola'
+        alola = f'{normal}alola'
         with client.get(f'/pokemon?ver={game_version}&p={normal}') as rv:
             moves = next((moves for moves in get_json(rv).values()))
 
@@ -208,7 +208,7 @@ class TestMoves():
         assert len(moves_list) == len(set(data))
 
     def test_changed_type(self, client):
-        data = ['sweet-kiss']
+        data = ['sweetkiss']
         rv = client.post('/moves',
                          data=json.dumps(data),
                          content_type='application/json')
