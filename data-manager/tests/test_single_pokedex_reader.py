@@ -78,6 +78,7 @@ def test_order_in_pokedex(filled_pokedex):
     assert pokemon_list.index('rhyhorn') == pokemon_list.index('rhyperior') - 2
     assert pokemon_list.index('pikachu') == pokemon_list.index('raichualola') - 2
     assert pokemon_list.index('vulpixalola') == pokemon_list.index('ninetalesalola') - 2
+    assert pokemon_list.index('mimejr') == pokemon_list.index('starmie') + 1
 
 
 @pytest.mark.parametrize("pokemon_id,name", [

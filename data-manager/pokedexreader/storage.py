@@ -103,11 +103,14 @@ class PokedexStorage():
     def _sorting_key(self, pokemon_id):
         prevo = self._get_evolution_chain(pokemon_id)[0]
         family_number = self.pokemon[prevo].number
+        pokemon_numbers = [self.pokemon[pokemon_id].number
+                           for chain in self._evolution_trees[family_number]
+                           for pokemon_id in chain]
         for chain_number, chain in enumerate(self._evolution_trees[family_number]):
             if pokemon_id in chain:
                 evolution_chain_index = chain.index(pokemon_id)
                 break
-        return (family_number, evolution_chain_index, chain_number)
+        return (min(pokemon_numbers), evolution_chain_index, chain_number)
 
     def _output_pokemon(self, fh):
         struct = {}
