@@ -22,6 +22,22 @@ export class TeamService {
   private moveTemplate = {'category': '', 'name': '', 'type': '', 'id': ''};
   private memberTemplate = {'pokemon': {'id': '', 'name': '', 'type': []},
     'moves': Array(this.MOVES_NUMBER).fill(this.moveTemplate)};
+  private EeveeShowdownMap = {
+    "arceus-normal": "arceus",
+    "darmanitan-standard": "darmanitan",
+    "deoxys-normal": "deoxys",
+    "giratina-altered": "giratina",
+    "lycanroc-midday": "lycanroc",
+    "meloetta-aria": "meloetta",
+    "meowstic-male": "meowstic",
+    "meowstic-female": "meowsticf",
+    "necrozma-dawn": "necrozmadawnwings",
+    "necrozma-dusk": "necrozmaduskmane",
+    "oricorio-baile": "oricorio",
+    "shaymin-land": "shaymin",
+    "silvally-normal": "silvally",
+    "wormadam-plant": "wormadam",
+  }
 
   public team: any[] = Array(this.MAX_MEMBERS_NUMBER);
   public teamDataRequest$ = new Subject();
@@ -42,6 +58,20 @@ export class TeamService {
         }
         return {'name': member[0], 'moves': member.slice(1, this.MOVES_NUMBER + 1)};
       });
+
+    let newTeamDefinition = this.applyFilters(this._teamDefinition);
+
+    const outdatedTeamDefinition = (
+      JSON.stringify(this._teamDefinition) !== JSON.stringify(newTeamDefinition))
+
+    if (outdatedTeamDefinition) {
+      const message = {
+        'param': 'team',
+        'value': JSON.stringify(this.teamDefinitionToURLDefinition(newTeamDefinition))
+      }
+      this.urlmanager.openURLWithParam(message);
+      return;
+    }
 
     this.teamDataRequest$.next(this._teamDefinition
       .map(pokemon => pokemon.name)
@@ -107,8 +137,30 @@ export class TeamService {
     return this.nextMemberIndex(index) !== undefined;
   }
 
+  private applyFilters(team) {
+    return team.map(member => {
+      let filteredName = this.filterName(member.name);
+      let filteredMoves = member.moves
+        .map(move => move.replace(/-/g, ''));
+      return {"name": filteredName, "moves": filteredMoves};
+    });
+  }
+
+  private filterName(name) {
+    if (name in this.EeveeShowdownMap) {
+      return this.EeveeShowdownMap[name];
+    }
+    return name.replace(/-/g, '');
+  }
+
   private teamMemberIsDefined(index) {
     return (this.team[index] !== undefined && this.team[index].pokemon.id !== '');
+  }
+
+  private teamDefinitionToURLDefinition(teamDefinition) {
+    return teamDefinition
+      .map(member => [].concat([member.name], member.moves))
+      .map(member => ((member[0] === '') ? [] : member ));
   }
 
   private teamToURLDefinition() {
