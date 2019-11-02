@@ -4,8 +4,11 @@ data-manager takes data from specified source and outputs JSON files readable by
 
 ## Requirements
 
-* Python 3.4 or later
-* SQLite file with data from [veekun Pokédex](https://github.com/veekun/pokedex)
+* Python 3.6 or later
+* Node.js 12.0 or later (optional, only if Pokemon Showdown is used as data source)
+* At least one data source:
+    * SQLite file with data from [veekun Pokédex](https://github.com/veekun/pokedex)
+    * Copy of [Pokemon Showdown repository](https://github.com/Zarel/Pokemon-Showdown)
 
 ## Installation
 
@@ -21,7 +24,11 @@ You can - and should! - use one virtual environment for both `backend` and `data
 
 ## Setting up data source
 
-This component requires some data source. Currently only SQLite file with veekun Pokédex is supported. You can acquire it by running following commands; make sure to run them outside of **this** project repository:
+This component requires some data source. Currently SQLite file with veekun Pokédex and `data` directory from Pokemon Showdown repository are supported.
+
+### veekun SQLite file
+
+You can acquire veekun SQLite by running following commands; make sure to run them outside of **this** project repository:
 
 ```
 git clone https://github.com/veekun/pokedex.git
@@ -34,19 +41,30 @@ pokedex load
 
 Path to SQLite file will be printed out at the beginning of output. Or you can use `pokedex status`.
 
+### Pokemon Showdown `data` directory
+
+Acquire copy of Pokemon Showdown repository. Since files in `data` directory are designed to be used by Node.js, they must be transformed to JSON first. Adjust paths in following commands:
+
+```
+git clone https://github.com/Zarel/Pokemon-Showdown.git
+node create-pokemon-team/data-manager/showdown2json Pokemon-Showdown/data/ /tmp/showdown-data-json/
+```
+
 ## Usage
 
 When virtual environment for this project is active, run:
 
 ```
-pokedexreader --eevee <path_to_veekun_pokedex.sqlite> -o <path_to_backend/api/data/>
+pokedexreader --eevee <path_to_veekun_pokedex.sqlite> --showdown <path_to_showdown_data_json_dir> -o <path_to_backend/api/data/>
 ```
+
+One of `--eevee` and `--showdown` can be omitted. For best results, use both of them.
 
 See `pokedexreader --help` for all available options.
 
 ## Data sources
 
-There are three publicly-availble sources of data about Pokémon:
+There are three publicly-available sources of data about Pokémon:
 
 * [veekun Pokédex](https://veekun.com/dex)
 * [Pokémon Showdown!](https://pokemonshowdown.com/)
@@ -58,9 +76,9 @@ veekun uses custom scripts to dump data from game files. While it is very compre
 
 Pokémon Showdown! is online battle simulator. It completely omits generations I and II, as battle mechanics was revamped in generation III. It stores data in couple of JavaScript files - they can be easily converted to JSON, but require something that can understand JS.
 
-Bulbapedia is wiki dedicated to Pokémon. They are probably the most comprehensive and quickest to update, but their database is not publicly availble and they actively fight all attempts at mass scraping of data. Even if they would not, a lot of interesting data seems to not be structured in any particular way, making it extremely hard to read automatically.
+Bulbapedia is wiki dedicated to Pokémon. They are probably the most comprehensive and quickest to update, but their database is not publicly available and they actively fight all attempts at mass scraping of data. Even if they would not, a lot of interesting data seems to not be structured in any particular way, making it extremely hard to read automatically.
 
-At the moment, **this script supports only veekun SQLite file as data source**.
+At the moment, **this script supports veekun SQLite file and Pokémon Showdown `data` directory as data sources**.
 
 ## License
 
