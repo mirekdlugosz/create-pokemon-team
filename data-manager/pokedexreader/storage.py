@@ -64,6 +64,13 @@ class PokedexStorage():
         self._move_categories = ['physical', 'special', 'status']
         self._evolution_trees = {}
 
+    @property
+    def _inserted_versions(self):
+        versions = set()
+        for pokemon in self.pokemon.values():
+            versions.update(set(pokemon.moves.keys()))
+        return versions
+
     def _get_evolution_chain(self, pokemon_id):
         evo_chain = [pokemon_id]
         while True:
@@ -116,6 +123,8 @@ class PokedexStorage():
         struct = {}
         self._evolution_trees = self._create_evolution_trees()
         for version, pokemon_ids in Constants.available_pokemon.items():
+            if version not in self._inserted_versions:
+                continue
             pokemon_ids = sorted(
                 pokemon_ids,
                 key=lambda x: self._sorting_key(x)
@@ -134,10 +143,12 @@ class PokedexStorage():
     def _output_learnsets(self, fh):
         struct = {}
         all_pokemon_ids = set()
-        for pokemon_list in Constants.available_pokemon.values():
+        for version, pokemon_list in Constants.available_pokemon.items():
+            if version not in self._inserted_versions:
+                continue
             all_pokemon_ids.update(pokemon_list)
 
-        for pokemon_id in pokemon_list:
+        for pokemon_id in all_pokemon_ids:
             learnset = self.pokemon[pokemon_id].moves
             for version, moves_list in learnset.items():
                 if pokemon_id not in Constants.available_pokemon[version]:

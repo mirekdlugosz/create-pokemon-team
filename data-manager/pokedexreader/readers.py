@@ -344,10 +344,11 @@ class ShowdownReader(AbstractReader):
                 continue
             if method == "T":  # Tutor - often exclusive to last game in generation
                 games = [games[-1]]
-                for tutor_special_case in Constants.tutor_moves_map[generation]:
-                    if move in tutor_special_case["moves"]:
-                        games = tutor_special_case["games"]
-                        break
+                if generation in Constants.tutor_moves_map:
+                    for tutor_special_case in Constants.tutor_moves_map[generation]:
+                        if move in tutor_special_case["moves"]:
+                            games = tutor_special_case["games"]
+                            break
             versions.update(games)
         return versions
 
@@ -372,7 +373,7 @@ class ShowdownReader(AbstractReader):
         species_name = base_species or species
         forme_name = base_forme or forme
 
-        if species_name == "Meowstic":
+        if species_name in ("Meowstic", "Indeedee"):
             if forme_name == "M":
                 forme_name = "Male"
             else:
@@ -380,14 +381,16 @@ class ShowdownReader(AbstractReader):
 
         if forme_name == "Alola":
             return f"Alolan {species_name}"
+        if forme_name == "Galar":
+            return f"Galarian {species_name}"
         if forme_name == "Primal":
             return f"{species_name} (Primal Reversion)"
         if forme_name.startswith("Mega"):
             _, _, version = forme_name.partition("-")
             return f"Mega {species_name} {version}".strip()
-        if species_name.startswith("Rotom"):
+        if species_name.startswith(("Rotom", "Zacian", "Zamazenta")):
             return f"{forme_name} {species_name}"
-        if species_name.startswith(("Kyurem", "Hoopa", "Meowstic")):
+        if species_name.startswith(("Kyurem", "Hoopa", "Meowstic", "Indeedee")):
             return f"{species_name} ({forme_name})"
         if species_name.startswith("Necrozma"):
             return f"{species_name} ({forme_name.replace('-', ' ')})"
@@ -452,7 +455,7 @@ class ShowdownReader(AbstractReader):
             return pokemon_obj["prevo"]
         if "baseSpecies" in pokemon_obj and (
                 pokemon_obj.get("forme", None) not in ["Alola"]):
-            return pokemon_obj["baseSpecies"].lower()
+            return pokemon_obj["baseSpecies"].lower().replace("'", "")
 
         return None
 

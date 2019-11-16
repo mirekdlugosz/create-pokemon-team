@@ -105,6 +105,7 @@ def test_order_in_pokedex(filled_pokedex):
     ("meowsticf", "Meowstic (Female)"),
     ("hoopa", "Hoopa (Confined)"),
     ("hoopaunbound", "Hoopa (Unbound)"),
+    ("raichualola", "Alolan Raichu"),
     ("oricoriopau", "Oricorio (Pa’u Style)"),
     ("oricoriosensu", "Oricorio (Sensu Style)"),
     ("lycanroc", "Lycanroc (Midday Form)"),
@@ -112,8 +113,19 @@ def test_order_in_pokedex(filled_pokedex):
     ("necrozmaduskmane", "Necrozma (Dusk Mane)"),
     ("necrozmadawnwings", "Necrozma (Dawn Wings)"),
     ("necrozmaultra", "Necrozma (Ultra)"),
+    ("darmanitangalar", "Galarian Darmanitan (Standard Mode)"),
+    ("darmanitanzengalar", "Galarian Darmanitan (Zen Mode)"),
+    ("yamaskgalar", "Galarian Yamask"),
+    ("indeedee", "Indeedee (Male)"),
+    ("indeedeef", "Indeedee (Female)"),
+    ("zamazentacrowned", "Crowned Zamazenta"),
 ])
 def test_forme_name(filled_pokedex, pokemon_id, name):
+    unavailable_in_eevee = ["darmanitangalar", "darmanitanzengalar", "yamaskgalar",
+                            "indeedee", "indeedeef", "zamazentacrowned"]
+    if filled_pokedex['reader'] == "EeveeReader" and pokemon_id in unavailable_in_eevee:
+        pytest.skip(f"{pokemon_id} is not available in EeveeDex")
+
     in_any = False
     for game in filled_pokedex['pokemon']:
         pokemon = next((item for item in filled_pokedex['pokemon'][game]
@@ -209,8 +221,8 @@ def test_smeargle_moves(filled_pokedex):
     (['kyurem'], ['kyuremwhite', 'kyuremblack'], ['scaryface', 'glaciate']),
     (['kyuremwhite'], ['kyurem', 'kyuremblack'], ['fusionflare', 'iceburn']),
     (['kyuremblack'], ['kyurem', 'kyuremwhite'], ['fusionbolt', 'freezeshock']),
-    (['meowstic'], ['meowsticf'], ['charm', 'imprison', 'meanlook', 'miracleeye', 'mistyterrain', 'quickguard']),
-    (['meowsticf'], ['meowstic'], ['extrasensory', 'futuresight', 'magicalleaf', 'mefirst', 'storedpower']),
+    (['meowstic'], ['meowsticf'], ['imprison', 'meanlook', 'mistyterrain', 'quickguard']),
+    (['meowsticf'], ['meowstic'], ['extrasensory', 'futuresight', 'magicalleaf', 'storedpower']),
     (['lycanrock', 'lycanrocdusk'], ['lycanrocmidnight'], ['accelerock']),
     (['lycanrocmidnight', 'lycanrocdusk'], ['lycanroc'], ['counter']),
     (['lycanroc'], ['lycanrocmidnight', 'lycanrocdusk'], ['quickattack']),

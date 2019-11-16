@@ -282,7 +282,7 @@ class Constants():
                        'frenzyplant', 'grasspledge', 'hydrocannon', 'relicsong',
                        'secretsword', 'volttackle', 'waterpledge'],
              'games': ['sun-moon', 'ultra-sun-ultra-moon']}
-        ]
+        ],
     }
 
     # Sometimes Eevee Pokedex names are just better, but there is no obvious
@@ -293,6 +293,8 @@ class Constants():
         "farfetchd": "Farfetch’d",
         "rockruff": "Rockruff",
         "silvally": "Silvally (Normal Type)",
+        "darmanitangalar": "Galarian Darmanitan (Standard Mode)",
+        "darmanitanzengalar": "Galarian Darmanitan (Zen Mode)",
     }
 
     # Map of Pokemon and their real prevolutions

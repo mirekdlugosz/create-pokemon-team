@@ -60,6 +60,7 @@ def filled_pokedex(request):
         learnsets = json.loads(fh.getvalue())
 
     return {
+        'reader': ReaderClass.__name__,
         'pokedex': pokedex,
         'pokemon': pokemon,
         'moves': moves,
