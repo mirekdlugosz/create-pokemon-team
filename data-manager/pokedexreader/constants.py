@@ -24,6 +24,7 @@ class Constants():
         "emerald", "firered-leafgreen", "diamond-pearl", "platinum",
         "heartgold-soulsilver", "black-white", "black-2-white-2", "x-y",
         "omega-ruby-alpha-sapphire", "sun-moon", "ultra-sun-ultra-moon",
+        "sword-shield",
     ]
 
     games_in_generation = (
@@ -43,6 +44,8 @@ class Constants():
         [known_versions[12], known_versions[13]],
         # gen 7 - sun/moon, ultra sun/ultra moon
         [known_versions[14], known_versions[15]],
+        # gen 8 - sword/shield
+        [known_versions[16], ],
     )
 
     # In the history of franchise, some Pokemon changed their type.
