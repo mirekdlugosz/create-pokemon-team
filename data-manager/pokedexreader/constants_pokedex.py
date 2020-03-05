@@ -282,7 +282,7 @@ GEN8_DEX = ["grookey", "thwackey", "rillaboom", "scorbunny", "raboot",
             "mantyke", "mantine", "wailmer", "wailord", "bergmite",
             "avalugg", "dhelmise", "lapras", "lunatone", "solrock", "mimejr",
             "mrmimegalar", "mrrime", "darumakagalar", "darmanitangalar",
-            "darmanitanzengalar", "stonjourner", "eiscue", "duraludon",
+            "darmanitangalarzen", "stonjourner", "eiscue", "duraludon",
             "rotom", "rotomheat", "rotomwash", "rotomfrost", "rotomfan",
             "rotommow", "ditto", "dracozolt", "arctozolt", "dracovish",
             "arctovish", "charmander", "charmeleon", "charizard", "typenull",
@@ -294,7 +294,16 @@ GEN8_DEX = ["grookey", "thwackey", "rillaboom", "scorbunny", "raboot",
             "silvallywater", "larvitar", "pupitar", "tyranitar", "deino",
             "zweilous", "hydreigon", "goomy", "sliggoo", "goodra", "jangmoo",
             "hakamoo", "kommoo", "dreepy", "drakloak", "dragapult", "zacian",
-            "zaciancrowned", "zamazenta", "zamazentacrowned", "eternatus"]
+            "zaciancrowned", "zamazenta", "zamazentacrowned", "eternatus",
+            "slowpokegalar", "bulbasaur", "ivysaur", "venusaur", "squirtle",
+            "wartortle", "blastoise", "mew", "mewtwo", "celebi", "jirachi",
+            "cobalion", "terrakion", "virizion", "reshiram", "zekrom",
+            "kyurem", "kyuremblack", "kyuremwhite", "keldeo", "rowlet",
+            "dartrix", "decidueye", "litten", "torracat", "incineroar",
+            "popplio", "brionne", "primarina", "cosmog", "cosmoem", "solgaleo",
+            "lunala", "necrozma", "necrozmaduskmane", "necrozmadawnwings",
+            "marshadow", "zeraora", "meltan", "melmetal"
+            ]
 
 
 available_pokemon = {

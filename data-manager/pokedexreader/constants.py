@@ -294,7 +294,7 @@ class Constants():
         "rockruff": "Rockruff",
         "silvally": "Silvally (Normal Type)",
         "darmanitangalar": "Galarian Darmanitan (Standard Mode)",
-        "darmanitanzengalar": "Galarian Darmanitan (Zen Mode)",
+        "darmanitangalarzen": "Galarian Darmanitan (Zen Mode)",
     }
 
     # Map of Pokemon and their real prevolutions

@@ -44,6 +44,11 @@ class TestPokemon():
     def test_number(self, client):
         with client.get('/pokemon') as rv:
             pokemon_list = get_json(rv)
+            assert len(pokemon_list) == 469
+
+    def test_number_all(self, client):
+        with client.get('/pokemon?ver=ultra-sun-ultra-moon') as rv:
+            pokemon_list = get_json(rv)
             assert len(pokemon_list) == 939
 
     def test_structure(self, client):

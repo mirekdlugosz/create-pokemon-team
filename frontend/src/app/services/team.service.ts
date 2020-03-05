@@ -25,6 +25,7 @@ export class TeamService {
   private EeveeShowdownMap = {
     "arceus-normal": "arceus",
     "darmanitan-standard": "darmanitan",
+    "darmanitanzengalar": "darmanitangalarzen",
     "deoxys-normal": "deoxys",
     "giratina-altered": "giratina",
     "lycanroc-midday": "lycanroc",

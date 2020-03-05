@@ -114,14 +114,14 @@ def test_order_in_pokedex(filled_pokedex):
     ("necrozmadawnwings", "Necrozma (Dawn Wings)"),
     ("necrozmaultra", "Necrozma (Ultra)"),
     ("darmanitangalar", "Galarian Darmanitan (Standard Mode)"),
-    ("darmanitanzengalar", "Galarian Darmanitan (Zen Mode)"),
+    ("darmanitangalarzen", "Galarian Darmanitan (Zen Mode)"),
     ("yamaskgalar", "Galarian Yamask"),
     ("indeedee", "Indeedee (Male)"),
     ("indeedeef", "Indeedee (Female)"),
     ("zamazentacrowned", "Crowned Zamazenta"),
 ])
 def test_forme_name(filled_pokedex, pokemon_id, name):
-    unavailable_in_eevee = ["darmanitangalar", "darmanitanzengalar", "yamaskgalar",
+    unavailable_in_eevee = ["darmanitangalar", "darmanitangalarzen", "yamaskgalar",
                             "indeedee", "indeedeef", "zamazentacrowned"]
     if filled_pokedex['reader'] == "EeveeReader" and pokemon_id in unavailable_in_eevee:
         pytest.skip(f"{pokemon_id} is not available in EeveeDex")
@@ -218,7 +218,7 @@ def test_smeargle_moves(filled_pokedex):
     (['wormadam'], ['wormadamsandy', 'wormadamtrash'], ['razorleaf', 'growth', 'leafstorm']),
     (['wormadamsandy'], ['wormadam', 'wormadamtrash'], ['rockblast', 'harden', 'fissure']),
     (['wormadamtrash'], ['wormadam', 'wormadamsandy'], ['mirrorshot', 'metalsound', 'ironhead']),
-    (['kyurem'], ['kyuremwhite', 'kyuremblack'], ['scaryface', 'glaciate']),
+    (['kyurem'], ['kyuremwhite', 'kyuremblack'], ['glaciate']),
     (['kyuremwhite'], ['kyurem', 'kyuremblack'], ['fusionflare', 'iceburn']),
     (['kyuremblack'], ['kyurem', 'kyuremwhite'], ['fusionbolt', 'freezeshock']),
     (['meowstic'], ['meowsticf'], ['imprison', 'meanlook', 'mistyterrain', 'quickguard']),
