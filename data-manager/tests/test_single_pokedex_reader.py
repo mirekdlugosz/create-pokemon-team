@@ -214,21 +214,29 @@ def test_smeargle_moves(filled_pokedex):
             assert move not in smeargle_moves
 
 
-@pytest.mark.parametrize("pokemon_with,pokemon_without,moves", [
-    (['wormadam'], ['wormadamsandy', 'wormadamtrash'], ['razorleaf', 'growth', 'leafstorm']),
-    (['wormadamsandy'], ['wormadam', 'wormadamtrash'], ['rockblast', 'harden', 'fissure']),
-    (['wormadamtrash'], ['wormadam', 'wormadamsandy'], ['mirrorshot', 'metalsound', 'ironhead']),
-    (['kyurem'], ['kyuremwhite', 'kyuremblack'], ['glaciate']),
-    (['kyuremwhite'], ['kyurem', 'kyuremblack'], ['fusionflare', 'iceburn']),
-    (['kyuremblack'], ['kyurem', 'kyuremwhite'], ['fusionbolt', 'freezeshock']),
-    (['meowstic'], ['meowsticf'], ['imprison', 'meanlook', 'mistyterrain', 'quickguard']),
-    (['meowsticf'], ['meowstic'], ['extrasensory', 'futuresight', 'magicalleaf', 'storedpower']),
-    (['lycanrock', 'lycanrocdusk'], ['lycanrocmidnight'], ['accelerock']),
-    (['lycanrocmidnight', 'lycanrocdusk'], ['lycanroc'], ['counter']),
-    (['lycanroc'], ['lycanrocmidnight', 'lycanrocdusk'], ['quickattack']),
+@pytest.mark.parametrize("pokemon_with,pokemon_without,moves,skip_games", [
+    (['wormadam'], ['wormadamsandy', 'wormadamtrash'], ['razorleaf', 'growth', 'leafstorm'], []),
+    (['wormadamsandy'], ['wormadam', 'wormadamtrash'], ['rockblast', 'harden', 'fissure'], []),
+    (['wormadamtrash'], ['wormadam', 'wormadamsandy'], ['mirrorshot', 'metalsound', 'ironhead'], []),
+    (['kyurem'], ['kyuremwhite', 'kyuremblack'], ['scaryface', 'glaciate'], ['sword-shield']),
+    (['kyurem'], ['kyuremwhite', 'kyuremblack'], ['glaciate'], []),
+    (['kyuremwhite'], ['kyurem', 'kyuremblack'], ['fusionflare', 'iceburn'], []),
+    (['kyuremblack'], ['kyurem', 'kyuremwhite'], ['fusionbolt', 'freezeshock'], []),
+    (['meowstic'], ['meowsticf'], ['charm', 'imprison', 'meanlook', 'miracleeye', 'mistyterrain', 'quickguard'],
+     ['sword-shield']),
+    (['meowstic'], ['meowsticf'], ['imprison', 'meanlook', 'mistyterrain', 'quickguard'], []),
+    (['meowsticf'], ['meowstic'], ['extrasensory', 'futuresight', 'magicalleaf', 'mefirst', 'storedpower'],
+     ['sword-shield']),
+    (['meowsticf'], ['meowstic'], ['extrasensory', 'futuresight', 'magicalleaf', 'storedpower'], []),
+    (['lycanrock', 'lycanrocdusk'], ['lycanrocmidnight'], ['accelerock'], []),
+    (['lycanrocmidnight', 'lycanrocdusk'], ['lycanroc'], ['counter'], []),
+    (['lycanroc'], ['lycanrocmidnight', 'lycanrocdusk'], ['quickattack'], ['sword-shield']),
+    (['lycanroc', 'lycanrocdusk'], ['lycanrocmidnight'], ['quickattack'], ['sun-moon', 'ultra-sun-ultra-moon']),
 ])
-def test_exclusive_form_moves(filled_pokedex, pokemon_with, pokemon_without, moves):
-    for game_learnset in filled_pokedex['learnsets'].values():
+def test_exclusive_form_moves(filled_pokedex, pokemon_with, pokemon_without, moves, skip_games):
+    for game_name, game_learnset in filled_pokedex['learnsets'].items():
+        if game_name in skip_games:
+            continue
         if not all(pokemon in game_learnset for pokemon in pokemon_with + pokemon_without):
             continue
         for move in moves:
