@@ -293,6 +293,7 @@ class ShowdownReader(AbstractReader):
         self._pokemon_moves_map = self._fetch_learnsets(path)
         self._ignored_versions = ["red-blue", "yellow", "gold-silver",
                                   "crystal"]
+        self._pokemon_names_ids_map = self._create_pokemon_names_ids_map()
 
     def _fetch_all_pokemon(self, basedir_path):
         with open(Path(basedir_path).joinpath('pokedex.json')) as fh:
@@ -318,6 +319,8 @@ class ShowdownReader(AbstractReader):
         """
         out = {}
         for pokemon in learnsets:
+            if "learnset" not in learnsets[pokemon]:
+                continue
             learnset = learnsets[pokemon]["learnset"]
             out[pokemon] = self._invert_learnset_map(learnset)
 
@@ -352,12 +355,18 @@ class ShowdownReader(AbstractReader):
             versions.update(games)
         return versions
 
+    def _create_pokemon_names_ids_map(self):
+        names_ids_map = {}
+        for pokemon_id, pokemon_obj in self._all_pokemon.items():
+            names_ids_map[pokemon_obj["name"]] = pokemon_id
+        return names_ids_map
+
     def _create_pokemon_name(self, pokemon_id):
         if pokemon_id in Constants.showdown_correct_pokemon_names:
             return Constants.showdown_correct_pokemon_names[pokemon_id]
 
         pokemon_obj = self._all_pokemon[pokemon_id]
-        species = pokemon_obj.get('species', None)
+        species = pokemon_obj.get('name', None)
         base_species = pokemon_obj.get('baseSpecies', None)
         forme = pokemon_obj.get('forme', None)
         base_forme = pokemon_obj.get('baseForme', None)
@@ -452,10 +461,11 @@ class ShowdownReader(AbstractReader):
 
         pokemon_obj = self._all_pokemon[pokemon_id]
         if "prevo" in pokemon_obj:
-            return pokemon_obj["prevo"]
+            prevo_name = pokemon_obj["prevo"]
+            return self._pokemon_names_ids_map[prevo_name]
         if "baseSpecies" in pokemon_obj and (
                 pokemon_obj.get("forme", None) not in ["Alola"]):
-            return pokemon_obj["baseSpecies"].lower().replace("'", "")
+            return pokemon_obj["baseSpecies"].lower().replace("’", "")
 
         return None
 

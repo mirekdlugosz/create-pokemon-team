@@ -43,11 +43,22 @@ Path to SQLite file will be printed out at the beginning of output. Or you can u
 
 ### Pokemon Showdown `data` directory
 
-Acquire copy of Pokemon Showdown repository. Since files in `data` directory are designed to be used by Node.js, they must be transformed to JSON first. Adjust paths in following commands:
+Acquire copy of Pokemon Showdown repository. You need to build the project to use files in `data` directory. Compiled files are designed to be used by Node.js and they must be transformed to JSON first.
+
+First, run these commands outside of **this** project repository:
 
 ```
-git clone https://github.com/Zarel/Pokemon-Showdown.git
-node create-pokemon-team/data-manager/showdown2json Pokemon-Showdown/data/ /tmp/showdown-data-json/
+# run these commands outside of this project repository
+git clone https://github.com/smogon/pokemon-showdown.git
+cd pokemon-showdown
+npm install
+npm run build
+```
+
+Second, run below command in this project repository; remember to adjust paths:
+
+```
+node create-pokemon-team/data-manager/showdown2json pokemon-showdown/.data-dist/ /tmp/showdown-data-json/
 ```
 
 ## Usage
