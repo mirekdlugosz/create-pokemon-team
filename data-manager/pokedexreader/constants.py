@@ -302,6 +302,7 @@ class Constants():
     showdown_prevolution_override = {
         "kyuremwhite": None,
         "kyuremblack": None,
+        "darmanitangalarzen": "darmanitangalar",
     }
 
     # Some Pokemon have multiple forms that differ in a way that is not

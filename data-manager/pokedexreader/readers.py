@@ -464,7 +464,7 @@ class ShowdownReader(AbstractReader):
             prevo_name = pokemon_obj["prevo"]
             return self._pokemon_names_ids_map[prevo_name]
         if "baseSpecies" in pokemon_obj and (
-                pokemon_obj.get("forme", None) not in ["Alola"]):
+                pokemon_obj.get("forme", None) not in ["Alola", "Galar"]):
             return pokemon_obj["baseSpecies"].lower().replace("’", "")
 
         return None
