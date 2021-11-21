@@ -27,7 +27,8 @@ export class Version {
     {'id': 'omega-ruby-alpha-sapphire', 'label': 'Omega Ruby / Alpha Sapphire', 'generation': 6},
     {'id': 'sun-moon', 'label': 'Sun / Moon', 'generation': 7},
     {'id': 'ultra-sun-ultra-moon', 'label': 'Ultra Sun / Ultra Moon', 'generation': 7},
-    {'id': 'sword-shield', 'label': 'Sword / Shield', 'generation': 8}
+    {'id': 'sword-shield', 'label': 'Sword / Shield', 'generation': 8},
+    {'id': 'brilliant-diamond-shining-pearl', 'label': 'Brilliant Diamond / Shining Pearl', 'generation': 8}
   ];
 
   static get latest() {

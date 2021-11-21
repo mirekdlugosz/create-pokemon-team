@@ -30,7 +30,7 @@ KNOWN_VERSIONS = [
     "emerald", "firered-leafgreen", "diamond-pearl", "platinum",
     "heartgold-soulsilver", "black-white", "black-2-white-2", "x-y",
     "omega-ruby-alpha-sapphire", "sun-moon", "ultra-sun-ultra-moon",
-    "sword-shield",
+    "sword-shield", "brilliant-diamond-shining-pearl"
 ]
 
 api = flask.Blueprint('api', APP_NAME)
