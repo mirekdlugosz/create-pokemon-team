@@ -377,5 +377,5 @@ available_pokemon = {
     "sun-moon": GEN7_DEX,
     "ultra-sun-ultra-moon": GEN7_DEX + GEN7_ADDITIONS,
     "sword-shield": GEN8_DEX,
-    "brilliant-diamond-shining-pearl": GEN4_DEX,
+    "brilliant-diamond-shining-pearl": GEN4_DEX + GEN4_ADDITIONS,
 }
